@@ -233,10 +233,12 @@
 					</Button>
 
 					<!-- Shopping Cart -->
-					<Button class="btn">
-						<i class="fas fa-shopping-cart"></i>
-						<span>Cart</span>
-					</Button>
+					<a href="/cart" style="text-decoration: none;">
+						<Button class="btn">
+							<i class="fas fa-shopping-cart"></i>
+							<span>Cart</span>
+						</Button>
+					</a>
 				</div>
 			</div>
 		{/if}

@@ -93,35 +93,7 @@
 			</div>
 
 			<!-- Meet the Maker -->
-			<div class="maker-section">
-				<h2>Meet the Maker</h2>
-				<div class="maker-content">
-					<div class="maker-image">
-						<div class="image-placeholder large">
-							<i class="fas fa-user-circle fa-5x"></i>
-						</div>
-					</div>
-					<div class="maker-bio">
-						<h3>Your Name</h3>
-						<p class="maker-title">Founder & Artisan</p>
-						<p>
-							Hi! I'm passionate about creating unique, wearable art. My journey started
-							with chainmail weaving and has expanded to include laser engraving and
-							custom designs. I love connecting with customers at local markets and
-							creating pieces that bring joy.
-						</p>
-						<p>
-							When I'm not crafting, you can find me exploring new weaving patterns,
-							experimenting with design software, or planning our next market appearance.
-						</p>
-						<div class="maker-social">
-							<a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
-							<a href="#" class="social-link"><i class="fab fa-facebook"></i></a>
-							<a href="#" class="social-link"><i class="fab fa-tiktok"></i></a>
-						</div>
-					</div>
-				</div>
-			</div>
+
 
 			<!-- CTA Section -->
 			<div class="about-cta">
@@ -141,7 +113,6 @@
 	.about-hero {
 		padding: 4rem 2rem 3rem;
 		text-align: center;
-		background: linear-gradient(135deg, rgba(167, 139, 250, 0.1) 0%, transparent 100%);
 		border-bottom: 1px solid var(--border-primary);
 	}
 

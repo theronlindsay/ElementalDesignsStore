@@ -37,6 +37,24 @@ src/
 │   │                          #    - Search bar & account/cart buttons
 │   │                          #    - SCSS with breakpoint variables
 │   │
+│   ├── Footer.svelte          # Footer component
+│   │                          #    - Newsletter signup
+│   │                          #    - Links and social media
+│   │
+│   ├── CartItem.svelte        # Shopping cart item component
+│   │                          #    - Props: item, onUpdateQuantity, onRemove
+│   │                          #    - Quantity controls with +/- buttons
+│   │                          #    - Responsive grid layout
+│   │
+│   ├── CartSummary.svelte     # Cart order summary component
+│   │                          #    - Props: subtotal, shipping, tax
+│   │                          #    - Calculates total automatically
+│   │                          #    - Sticky positioning on desktop
+│   │
+│   ├── EmptyCart.svelte       # Empty cart state component
+│   │                          #    - Shows when cart has no items
+│   │                          #    - Call-to-action to start shopping
+│   │
 │   └── assets/                # Static assets (images, icons)
 │       ├── favicon.svg        # Site favicon
 │       ├── Logo.png           # Main logo with background
@@ -54,11 +72,18 @@ src/
     │                          #    - Categories showcase
     │
     ├── page.svelte.spec.js    # Unit tests for homepage
-    |
-    |
-    |
+    │
     ├── about/
-	├──+page.svelte		# About page, additional pages can be made this same way
+    │   └── +page.svelte       # About page (route: /about)
+    │                          #    - Company story and values
+    │                          #    - Meet the maker section
+    │
+    └── cart/
+        └── +page.svelte       # Shopping cart page (route: /cart)
+                               #    - Uses CartItem, CartSummary, EmptyCart components
+                               #    - Quantity management and item removal
+                               #    - Promo code input
+                               #    - Order summary with tax/shipping
   
 ```
 

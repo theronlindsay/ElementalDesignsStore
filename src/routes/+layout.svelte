@@ -3,8 +3,14 @@
 	import '@fortawesome/fontawesome-free/css/all.min.css';
 	import '../app.scss';
 	import {Navbar, Footer} from '$lib'
+	import { page } from '$app/stores';
 
 	let { children } = $props();
+	
+	// Hide navbar and footer in admin routes (except login)
+	// $derived rune creates computed values that automatically update
+	let isAdminRoute = $derived($page.url.pathname.startsWith('/admin'));
+	let showNavAndFooter = $derived(!isAdminRoute);
 </script>
 
 <svelte:head>
@@ -14,9 +20,13 @@
 </svelte:head>
 
 <main class="elemental-store">
-	<Navbar />
+	{#if showNavAndFooter}
+		<Navbar />
+	{/if}
 
 	{@render children?.()}
 
-	<Footer />
+	{#if showNavAndFooter}
+		<Footer />
+	{/if}
 </main>

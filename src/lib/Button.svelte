@@ -3,6 +3,7 @@
   export let size: 'sm' | 'md' = 'md';
   export let type: 'button' | 'submit' | 'reset' = 'button';
   export let ariaLabel: string | undefined = undefined;
+  export let onclick: ((event: MouseEvent) => void) | undefined = undefined;
   
   // $$restProps is automatically available - no need to export it
   $: classes = [
@@ -12,12 +13,12 @@
   ].join(' ');
 </script>
 
-<button class={classes} type={type} aria-label={ariaLabel} {...$$restProps}>
+<button class={classes} type={type} aria-label={ariaLabel} {onclick} {...$$restProps}>
   <slot />
 </button>
 
 <style lang="scss">
-  @import '../app.scss';
+  //@import '../app.scss';
 
   .btn {
     display: inline-flex;
@@ -38,5 +39,5 @@
 
   .btn--default:hover { border-color: var(--accent); background: rgba(167,139,250,0.06); color: #f3f4f6 }
   .btn--ghost { background: transparent }
-  .btn--primary { background: linear-gradient(135deg,var(--accent),var(--accent-2)); color: white; border-color: transparent }
+  .btn--primary { background: linear-gradient(135deg,var(--accent),var(--accent-2)); color: white; border-color: transparent; padding: 1.2em 1em;}
 </style>
