@@ -11,6 +11,7 @@
 		{ id: 'laser', label: 'Laser Engraving', href: '/laser', active: false },
 		{ id: 'about', label: 'About', href: '/about', active: false }, 
 		{ id: 'faq', label: 'FAQ', href: '/faq', active: false},
+		{ id: 'examplePage', label: 'example', href: '/productPage', active: true},
 	];
 
 	let activeItem = items.find(item => item.active)?.id || items[0]?.id;
