@@ -40,6 +40,7 @@
 		"vitest-browser-svelte": "^0.1.0"
 	},
 	"dependencies": {
-		"@fortawesome/fontawesome-free": "^7.1.0"
+		"@fortawesome/fontawesome-free": "^7.1.0",
+		"square": "^43.2.0"
 	}
 }

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { HTMLInputAttributes } from 'svelte/elements';
 	
-	export let type: 'text' | 'password' | 'email' | 'number' = 'text';
+	export let type: 'date' | 'text' | 'password' | 'email' | 'number' = 'text';
 	export let name: string;
 	export let placeholder: string = '';
 	export let value: string = '';

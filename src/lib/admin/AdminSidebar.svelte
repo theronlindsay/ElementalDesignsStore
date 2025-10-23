@@ -10,6 +10,7 @@
 		{ href: '/admin/products', icon: 'fa-box', label: 'Products' },
 		{ href: '/admin/orders', icon: 'fa-shopping-bag', label: 'Orders' },
 		{ href: '/admin/customers', icon: 'fa-users', label: 'Customers' },
+		{ href: '/admin/events', icon: 'fa-calendar-alt', label: 'Events' },
 		{ href: '/admin/coupons', icon: 'fa-ticket-alt', label: 'Coupons' },
 		{ href: '/admin/settings', icon: 'fa-cog', label: 'Settings' }
 	];
@@ -38,7 +39,7 @@
 
 <!-- Overlay for mobile -->
 {#if isOpen}
-	<div class="sidebar-overlay" on:click={closeSidebar}></div>
+	<div class="sidebar-overlay" on:click={closeSidebar} on:keydown={(e) => e.key === 'Escape' && closeSidebar()} role="button" tabindex="0"></div>
 {/if}
 
 <!-- Sidebar -->

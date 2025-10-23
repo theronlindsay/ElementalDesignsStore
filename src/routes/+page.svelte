@@ -1,6 +1,39 @@
 <script lang="ts">
+	import { EventCard } from '$lib';
+	
 	let showAccountMenu = false;
 	let showMainMenus = {};
+	
+	// Mock events data (in production, this would be fetched from API/database)
+	// This should match the events created in admin panel
+	let events = [
+		{
+			id: '1',
+			title: 'Renaissance Fair 2025',
+			description: 'Join us for a spectacular Renaissance fair featuring chainmail demonstrations, medieval crafts, and artisan vendors.',
+			date: '2026-06-15',
+			location: 'Heritage Park, Portland',
+			image: 'https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?w=800',
+			link: 'https://example.com/renaissance-fair'
+		},
+		{
+			id: '2',
+			title: 'Maker Faire Summer Edition',
+			description: 'Discover unique handcrafted items, watch live demonstrations of laser engraving, and meet local artisans.',
+			date: '2026-07-20',
+			location: 'Downtown Convention Center',
+			image: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800',
+			link: 'https://example.com/maker-faire'
+		}
+	];
+	
+	// Filter for upcoming events only
+	let upcomingEvents = $derived(
+		events
+			.filter(e => new Date(e.date) >= new Date())
+			.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+			.slice(0, 3) // Show max 3 events on homepage
+	);
 </script>
     
 <!-- Hero Section -->
@@ -63,50 +96,42 @@
 <div class="content-grid">
 	<!-- Events Section -->
 	<section class="events-section">
-		<h3>Where we'll be</h3>
-		<div class="event-list">
-			<div class="event-item">
-				<div class="event-date">Sat 10-4</div>
-				<div class="event-details">
-					<strong>Riverfront Market</strong>
-					<small>Springfield, IL</small>
-				</div>
-			</div>
-			
-			<div class="event-item">
-				<div class="event-date">Sun 11-3</div>
-				<div class="event-details">
-					<strong>Lakeside Fair</strong>
-					<small>Madison, WI</small>
-				</div>
-			</div>
-			
-			<div class="event-item">
-				<div class="event-date">Fri 6-9</div>
-				<div class="event-details">
-					<strong>Night Bazaar</strong>
-					<small>Milwaukee, WI</small>
-				</div>
-			</div>
-		</div>
+		<h3>Upcoming Events</h3>
 		
-		<div class="newsletter-signup">
+		{#if upcomingEvents.length > 0}
+			<div class="events-list">
+				{#each upcomingEvents as event (event.id)}
+					<EventCard {event} editable={false} />
+				{/each}
+			</div>
+		{:else}
+			<div class="no-events">
+				<p>No upcoming events at this time. Check back soon!</p>
+			</div>
+		{/if}
+	</section>
+
+	<div class ="hgrid">
+
+		<!-- Custom Orders Section -->
+		<section class="custom-orders">
+			<h2>Custom orders</h2>
+			<p>Have something specific in mind? We create custom chainmail and laser-engraved pieces tailored to your vision. From personalized jewelry to unique gifts.</p>
+			
+			<div class="custom-actions">
+				<button class="btn-custom">Start a custom request</button>
+				<button class="btn-past-work">See past work</button>
+			</div>
+		</section>
+
+		<section class="newsletter-signup">
+			<h2>Sign up for our newsletter:</h2>
+
 			<input type="email" placeholder="Enter your email" />
 			<button class="btn-signup">Get updates</button>
 			<small>No pop-ups. We only email about shows and launches.</small>
-		</div>
-	</section>
-
-	<!-- Custom Orders Section -->
-	<section class="custom-orders">
-		<h3>Custom orders</h3>
-		<p>Have something specific in mind? We create custom chainmail and laser-engraved pieces tailored to your vision. From personalized jewelry to unique gifts.</p>
-		
-		<div class="custom-actions">
-			<button class="btn-custom">Start a custom request</button>
-			<button class="btn-past-work">See past work</button>
-		</div>
-	</section>
+		</section>
+	</div>
 </div>
 
 

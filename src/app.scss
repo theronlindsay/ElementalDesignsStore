@@ -453,15 +453,23 @@ body > * {
    ============================================ */
 
 .content-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+  display: flex;
+  flex-direction: column;
   gap: $spacing-xl;
   max-width: $desktop-breakpoint;
   margin: 0 auto;
   padding: $spacing-xl;
 }
 
-.events-section, .custom-orders {
+.hgrid{
+  display: flex;
+  flex-direction: row;
+  gap: $spacing-xl;
+  max-width: $desktop-breakpoint;
+  margin: 0 auto;
+}
+
+.events-section, .custom-orders, .newsletter-signup {
   background: rgba(42, 36, 56, 0.5);
   border: 1px solid $border-primary;
   border-radius: $radius-lg;
@@ -475,8 +483,12 @@ body > * {
   }
 }
 
-.event-list {
-  margin-bottom: $spacing-xl;
+.events-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: $spacing-md;
+  align-items: start; /* keep card tops aligned */
+  margin-top: $spacing-sm;
 }
 
 .event-item {
@@ -517,7 +529,7 @@ body > * {
 .newsletter-signup {
   display: flex;
   flex-direction: column;
-  gap: $spacing-sm;
+  gap: $spacing-md;
 
   input {
     padding: 0.75rem;

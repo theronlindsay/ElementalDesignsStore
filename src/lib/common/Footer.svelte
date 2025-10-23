@@ -42,7 +42,7 @@
 
 <style lang="scss">
 
-@import '../app.scss';
+@import '../../app.scss';
 
 .footer {
   background: $bg-primary;
