@@ -42,7 +42,7 @@
 		<div class="hero-main">
 			<a href="/" class="logo-link" aria-label="Elemental Designs Home">
 					<div class="logo">
-						<img src="/src/lib/assets/LogoTransparent.png" alt="Logo" style="max-width: 200px; display: block"/>
+						<img src="/src/lib/assets/LogoTextAbove.png" alt="Logo" style="max-width: 500px; display: block"/>
 					</div>
 				</a>
 			<p class="hero-title">Handcrafted Chainmail and Laser-Engraved Gifts</p>

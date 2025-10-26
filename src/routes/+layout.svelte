@@ -1,7 +1,7 @@
 <script>
-	import favicon from '$lib/assets/favicon.svg';
+	import favicon from '$lib/assets/favicon.png';
 	import '@fortawesome/fontawesome-free/css/all.min.css';
-	import '../app.scss';
+	import '$lib/app.scss';
 	import {Navbar, Footer} from '$lib'
 	import { page } from '$app/stores';
 

@@ -6,11 +6,11 @@
 	// Navbar Routes
 	export let items = [
 		{ id: 'home', label: 'Home', href: '/', active: true },
-		{ id: 'chainmail', label: 'Chainmail', href: '/chainmail', active: false },
-		{ id: 'nsfw', label: 'NSFW', href: '/nsfw', active: false },
+		{ id: 'jewelry', label: 'Jewelry', href: '/jewelry', active: false },
+		{ id: 'armor', label: 'Armor', href: '/armor', active: false },
 		{ id: 'laser', label: 'Laser Engraving', href: '/laser', active: false },
+		{ id: 'more', label: 'More', href: '/more', active: false},
 		{ id: 'about', label: 'About', href: '/about', active: false }, 
-		{ id: 'faq', label: 'FAQ', href: '/faq', active: false},
 		{ id: 'examplePage', label: 'example', href: '/productPage', active: true},
 	];
 
