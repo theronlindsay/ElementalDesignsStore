@@ -1,31 +1,14 @@
 <script lang="ts">
+	//importing PageData library
 	import type { PageData } from './$types';
-	
+	// this is saying, let data
+	// Destructures 'data' from props and uses TypeScript to assert that the props object contains a 'data' property of type PageData
 	let { data }: { data: PageData } = $props();
-	
-	// Jewelry type categories
-	const jewelryTypes = [
-		'All',
-		'Earrings & Ear Cuffs',
-		'Necklaces & Chokers',
-		'Bracelets',
-		'Rings',
-		'Anklets',
-		'Body Chains',
-		'Waist Chains',
-		'Headdresses',
-		'Face Chains',
-		'Gauntlets',
-		'Harnesses',
-		'Garters',
-		'Arm Bands',
-		'Statement Pieces'
-	];
 	
 	// Filter state
 	let selectedType = $state('All');
 	let minPrice = $state(0);
-	let maxPrice = $state(1000);
+	let maxPrice = $state(999999);
 	let minRating = $state(0);
 	let sortBy = $state<'name' | 'price-low' | 'price-high' | 'rating'>('name');
 	let showFilters = $state(true);
@@ -50,16 +33,45 @@
 		return item.customAttributeValues?.rating?.numberValue || 0;
 	}
 	
-	// Mock function to get jewelry type from item
-	function getJewelryType(item: any): string {
-		// This should come from custom attributes or item name parsing
-		const name = item.itemData?.name?.toLowerCase() || '';
-		const description = item.itemData?.description?.toLowerCase() || '';
-		const customType = item.customAttributeValues?.jewelry_type?.stringValue;
+	// Function to get jewelry type from item
+	// Pass categories to look up the actual category name
+	function getJewelryType(item: any, categories: any[] = []): string {
+		// First, try to get the actual category from Square
+		const categoryId = item.itemData?.categoryId;
 		
+		// Debug logging - let's see what we're working with
+		console.log('=== Checking item ===');
+		console.log('Item name:', item.itemData?.name);
+		console.log('Item categoryId:', categoryId);
+		console.log('Categories array length:', categories.length);
+		
+		if (categories.length > 0) {
+			console.log('First few categories:', categories.slice(0, 3).map(c => ({
+				id: c.id,
+				name: c.categoryData?.name,
+				hasParent: !!c.categoryData?.parentCategory
+			})));
+		}
+		
+		if (categoryId && categories.length > 0) {
+			const category = categories.find((cat: any) => cat.id === categoryId);
+			console.log('Found category match:', category?.categoryData?.name || 'NOT FOUND');
+			
+			if (category?.categoryData?.name) {
+				return category.categoryData.name;
+			} else {
+				// Debug: category not found
+				console.log('❌ Category not found for ID:', categoryId);
+				console.log('All category IDs:', categories.map(c => c.id));
+			}
+		}
+		
+		// Fallback to custom attribute if exists
+		const customType = item.customAttributeValues?.jewelry_type?.stringValue;
 		if (customType) return customType;
 		
-		// Try to infer from name/description
+		// Last resort: try to infer from name/description
+		const name = item.itemData?.name?.toLowerCase() || '';
 		if (name.includes('earring') || name.includes('ear cuff')) return 'Earrings & Ear Cuffs';
 		if (name.includes('necklace') || name.includes('choker')) return 'Necklaces & Chokers';
 		if (name.includes('bracelet')) return 'Bracelets';
@@ -74,17 +86,31 @@
 		if (name.includes('garter')) return 'Garters';
 		if (name.includes('arm band') || name.includes('armband')) return 'Arm Bands';
 		
-		return 'Statement Pieces';
+		// If no category found, return "Uncategorized" instead of assuming
+		console.log('⚠️ Returning Uncategorized for:', item.itemData?.name);
+		return 'Uncategorized';
 	}
 	
-	// Filtered and sorted items
+	// Filtered and sorted items - now derived from the resolved promise data
 	let filteredItems = $derived.by(() => {
-		if (!data.items || data.items.length === 0) return [];
+		// We'll handle the filtering in the template after the promise resolves
+		return [];
+	});
+	
+	// Function to filter items from resolved data
+	function filterItems(items: any[], categories: any[] = []) {
+		if (!items || items.length === 0) return [];
 		
-		let filtered = data.items.filter((item: any) => {
+		let filtered = items.filter((item: any) => {
+			// Ensure item is actually a catalog ITEM type (not IMAGE or other types)
+			if (item.type !== 'ITEM') {
+				console.log('Filtering out non-ITEM:', item.type, item.id);
+				return false;
+			}
+			
 			const price = getItemPrice(item);
 			const rating = getItemRating(item);
-			const type = getJewelryType(item);
+			const type = getJewelryType(item, categories);
 			
 			// Type filter
 			if (selectedType !== 'All' && type !== selectedType) return false;
@@ -115,7 +141,7 @@
 		});
 		
 		return filtered;
-	});
+	}
 	
 	function formatPrice(price: number): string {
 		return `$${price.toFixed(2)}`;
@@ -150,15 +176,19 @@
 				<div class="filter-section">
 					<h3>Jewelry Type</h3>
 					<div class="type-filters">
-						{#each jewelryTypes as type}
-							<button 
-								class="type-button"
-								class:active={selectedType === type}
-								onclick={() => selectedType = type}
-							>
-								{type}
-							</button>
-						{/each}
+						{#await data.itemsPromise then itemsData}
+							{@const categoryNames = (itemsData.categories || []).map((cat: any) => cat.categoryData?.name).filter(Boolean)}
+							{@const jewelryTypes = ['All', ...categoryNames]}
+							{#each jewelryTypes as type}
+								<button 
+									class="type-button"
+									class:active={selectedType === type}
+									onclick={() => selectedType = type}
+								>
+									{type}
+								</button>
+							{/each}
+						{/await}
 					</div>
 				</div>
 				
@@ -191,7 +221,7 @@
 						type="range" 
 						bind:value={maxPrice} 
 						min="0" 
-						max="1000" 
+						max="999999" 
 						step="10"
 						class="price-slider"
 					/>
@@ -230,82 +260,102 @@
 		
 		<!-- Main Content -->
 		<main class="jewelry-content">
-			<div class="results-header">
-				<p class="results-count">
-					{filteredItems.length} {filteredItems.length === 1 ? 'item' : 'items'} found
-				</p>
+			<!-- Use Svelte 5 await block to handle promise-based loading -->
+			{#await data.itemsPromise}
+				<!-- Loading state - shown immediately while data loads -->
+				<div class="loading-container">
+					<div class="loading-spinner">
+						<div class="spinner"></div>
+						<p>Loading jewelry collection...</p>
+					</div>
+				</div>
+			{:then itemsData}
+				<!-- Data loaded successfully -->
+				{@const filtered = filterItems(itemsData.items, itemsData.categories)}
 				
-				<button class="mobile-filter-toggle" onclick={() => showFilters = !showFilters}>
-					<span>🔍</span> Filters
-				</button>
-			</div>
-			
-			{#if !data.success}
+				<div class="results-header">
+					<p class="results-count">
+						{filtered.length} {filtered.length === 1 ? 'item' : 'items'} found
+					</p>
+					
+					<button class="mobile-filter-toggle" onclick={() => showFilters = !showFilters}>
+						<span>🔍</span> Filters
+					</button>
+				</div>
+				
+				{#if !itemsData.success}
+					<div class="error-message">
+						<p>⚠️ Unable to load jewelry items</p>
+						<p class="error-detail">{itemsData.error || 'Please try again later'}</p>
+					</div>
+				{:else if filtered.length === 0}
+					<div class="no-results">
+						<p>No items match your filters</p>
+						<button onclick={resetFilters}>Clear Filters</button>
+					</div>
+				{:else}
+					<div class="jewelry-grid">
+						{#each filtered as item (item.id)}
+							{@const itemData = (item as any).itemData || {}}
+							{@const itemPrice = getItemPrice(item)}
+							{@const itemRating = getItemRating(item)}
+							{@const itemType = getJewelryType(item, itemsData.categories)}
+							
+							<article class="jewelry-card">
+								<div class="card-image">
+									{#if item.imageUrls?.length > 0}
+										<img src={item.imageUrls[0]} alt={itemData.name} />
+									{:else if itemData.imageIds?.[0]}
+										<div class="placeholder-image">
+											<span>🖼️</span>
+											<small>Image ID: {itemData.imageIds[0]}</small>
+										</div>
+									{:else}
+										<div class="placeholder-image">
+											<span>📿</span>
+										</div>
+									{/if}
+									
+									<div class="card-badge">
+										{itemType}
+									</div>
+								</div>
+								
+								<div class="card-content">
+									<h3 class="item-name">{itemData.name || 'Untitled Item'}</h3>
+									
+									{#if itemData.description}
+										<p class="item-description">
+											{itemData.description.slice(0, 100)}{itemData.description.length > 100 ? '...' : ''}
+										</p>
+									{/if}
+									
+									<div class="card-footer">
+										<div class="price-rating">
+											<span class="item-price">{formatPrice(itemPrice)}</span>
+											{#if itemRating > 0}
+												<span class="item-rating">
+													⭐ {itemRating.toFixed(1)}
+												</span>
+											{/if}
+										</div>
+										
+										<button class="add-to-cart-btn">
+											Add to Cart
+										</button>
+									</div>
+								</div>
+							</article>
+						{/each}
+					</div>
+				{/if}
+			{:catch error}
+				<!-- Error state - shown if promise rejects -->
 				<div class="error-message">
 					<p>⚠️ Unable to load jewelry items</p>
-					<p class="error-detail">{data.error || 'Please try again later'}</p>
+					<p class="error-detail">{error?.message || 'Please try again later'}</p>
 				</div>
-			{:else if filteredItems.length === 0}
-				<div class="no-results">
-					<p>No items match your filters</p>
-					<button onclick={resetFilters}>Clear Filters</button>
-				</div>
-			{:else}
-				<div class="jewelry-grid">
-					{#each filteredItems as item (item.id)}
-						{@const itemData = (item as any).itemData || {}}
-						{@const itemPrice = getItemPrice(item)}
-						{@const itemRating = getItemRating(item)}
-						{@const itemType = getJewelryType(item)}
-						
-						<article class="jewelry-card">
-							<div class="card-image">
-								{#if item.imageUrls?.length > 0}
-									<img src={item.imageUrls[0]} alt={itemData.name} />
-								{:else if itemData.imageIds?.[0]}
-									<div class="placeholder-image">
-										<span>🖼️</span>
-										<small>Image ID: {itemData.imageIds[0]}</small>
-									</div>
-								{:else}
-									<div class="placeholder-image">
-										<span>📿</span>
-									</div>
-								{/if}
-								
-								<div class="card-badge">
-									{itemType}
-								</div>
-							</div>
-							
-							<div class="card-content">
-								<h3 class="item-name">{itemData.name || 'Untitled Item'}</h3>
-								
-								{#if itemData.description}
-									<p class="item-description">
-										{itemData.description.slice(0, 100)}{itemData.description.length > 100 ? '...' : ''}
-									</p>
-								{/if}
-								
-								<div class="card-footer">
-									<div class="price-rating">
-										<span class="item-price">{formatPrice(itemPrice)}</span>
-										{#if itemRating > 0}
-											<span class="item-rating">
-												⭐ {itemRating.toFixed(1)}
-											</span>
-										{/if}
-									</div>
-									
-									<button class="add-to-cart-btn">
-										Add to Cart
-									</button>
-								</div>
-							</div>
-						</article>
-					{/each}
-				</div>
-			{/if}
+			{/await}
 		</main>
 	</div>
 </div>
@@ -351,7 +401,7 @@
 	
 	.jewelry-page {
 		min-height: 100vh;
-		background: $bg-primary;
+		// background: $bg-primary;
 		padding: $spacing-xl;
 	}
 	
@@ -479,6 +529,7 @@
 		align-items: flex-end;
 		gap: $spacing-sm;
 		margin-bottom: $spacing-sm;
+		max-width: fit-content;
 		
 		.input-group {
 			flex: 1;
@@ -498,6 +549,8 @@
 				padding: $spacing-sm;
 				border-radius: $radius-sm;
 				outline: none;
+				max-width: fit-content;
+  					width: 7em;
 				
 				&:focus {
 					border-color: $accent-primary;
@@ -754,6 +807,44 @@
 		}
 	}
 	
+	/* Loading State */
+	.loading-container {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		min-height: 400px;
+		padding: $spacing-3xl;
+	}
+	
+	.loading-spinner {
+		text-align: center;
+		
+		.spinner {
+			width: 60px;
+			height: 60px;
+			margin: 0 auto $spacing-lg;
+			border: 4px solid $border-secondary;
+			border-top-color: $accent-primary;
+			border-radius: 50%;
+			animation: spin 1s linear infinite;
+		}
+		
+		p {
+			color: $text-secondary;
+			font-size: 1.1rem;
+			margin: 0;
+		}
+	}
+	
+	@keyframes spin {
+		0% {
+			transform: rotate(0deg);
+		}
+		100% {
+			transform: rotate(360deg);
+		}
+	}
+	
 	.error-message, .no-results {
 		text-align: center;
 		padding: $spacing-3xl;
@@ -766,12 +857,16 @@
 			font-size: 1.1rem;
 			margin: $spacing-md 0;
 		}
-		
+	}
+	
+	.error-message {
 		.error-detail {
 			color: $text-muted-2;
 			font-size: 0.9rem;
 		}
-		
+	}
+	
+	.no-results {
 		button {
 			background: $accent-primary;
 			border: none;

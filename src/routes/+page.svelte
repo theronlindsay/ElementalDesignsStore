@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { EventCard } from '$lib';
+	import { EventCard, CategoryGrid } from '$lib';
 	
 	let showAccountMenu = false;
 	let showMainMenus = {};
@@ -70,27 +70,7 @@
 
 
 <!-- Product Categories Grid -->
-<section class="categories-grid">
-	<div class="category-item">
-		<div class="category-image"></div>
-		<h4>Shop by collection</h4>
-	</div>
-	
-	<div class="category-item">
-		<div class="category-image"></div>
-		<h4>Bracelets</h4>
-	</div>
-	
-	<div class="category-item">
-		<div class="category-image"></div>
-		<h4>Rings</h4>
-	</div>
-	
-	<div class="category-item">
-		<div class="category-image"></div>
-		<h4>Engraved Gifts</h4>
-	</div>
-</section>
+<CategoryGrid />
 
 <!-- Content Grid -->
 <div class="content-grid">

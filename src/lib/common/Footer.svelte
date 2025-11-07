@@ -42,7 +42,47 @@
 
 <style lang="scss">
 
-@use '$lib/app.scss' as *;
+// Color Variables
+$bg-primary: #1a1625;
+$bg-secondary: #2a2438;
+$bg-panel: rgba(26, 22, 37, 0.6);
+$bg-nav: rgba(42, 36, 56, 0.8);
+
+$border-primary: #3d3650;
+$border-secondary: #4a4560;
+$border-accent: #6b5d7a;
+
+$text-primary: #f3f4f6;
+$text-secondary: #e8e4f3;
+$text-muted: #d1d5db;
+$text-muted-2: #9ca3af;
+$text-muted-3: #94a3b8;
+
+$accent-primary: #a78bfa;
+$accent-secondary: #8b5cf6;
+
+// Spacing Variables
+$spacing-xs: 0.25rem;
+$spacing-sm: 0.5rem;
+$spacing-md: 1rem;
+$spacing-lg: 1.5rem;
+$spacing-xl: 2rem;
+$spacing-2xl: 3rem;
+$spacing-3xl: 4rem;
+
+$desktop-breakpoint: 1200px;
+$bg-primary: #1a1625;
+
+// Border Radius
+$radius-sm: 6px;
+$radius-md: 8px;
+$radius-lg: 12px;
+$radius-full: 50%;
+
+// Transitions
+$transition-fast: 0.18s ease;
+$transition-normal: 0.3s ease;
+$transition-slow: 0.5s ease;
 
 .footer {
   background: $bg-primary;

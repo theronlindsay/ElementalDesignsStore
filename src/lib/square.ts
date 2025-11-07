@@ -25,8 +25,9 @@ export async function getCatalogItemsByFilter(
     try {
         // Build the search query based on filter type
         const searchRequest: any = {
-            objectTypes: ['ITEM'],
+            objectTypes: ['ITEM'], //this is the type square assigns to items
             limit: 100, // Adjust as needed
+            includeRelatedObjects: true, // Include all related data like categories
         };
 
         if (filterType === 'category') {
@@ -51,7 +52,12 @@ export async function getCatalogItemsByFilter(
         const response = await client.catalog.search(searchRequest);
 
         if (response.objects) {
-            console.log("got objects: " + response.objects)
+            // Log to verify categoryId is present
+            console.log("Sample item structure:", response.objects[0]);
+            console.log("Sample item categoryId:", (response.objects[0] as any)?.itemData?.categoryId);
+            
+            console.log("got objects:", JSON.stringify(response.objects, (key, value) =>
+                typeof value === 'bigint' ? value.toString() : value, 2));
             return response.objects;
         }
 
@@ -71,7 +77,16 @@ export async function getCatalogItemsByFilter(
  * @returns Array of catalog items in the specified category
  */
 export async function getItemsByCategory(categoryId: string) {
-    return getCatalogItemsByFilter('category', categoryId);
+    const items = await getCatalogItemsByFilter('category', categoryId);
+    
+    // Add the categoryId to each item since Square doesn't include it in search results
+    return items.map(item => ({
+        ...item,
+        itemData: {
+            ...(item as any).itemData,
+            categoryId: categoryId // Manually add the category ID we searched for
+        }
+    }));
 }
 
 /**
@@ -135,6 +150,7 @@ export async function getItemsByCategoryIncludingSubcategories(categoryId: strin
             console.log('=== SAMPLE ITEM STRUCTURE ===');
             console.log('Item ID:', uniqueItems[0].id);
             console.log('Item Type:', uniqueItems[0].type);
+            console.log('Item categoryId:', (uniqueItems[0] as any).itemData?.categoryId);
             
             // Print itemData structure
             const itemData = (uniqueItems[0] as any).itemData;

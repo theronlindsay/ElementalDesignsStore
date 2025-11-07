@@ -1,18 +1,19 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
+	import { page } from '$app/stores';
 	// import '../app.scss';
 	import { Button } from '$lib';
 
 	// Navbar Routes
-	export let items = [
+	let { items = [
 		{ id: 'home', label: 'Home', href: '/', active: true },
-		{ id: 'jewelry', label: 'Jewelry', href: '/jewelry', active: false },
-		{ id: 'armor', label: 'Armor', href: '/armor', active: false },
-		{ id: 'laser', label: 'Laser Engraving', href: '/laser', active: false },
-		{ id: 'more', label: 'More', href: '/more', active: false},
+		{ id: 'jewelry', label: 'Jewelry', href: '/search#jewelry', active: false },
+		{ id: 'armor', label: 'Armor', href: '/search#armor', active: false },
+		{ id: 'laser', label: 'Laser Engraving', href: '/search#laser', active: false },
+		{ id: 'more', label: 'More', href: '/search#more', active: false},
 		{ id: 'about', label: 'About', href: '/about', active: false }, 
 		{ id: 'examplePage', label: 'example', href: '/productPage', active: true},
-	];
+	] } = $props();
 
 	let activeItem = items.find(item => item.active)?.id || items[0]?.id;
 	let visuallyActiveItem = activeItem; // Separate state for visual boldness
@@ -22,6 +23,58 @@
 	
 	// Add state for dropdown menus
 	let showAccountMenu = false;
+	
+	// Search state - reactive to URL changes
+	let searchInput = $state('');
+	
+	// Sync search input with URL query parameter
+	$effect(() => {
+		const urlQuery = $page.url.searchParams.get('q') || '';
+		searchInput = urlQuery;
+	});
+	
+	// Update active item based on current URL
+	$effect(() => {
+		const currentPath = $page.url.pathname;
+		const currentHash = $page.url.hash;
+		
+		// Find matching item based on path and hash
+		let matchedItemId: string | null = null;
+		
+		for (const item of items) {
+			// Exact path match
+			if (item.href === currentPath) {
+				matchedItemId = item.id;
+				break;
+			}
+			
+			// Path + hash match (for search routes)
+			if (item.href === currentPath + currentHash) {
+				matchedItemId = item.id;
+				break;
+			}
+			
+			// Check if path starts with item's href (for nested routes)
+			if (currentPath.startsWith(item.href) && item.href !== '/') {
+				matchedItemId = item.id;
+			}
+		}
+		
+		// Update active item if we found a match
+		if (matchedItemId && matchedItemId !== activeItem) {
+			activeItem = matchedItemId;
+			visuallyActiveItem = matchedItemId;
+			
+			// Update items array
+			items = items.map(item => ({
+				...item,
+				active: item.id === matchedItemId
+			}));
+			
+			// Move selector
+			setTimeout(() => moveSelector(matchedItemId!), 50);
+		}
+	});
 
 	// Responsive state management
 	let screenWidth = 0;
@@ -43,6 +96,24 @@
 	// Toggle mobile menu
 	function toggleMobileMenu() {
 		isMobileMenuOpen = !isMobileMenuOpen;
+	}
+	
+	// Handle search submit
+	function handleSearch(event?: Event) {
+		if (event) event.preventDefault();
+		
+		const trimmedQuery = searchInput.trim();
+		if (trimmedQuery) {
+			// Navigate to search page with query parameter
+			window.location.href = `/search?q=${encodeURIComponent(trimmedQuery)}`;
+		}
+	}
+	
+	// Handle search input keypress
+	function handleSearchKeypress(event: KeyboardEvent) {
+		if (event.key === 'Enter') {
+			handleSearch();
+		}
 	}
 
 	// Function to move the selector to the active item
@@ -208,12 +279,21 @@
 			
 			<!-- Search and Actions (together) -->
 			<div class="nav-search-container">
-				<div class="nav-search-box">
-					<input type="text" placeholder="Search..." />
-					<button class="nav-search-btn" aria-label="Search Products">
+				<form class="nav-search-box" on:submit={handleSearch}>
+					<input 
+						type="text" 
+						placeholder="Search products..." 
+						bind:value={searchInput}
+						on:keypress={handleSearchKeypress}
+					/>
+					<button 
+						type="submit"
+						class="nav-search-btn" 
+						aria-label="Search Products"
+					>
 						<i class="fas fa-search"></i>
 					</button>
-				</div>
+				</form>
 				
 				<!-- Navigation Actions -->
 				<div class="nav-actions">
