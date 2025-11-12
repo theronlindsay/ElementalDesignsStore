@@ -448,8 +448,7 @@
 </div>
 
 <style lang="scss">
-	
-    @import '$lib/app.scss';
+	@use '$lib/app.scss' as *;
 	
 	.search-page {
 		min-height: 100vh;
