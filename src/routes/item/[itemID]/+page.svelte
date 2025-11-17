@@ -100,7 +100,7 @@
 
 				<div class="hero-actions">
 					<button class="btn-primary">Add to Cart</button>
-					<button class="btn-secondary">Add to Wishlist</button>
+          <!-- <button class="btn-secondary">Add to Wishlist</button> -->
 				</div>
 			</div>
 		</div>
