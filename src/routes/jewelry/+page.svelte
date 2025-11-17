@@ -1,6 +1,7 @@
 <script lang="ts">
 	//importing PageData library
 	import type { PageData } from './$types';
+	import { cart } from '$lib/cart/cartStore';
 	// this is saying, let data
 	// Destructures 'data' from props and uses TypeScript to assert that the props object contains a 'data' property of type PageData
 	let { data }: { data: PageData } = $props();
@@ -154,6 +155,10 @@
 		minRating = 0;
 		sortBy = 'name';
 	}
+
+	function handleClick() {
+    	console.log('Button clicked!');
+  	}
 </script>
 
 <div class="jewelry-page">
@@ -252,8 +257,8 @@
 					</select>
 				</div>
 				
-				<button class="reset-button" onclick={resetFilters}>
-					Reset All Filters
+				<button class="reset-button" onclick={handleClick}>
+					ResedadaFilters
 				</button>
 			{/if}
 		</aside>
@@ -340,9 +345,16 @@
 											{/if}
 										</div>
 										
-										<button class="add-to-cart-btn">
-											Add to Cart
-										</button>
+										<button
+										class="add-to-cart-btn"
+										onclick={() => {
+											console.log('--- ADD TO CART CLICKED ---');
+											console.log('ITEM ID:', item.id);
+											cart.addItem(item.id);
+										}}
+									>
+										Add to Cart
+									</button>
 									</div>
 								</div>
 							</article>
@@ -704,6 +716,9 @@
 		backdrop-filter: blur(10px);
 		transition: all $transition-normal;
 		
+		// --- VVV ADD THIS LINE VVV ---
+		pointer-events: none;
+
 		&:hover {
 			transform: translateY(-4px);
 			border-color: $accent-primary;
@@ -801,6 +816,12 @@
 		transition: all $transition-fast;
 		white-space: nowrap;
 		
+		// --- VVV ADD THESE TWO LINES VVV ---
+		z-index: 999;
+
+		// --- VVV ADD THIS LINE VVV ---
+		pointer-events: auto;
+
 		&:hover {
 			background: $accent-secondary;
 			transform: translateY(-2px);

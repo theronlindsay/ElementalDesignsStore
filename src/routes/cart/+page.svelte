@@ -9,7 +9,7 @@
 	// $state rune: Creates reactive state that automatically triggers updates
 	// When cartItems changes, the UI re-renders automatically
     // This should be left empty when done testing
-	let cartItems = $state([
+	/*let cartItems = $state([
 		{
 			id: '1',
 			name: 'Byzantine Chainmail Bracelet',
@@ -31,6 +31,16 @@
 			quantity: 1,
 			variant: 'Bronze'
 		}
+	]);*/
+
+	let cartItems = $state([
+		{
+			id: '1',
+			name: 'thing 1',
+			price: 2,
+			quantity: 4,
+			variant: ''
+		}
 	]);
 
     //This is the variable to be updated when the users region is detected
@@ -43,7 +53,7 @@
 		);
 	}
 	
-	function removeItem(id: string) {
+	function removeItem(id: string, quantity: number) {
 		console.log('Removing item:', id);
 		const newItems = cartItems.filter(item => item.id !== id);
 		cartItems = newItems;
@@ -112,7 +122,7 @@
 						
                         <!-- Dynamically adds CartItem.svelte components, passing in item object -->
 						<div class="cart-items-list">
-							{#each cartItems as item (item.id)}
+							{#each cartItems as item (item.id, item.quantity)}
 								<CartItem 
 									{item}
 									onUpdateQuantity={updateQuantity}

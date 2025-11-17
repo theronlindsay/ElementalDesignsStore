@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { PageData } from './$types';
+	import { cart } from '$lib/cart/cartStore';
 	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
@@ -426,7 +427,14 @@
 												{/if}
 											</div>
 											
-											<button class="add-to-cart-btn">
+											<button
+												class="add-to-cart-btn"
+												onclick={() => {
+													console.log('--- ADD TO CART CLICKED ---');
+													console.log('ITEM ID:', item.id);
+													cart.addItem(item.id);
+												}}
+											>
 												Add to Cart
 											</button>
 										</div>
