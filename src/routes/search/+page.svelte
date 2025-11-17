@@ -381,13 +381,15 @@
 							{/if}
 						</div>
 					{:else}
+
 						<div class="product-grid">
 							{#each filtered as item (item.id)}
 								{@const itemData = (item as any).itemData || {}}
 								{@const itemPrice = getItemPrice(item)}
 								{@const itemRating = getItemRating(item)}
 								{@const itemType = getItemType(item, currentCategoryData.subcategories)}
-								
+
+								<a href={`/item/${item.id}`} class="product-card-link">
 								<article class="product-card">
 									<div class="card-image">
 										{#if item.imageUrls?.length > 0}
@@ -429,17 +431,19 @@
 											
 											<button
 												class="add-to-cart-btn"
-												onclick={() => {
-													console.log('--- ADD TO CART CLICKED ---');
-													console.log('ITEM ID:', item.id);
-													cart.addItem(item.id);
-												}}
+												onclick={(e) => {
+                                                        e.preventDefault();
+                                                        e.stopPropagation();
+                                                        console.log('--- ADD TO CART CLICKED ---');
+                                                        console.log('ITEM ID:', item.id);
+                                                        cart.addItem(item.id);}}
 											>
 												Add to Cart
 											</button>
 										</div>
 									</div>
 								</article>
+								</a>
 							{/each}
 						</div>
 					{/if}
@@ -796,6 +800,7 @@
 		overflow: hidden;
 		backdrop-filter: blur(10px);
 		transition: all $transition-normal;
+		height: 100%;
 		
 		&:hover {
 			transform: translateY(-4px);
@@ -804,6 +809,13 @@
 		}
 	}
 	
+	.product-card-link {
+		text-decoration: none;
+		color: inherit;
+		display: block;
+		height: 100%;
+	}
+
 	.card-image {
 		position: relative;
 		width: 100%;
@@ -899,6 +911,8 @@
 		font-weight: 600;
 		transition: all $transition-fast;
 		white-space: nowrap;
+		position: relative;
+		z-index: 10;
 		
 		&:hover {
 			background: $accent-secondary;

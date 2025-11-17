@@ -137,22 +137,22 @@
 	<section class="categories-grid">
 		<div class="category-item">
 			<div class="category-image"></div>
-			<h4>Shop by collection</h4>
+			<h4>Jewelry</h4>
 		</div>
 
 		<div class="category-item">
 			<div class="category-image"></div>
-			<h4>Bracelets</h4>
+			<h4>Armor</h4>
 		</div>
 
 		<div class="category-item">
 			<div class="category-image"></div>
-			<h4>Rings</h4>
+			<h4>Laser Engraving</h4>
 		</div>
 
 		<div class="category-item">
 			<div class="category-image"></div>
-			<h4>Engraved Gifts</h4>
+			<h4>More</h4>
 		</div>
 	</section>
 </div>
