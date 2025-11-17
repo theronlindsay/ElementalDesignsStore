@@ -11,7 +11,7 @@
 	};
 	
 	export let onUpdateQuantity: (id: string, quantity: number) => void;
-	export let onRemove: (id: string) => void;
+	export let onRemove: (id: string, quantity: number) => void;
 	
 	function increaseQuantity() {
 		onUpdateQuantity(item.id, item.quantity + 1);
@@ -60,7 +60,7 @@
 	</div>
 	
 	<div class="item-actions">
-		<Button variant="ghost" size="sm" onclick={() => onRemove(item.id)} ariaLabel="Remove item">
+		<Button variant="ghost" size="sm" onclick={() => onRemove(item.id, item.quantity)} ariaLabel="Remove item">
 			<i class="fas fa-trash"></i>
 		</Button>
 	</div>
