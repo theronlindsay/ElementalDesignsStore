@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { Button } from '$lib';
+	import { goto } from '$app/navigation';
 </script>
 
 <div class="empty-cart">
@@ -11,7 +12,7 @@
 		Looks like you haven't added anything to your cart yet.
 		Browse our collection and discover unique handcrafted pieces.
 	</p>
-	<Button variant="primary" on:click={() => window.location.href = '/'}>
+	<Button variant="primary" onclick={() => goto('/')}>
 		<i class="fas fa-shopping-bag"></i>
 		<span>Start Shopping</span>
 	</Button>

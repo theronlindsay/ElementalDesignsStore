@@ -1,67 +1,80 @@
 <script lang="ts">
 	import { CartItem, CartSummary, EmptyCart, Button } from '$lib';
+	import { cart } from '$lib/cart/cartStore';
+	import { onMount } from 'svelte';
 	
 	// SVELTE 5 RUNES:
 	// $state - Creates reactive state (replaces 'let' for reactive variables)
 	// $derived - Creates computed/derived values (replaces $: reactive statements)
 	// $effect - Runs side effects when dependencies change (replaces $: for side effects)
 	
-	// $state rune: Creates reactive state that automatically triggers updates
-	// When cartItems changes, the UI re-renders automatically
-    // This should be left empty when done testing
-	/*let cartItems = $state([
-		{
-			id: '1',
-			name: 'Byzantine Chainmail Bracelet',
-			price: 45.00,
-			quantity: 1,
-			variant: 'Silver, Medium'
-		},
-		{
-			id: '2',
-			name: 'Laser Engraved Wooden Box',
-			price: 32.00,
-			quantity: 2,
-			variant: 'Walnut, Custom Text'
-		},
-		{
-			id: '3',
-			name: 'European 4-in-1 Necklace',
-			price: 78.00,
-			quantity: 1,
-			variant: 'Bronze'
+	// Subscribe to cart store and transform it with Square item data
+	let cartStoreItems = $state<any[]>([]);
+	let cartItems = $state<any[]>([]);
+	let itemsMap = $state<Record<string, any>>({});
+	let isDataReady = $state(false);
+	
+	// Subscribe to cart store on mount
+	let unsubscribe: (() => void) | null = null;
+	
+	$effect(() => {
+		// Subscribe to cart store and update cartStoreItems whenever it changes
+		unsubscribe = cart.subscribe((items) => {
+			cartStoreItems = items;
+		});
+		
+		return () => {
+			if (unsubscribe) unsubscribe();
+		};
+	});
+	
+	// Load itemsMap from client-side fetch (non-blocking)
+	// This allows the page to render instantly while data streams in
+	onMount(async () => {
+		try {
+			const response = await fetch('/api/items');
+			if (response.ok) {
+				const data = await response.json();
+				itemsMap = data.itemsMap;
+				isDataReady = true;
+			}
+		} catch (error) {
+			console.error('Failed to load items:', error);
 		}
-	]);*/
-
-	let cartItems = $state([
-		{
-			id: '1',
-			name: 'thing 1',
-			price: 2,
-			quantity: 4,
-			variant: ''
-		}
-	]);
+	});
+	
+	// Map store items to include Square data whenever cartStoreItems or itemsMap changes
+	$effect(() => {
+		cartItems = cartStoreItems.map((cartItem: any) => {
+			const squareData = itemsMap?.[cartItem.id];
+			
+			return {
+				id: cartItem.id,
+				name: squareData?.name || `Item ${cartItem.id}`,
+				price: squareData?.price || 0,
+				quantity: cartItem.quantity,
+				variant: squareData?.category || '',
+				image: squareData?.imageUrl
+			};
+		});
+	});
 
     //This is the variable to be updated when the users region is detected
     let taxRate = 0;
 	
-	// Cart functions - these update the $state, triggering automatic re-renders
+	// Cart functions - these update the cart store
 	function updateQuantity(id: string, quantity: number) {
-		cartItems = cartItems.map(item => 
-			item.id === id ? { ...item, quantity } : item
-		);
+		cart.updateQuantity(id, quantity);
 	}
 	
 	function removeItem(id: string, quantity: number) {
 		console.log('Removing item:', id);
-		const newItems = cartItems.filter(item => item.id !== id);
-		cartItems = newItems;
+		cart.removeItem(id);
 	}
 	
 	function clearCart() {
 		if (confirm('Are you sure you want to clear your cart?')) {
-			cartItems = [];
+			cart.clearCart();
 		}
 	}
 	
@@ -79,14 +92,7 @@
 	let itemCount = $derived(
 		cartItems.reduce((sum, item) => sum + item.quantity, 0)
 	);
-	
-	// Optional: $effect rune for side effects (like logging, localStorage, etc.)
-	// This runs whenever its dependencies change
-	// Example: Save cart to localStorage whenever it changes
-	// $effect(() => {
-	// 	localStorage.setItem('cart', JSON.stringify(cartItems));
-	// 	console.log('Cart updated:', cartItems);
-	// });
+
 </script>
 
 <main class="cart-page">
@@ -107,7 +113,8 @@
 	<!-- Cart Content -->
 	<section class="cart-content">
 		<div class="cart-container">
-			{#if cartItems.length > 0}
+			{#if cartStoreItems.length > 0}
+				<!-- Cart with data streaming in -->
 				<div class="cart-layout">
 					<!-- Cart Items Section -->
 					<div class="cart-items-section">
@@ -120,18 +127,29 @@
 							</Button>
 						</div>
 						
-                        <!-- Dynamically adds CartItem.svelte components, passing in item object -->
+						<!-- Dynamically adds CartItem.svelte components, passing in item object -->
 						<div class="cart-items-list">
-							{#each cartItems as item (item.id, item.quantity)}
-								<CartItem 
-									{item}
-									onUpdateQuantity={updateQuantity}
-									onRemove={removeItem}
-								/>
+							{#each cartItems as item (item.id)}
+								{#if isDataReady && item.name && item.name !== `Item ${item.id}`}
+									<!-- Fully loaded item -->
+									<CartItem 
+										{item}
+										onUpdateQuantity={updateQuantity}
+										onRemove={removeItem}
+									/>
+								{:else}
+									<!-- Skeleton loader while data streams in -->
+									<div class="skeleton-loader">
+										<div class="skeleton skeleton-image"></div>
+										<div class="skeleton-content">
+											<div class="skeleton skeleton-title"></div>
+											<div class="skeleton skeleton-text"></div>
+											<div class="skeleton skeleton-text short"></div>
+										</div>
+									</div>
+								{/if}
 							{/each}
-						</div>
-						
-						<!-- Promo Code Section -->
+						</div>						<!-- Promo Code Section -->
 						<div class="promo-section theme-glass">
 							<h3 class="promo-title">Have a promo code?</h3>
 							<div class="promo-input-group">
@@ -147,11 +165,20 @@
 					
 					<!-- Cart Summary Section -->
 					<aside class="cart-summary-section">
-						<CartSummary 
-							{subtotal}
-							{shipping}
-							{tax}
-						/>
+						{#if isDataReady}
+							<CartSummary 
+								{subtotal}
+								{shipping}
+								{tax}
+							/>
+						{:else}
+							<div class="skeleton-summary">
+								<div class="skeleton skeleton-line"></div>
+								<div class="skeleton skeleton-line"></div>
+								<div class="skeleton skeleton-line"></div>
+								<div class="skeleton skeleton-line"></div>
+							</div>
+						{/if}
 					</aside>
 				</div>
 			{:else}
@@ -288,5 +315,78 @@
 		.promo-input-group {
 			flex-direction: column;
 		}
+	}
+	
+	/* Skeleton Loader Styles */
+	@keyframes shimmer {
+		0% {
+			background-position: -1000px 0;
+		}
+		100% {
+			background-position: 1000px 0;
+		}
+	}
+	
+	.skeleton-loader {
+		display: flex;
+		gap: 1rem;
+		padding: 1rem;
+		background: var(--bg-panel);
+		border: 1px solid var(--border-secondary);
+		border-radius: 8px;
+		margin-bottom: 1rem;
+		animation: shimmer 2s infinite;
+	}
+	
+	.skeleton-image {
+		width: 100px;
+		height: 100px;
+		border-radius: 4px;
+		flex-shrink: 0;
+	}
+	
+	.skeleton-content {
+		flex: 1;
+		display: flex;
+		flex-direction: column;
+		gap: 0.75rem;
+	}
+	
+	.skeleton {
+		background: linear-gradient(
+			90deg,
+			var(--bg-secondary) 25%,
+			var(--bg-tertiary) 50%,
+			var(--bg-secondary) 75%
+		);
+		background-size: 1000px 100%;
+		animation: shimmer 2s infinite;
+		border-radius: 4px;
+	}
+	
+	.skeleton-title {
+		height: 1.2rem;
+		width: 80%;
+	}
+	
+	.skeleton-text {
+		height: 1rem;
+		width: 100%;
+	}
+	
+	.skeleton-text.short {
+		width: 60%;
+	}
+	
+	.skeleton-line {
+		height: 1.2rem;
+		margin-bottom: 0.75rem;
+	}
+	
+	.skeleton-summary {
+		padding: 1rem;
+		background: var(--bg-panel);
+		border: 1px solid var(--border-secondary);
+		border-radius: 8px;
 	}
 </style>

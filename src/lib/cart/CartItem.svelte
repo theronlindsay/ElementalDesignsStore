@@ -1,17 +1,20 @@
 <script lang="ts">
 	import { Button } from '$lib';
 	
-	export let item: {
-		id: string;
-		name: string;
-		price: number;
-		quantity: number;
-		image?: string;
-		variant?: string;
-	};
+	let { item, onUpdateQuantity, onRemove } = $props<{
+		item: {
+			id: string;
+			name: string;
+			price: number;
+			quantity: number;
+			image?: string;
+			variant?: string;
+		};
+		onUpdateQuantity: (id: string, quantity: number) => void;
+		onRemove: (id: string, quantity: number) => void;
+	}>();
 	
-	export let onUpdateQuantity: (id: string, quantity: number) => void;
-	export let onRemove: (id: string, quantity: number) => void;
+	let subtotal = $derived(item.price * item.quantity);
 	
 	function increaseQuantity() {
 		onUpdateQuantity(item.id, item.quantity + 1);
@@ -20,10 +23,10 @@
 	function decreaseQuantity() {
 		if (item.quantity > 1) {
 			onUpdateQuantity(item.id, item.quantity - 1);
+		} else {
+			onRemove(item.id, item.quantity);
 		}
 	}
-	
-	$: subtotal = item.price * item.quantity;
 </script>
 
 <div class="cart-item theme-glass">
@@ -42,7 +45,7 @@
 		{#if item.variant}
 			<p class="item-variant">{item.variant}</p>
 		{/if}
-		<p class="item-price">${item.price.toFixed(2)}</p>
+		<p class="item-price">${item.price.toFixed(2)} each</p>
 	</div>
 	
 	<div class="item-quantity">

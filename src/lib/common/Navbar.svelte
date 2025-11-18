@@ -1,254 +1,188 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { page } from '$app/state';
+	import { page } from '$app/stores';
+	// import '../app.scss';
 	import { Button } from '$lib';
-	import { goto } from '$app/navigation';
 
-	// ============================================
-	// TYPES & INTERFACES
-	// ============================================
-	interface NavItem {
-		id: string;
-		label: string;
-		href: string;
-		icon?: string;
-		action?: () => void; // For non-navigation items
-		dropdown?: { label: string; href: string }[];
-	}
-
-	// ============================================
-	// COMPONENT PROPS & STATE
-	// ============================================
-	// Navigation items - can include route links, actions, and dropdown menus
+	// Navbar Routes
 	let { items = [
-		{ id: 'home', label: 'Home', href: '/', icon: undefined },
-		{ id: 'jewelry', label: 'Jewelry', href: '/search#jewelry' },
-		{ id: 'armor', label: 'Armor', href: '/search#armor' },
-		{ id: 'laser', label: 'Laser Engraving', href: '/search#laser' },
-		{ id: 'more', label: 'More', href: '/search#more' },
-		{ id: 'about', label: 'About', href: '/about' },
-		{ id: 'account', label: 'Account', href: '#', action: () => {} }, // Dropdown, no navigation
-		{ id: 'cart', label: 'Cart', href: '/cart', action: () => goto('/cart') }, // Custom action
-	] as NavItem[] } = $props();
+		{ id: 'home', label: 'Home', href: '/', active: true },
+		{ id: 'jewelry', label: 'Jewelry', href: '/search#jewelry', active: false },
+		{ id: 'armor', label: 'Armor', href: '/search#armor', active: false },
+		{ id: 'laser', label: 'Laser Engraving', href: '/search#laser', active: false },
+		{ id: 'more', label: 'More', href: '/search#more', active: false},
+		{ id: 'about', label: 'About', href: '/about', active: false },
+		{ id: 'account', label: 'Account', href: '/account', active: false },
+		{ id: 'cart', label: 'Cart', href: '/cart', active: false }
+	] } = $props();
 
-	// Reactive state variables (Svelte 5 $state rune)
-	let activeItem = $state(items.find(item => item.href === '/')?.id || items[0]?.id);
-	let visuallyActiveItem = $state<string>(''); // Delayed boldness for animation smoothness
-	let selectorElement = $state<HTMLDivElement>();
-	let navElement = $state<HTMLElement>();
-	let searchContainerElement = $state<HTMLDivElement>(); // Reference to search box
-	let itemElements: { [key: string]: HTMLAnchorElement | HTMLButtonElement } = {};
-
-	// Responsive layout state
-	let screenWidth = $state(0);
-	let isMobileMode = $state(false);
-	let isWrappedMode = $state(false);
-	let isMobileMenuOpen = $state(false);
-
-	// Interactive state
+	let activeItem = items.find(item => item.active)?.id || items[0]?.id;
+	let visuallyActiveItem = $state(activeItem); // Separate state for visual boldness
+	let selectorElement = $state<HTMLDivElement | null>(null);
+	let navElement: HTMLElement;
+	let itemElements = $state<{ [key: string]: HTMLElement }>({});
+	
+	// Add state for dropdown menus
 	let showAccountMenu = $state(false);
-	let isAccountMenuSticky = $state(false); // Stays open when clicked
-	let isHoveringOverMenu = $state(false); // Track hovering over the dropdown
-	let hasActiveSearch = $state(false); // Track if a search query is active
+	let accountMenuLocked = $state(false); // Track if menu is locked open from click
+	
+	// Search state - reactive to URL changes
 	let searchInput = $state('');
-	// ============================================
-	// CONSTANTS
-	// ============================================
-	const MOBILE_BREAKPOINT = 450;
-	const WRAP_BREAKPOINT = 980;
-
-	// ============================================
-	// EFFECTS: Sync state with page changes
-	// ============================================
-	// Update search input from URL query parameter
+	
+	// Sync search input with URL query parameter
 	$effect(() => {
-		searchInput = page.url.searchParams.get('q') || '';
-		hasActiveSearch = !!searchInput;
+		const urlQuery = $page.url.searchParams.get('q') || '';
+		searchInput = urlQuery;
 	});
-
-	// Update active item based on current URL path/hash
+	
+	// Update active item based on current URL
 	$effect(() => {
-		const currentPath = page.url.pathname;
-		const currentHash = page.url.hash;
-		const searchQuery = page.url.searchParams.get('q');
-
+		const currentPath = $page.url.pathname;
+		const currentHash = $page.url.hash;
+		
+		// Find matching item based on path and hash
 		let matchedItemId: string | null = null;
-
-		// If on search route with a query parameter, don't highlight any nav item
-		// (the search box will be highlighted via hasActiveSearch instead)
-		if (currentPath === '/search' && searchQuery) {
-			matchedItemId = null;
-		}
-		// Check if on any account route
-		else if (currentPath.startsWith('/account')) {
-			matchedItemId = 'account';
-		} else {
-			// Match other nav items
-			for (const item of items) {
-				// Exact path match
-				if (item.href === currentPath) {
-					matchedItemId = item.id;
-					break;
-				}
-
-				// Path + hash match (for search routes with hash navigation)
-				if (item.href === currentPath + currentHash) {
-					matchedItemId = item.id;
-					break;
-				}
-
-				// Nested route match (e.g., /search for /search/results)
-				if (currentPath.startsWith(item.href) && item.href !== '/') {
-					matchedItemId = item.id;
-				}
+		
+		for (const item of items) {
+			// Exact path match
+			if (item.href === currentPath) {
+				matchedItemId = item.id;
+				break;
+			}
+			
+			// Path + hash match (for search routes)
+			if (item.href === currentPath + currentHash) {
+				matchedItemId = item.id;
+				break;
+			}
+			
+			// Check if path starts with item's href (for nested routes)
+			if (currentPath.startsWith(item.href) && item.href !== '/') {
+				matchedItemId = item.id;
 			}
 		}
-
+		
 		// Update active item if we found a match
-		if (matchedItemId) {
+		if (matchedItemId && matchedItemId !== activeItem) {
 			activeItem = matchedItemId;
 			visuallyActiveItem = matchedItemId;
+			
+			// Update items array
+			items = items.map(item => ({
+				...item,
+				active: item.id === matchedItemId
+			}));
+			
+			// Move selector
 			setTimeout(() => moveSelector(matchedItemId!), 50);
 		}
 	});
 
-	// ============================================
-	// COMPUTED & REACTIVE VALUES
-	// ============================================
-	// Update responsive layout based on screen width
-	$effect(() => {
+	// Responsive state management
+	let screenWidth = $state(0);
+	let isMobileMenuOpen = $state(false);
+	let isMobileMode = $state(false);
+	let isWrappedMode = $state(false);
+
+	// Breakpoints
+	const MOBILE_BREAKPOINT = 450;
+	const WRAP_BREAKPOINT = 980;
+
+
+	// Update layout based on screen size
+	function updateResponsiveLayout() {
 		isMobileMode = screenWidth <= MOBILE_BREAKPOINT;
 		isWrappedMode = screenWidth > MOBILE_BREAKPOINT && screenWidth <= WRAP_BREAKPOINT;
-		
-		// Only hide selector in mobile mode, keep it visible in wrapped mode
-		if (selectorElement && isMobileMode) {
-			selectorElement.style.display = 'none';
-		} else if (selectorElement) {
-			selectorElement.style.display = '';
-		}
-		
-		// Reposition selector when layout changes
-		if (!isMobileMode && activeItem) {
-			setTimeout(() => moveSelector(activeItem), 50);
-		}
-	});
-
-	// ============================================
-	// FUNCTIONS
-	// ============================================
-	// Helper to find item by ID
-	function getItem(id: string): NavItem | undefined {
-		return items.find(item => item.id === id);
 	}
 
-	// Animate selector to target nav item position
+	// Toggle mobile menu
+	function toggleMobileMenu() {
+		isMobileMenuOpen = !isMobileMenuOpen;
+	}
+	
+	// Handle search submit
+	function handleSearch(event?: Event) {
+		if (event) event.preventDefault();
+		
+		const trimmedQuery = searchInput.trim();
+		if (trimmedQuery) {
+			// Navigate to search page with query parameter
+			window.location.href = `/search?q=${encodeURIComponent(trimmedQuery)}`;
+		}
+	}
+	
+	// Handle search input keypress
+	function handleSearchKeypress(event: KeyboardEvent) {
+		if (event.key === 'Enter') {
+			handleSearch();
+		}
+	}
+
+	// Function to move the selector to the active item
 	function moveSelector(targetId: string) {
 		if (!selectorElement || !itemElements[targetId]) return;
 
 		const targetElement = itemElements[targetId];
 		const wrapperElement = selectorElement.parentElement;
 		if (!wrapperElement) return;
-
+		
 		const wrapperRect = wrapperElement.getBoundingClientRect();
 		const targetRect = targetElement.getBoundingClientRect();
-
-		// Calculate position relative to wrapper with smooth animation
+		
+		// Calculate position relative to the wrapper
 		const offsetX = targetRect.left - wrapperRect.left;
-		const offsetY = targetRect.top - wrapperRect.top;
 		const width = targetRect.width;
-		const height = targetRect.height;
 
-		// In wrapped mode, selector needs to move with items on different rows
-		selectorElement.style.transform = `translate(${offsetX}px, ${offsetY}px)`;
+		// Apply the transform with bounce animation
+		selectorElement.style.transform = `translateX(${offsetX}px)`;
 		selectorElement.style.width = `${width}px`;
-		selectorElement.style.height = `${height}px`;
 	}
 
-	// Handle navigation item click
-	function handleItemClick(itemId: string, item: NavItem) {
-		// Update active state immediately for all items
+	// Handle item click
+	function handleItemClick(itemId: string) {
 		activeItem = itemId;
 		moveSelector(itemId);
-
-		// Delay visual boldness to sync with animation (400ms cubic-bezier)
+		
+		// Delay the visual boldness change until near the end of animation (300ms out of 400ms)
 		setTimeout(() => {
 			visuallyActiveItem = itemId;
 		}, 300);
-
-		// If item has a custom action (e.g., cart button navigation), run it after selector updates
-		if (item.action) {
-			item.action();
-		}
+		
+		// Update items array
+		items = items.map(item => ({
+			...item,
+			active: item.id === itemId
+		}));
 	}
 
-	// Handle search form submission
-	function handleSearch(event: Event) {
-		event.preventDefault();
-		const query = searchInput.trim();
-
-		if (query) {
-			// Use goto for SPA navigation or window.location for full navigation
-			goto(`/search?q=${encodeURIComponent(query)}`);
-		}
-	}
-
-	// Handle search input keypress (Enter key)
-	function handleSearchKeypress(event: KeyboardEvent) {
-		if (event.key === 'Enter') {
-			handleSearch(event as Event);
-		}
-	}
-
-	// Toggle mobile menu visibility
-	function toggleMobileMenu() {
-		isMobileMenuOpen = !isMobileMenuOpen;
-	}
-
-	// ============================================
-	// LIFECYCLE
-	// ============================================
+	// Initialize selector position and responsive behavior
 	onMount(() => {
-		// Initialize responsive layout
+		// Set initial screen width
 		screenWidth = window.innerWidth;
+		updateResponsiveLayout();
 
-		// Position selector on active item after render
 		setTimeout(() => {
 			moveSelector(activeItem);
+			// Set initial visual state without delay
 			visuallyActiveItem = activeItem;
 		}, 50);
-
-		// Handle window resize events
+		
+		// Handle window resize
 		const handleResize = () => {
 			screenWidth = window.innerWidth;
-
-			// Close mobile menu when resizing to desktop
+			updateResponsiveLayout();
+			
+			// Close mobile menu on resize to larger screen
 			if (!isMobileMode) {
 				isMobileMenuOpen = false;
 			}
-
+			
 			// Update selector position
 			setTimeout(() => moveSelector(activeItem), 100);
 		};
-
-		// Close sticky account menu when clicking outside
-		const handleDocumentClick = (event: MouseEvent) => {
-			const accountButton = itemElements['account'];
-			const target = event.target as Node;
-			
-			// If sticky menu is open and click is outside the account button/menu, close it
-			if (isAccountMenuSticky && accountButton && !accountButton.contains(target)) {
-				isAccountMenuSticky = false;
-				showAccountMenu = false;
-			}
-		};
-
-		window.addEventListener('resize', handleResize);
-		document.addEventListener('click', handleDocumentClick);
 		
-		return () => {
-			window.removeEventListener('resize', handleResize);
-			document.removeEventListener('click', handleDocumentClick);
-		};
+		window.addEventListener('resize', handleResize);
+		return () => window.removeEventListener('resize', handleResize);
 	});
 </script>
 
@@ -287,39 +221,15 @@
 					
 					<!-- Mobile Actions (always visible) -->
 					<div class="mobile-actions">
-						<!-- Search button -->
-						<button 
-							class="btn mobile-action" 
-							type="button"
-							aria-label="Search Products"
-							onclick={() => {
-								// Focus search input or toggle search visibility
-								const searchInput = document.querySelector('.nav-search-box input') as HTMLInputElement;
-								if (searchInput) searchInput.focus();
-							}}
-						>
+						<Button class="btn mobile-action" ariaLabel="Search Products">
 							<i class="fas fa-search"></i>
-						</button>
-						
-						<!-- Account button -->
-						<button 
-							class="btn mobile-action" 
-							type="button"
-							aria-label="User Account"
-							onclick={() => goto('/account/profile')}
-						>
+						</Button>
+						<Button class="btn mobile-action" ariaLabel="User Account">
 							<i class="fas fa-user"></i>
-						</button>
-						
-						<!-- Cart button -->
-						<button 
-							class="btn mobile-action" 
-							type="button"
-							aria-label="Shopping Cart"
-							onclick={() => goto('/cart')}
-						>
+						</Button>
+						<Button class="btn mobile-action" ariaLabel="Shopping Cart">
 							<i class="fas fa-shopping-cart"></i>
-						</button>
+						</Button>
 					</div>
 				</div>
 			</div>
@@ -327,14 +237,13 @@
 			<!-- Mobile Menu (collapsible) -->
 			{#if isMobileMenuOpen}
 				<div class="mobile-menu">
-					{#each items.filter(item => item.id !== 'account' && item.id !== 'cart') as item}
+					{#each items as item}
 						<a
 							bind:this={itemElements[item.id]}
 							href={item.href}
 							class="nav-item mobile-nav-item {visuallyActiveItem === item.id ? 'active' : ''}"
-							onclick={(e) => {
-								// Don't prevent default - let SvelteKit handle navigation
-								handleItemClick(item.id, item);
+							onclick={() => {
+								handleItemClick(item.id);
 								isMobileMenuOpen = false;
 							}}
 						>
@@ -358,152 +267,158 @@
 						bind:this={itemElements[item.id]}
 						href={item.href}
 						class="nav-item {visuallyActiveItem === item.id ? 'active' : ''}"
-						onclick={(e) => {
-							// Don't prevent default - let navigation happen naturally
-							handleItemClick(item.id, item);
-						}}
+						onclick={() => handleItemClick(item.id)}
 					>
 						{item.label}
 					</a>
 				{/each}
-
-				<!-- Search Bar Section - Inside wrapper so selector can highlight it -->
-				<div class="nav-divider">
-					<i class="fas fa-grip-lines-vertical"></i>
-				</div>
-
-				<div class="nav-search-container {hasActiveSearch ? 'active' : ''}" bind:this={searchContainerElement}>
-					<form class="nav-search-box" onsubmit={handleSearch}>
-						<input 
-							type="text" 
-							placeholder="Search products..." 
-							bind:value={searchInput}
-							onkeypress={handleSearchKeypress}
-						/>
-						<button type="submit" class="nav-search-btn" aria-label="Search Products">
-							<i class="fas fa-search"></i>
-						</button>
-					</form>
-				</div>
 			</div>
-
-			<!-- Action Items (Account & Cart) -->
-			<div class="nav-actions">
-				<!-- Account Dropdown Container with unified hitbox -->
-				<div
-					class="account-dropdown-container"
-					role="presentation"
-					onmouseenter={() => {
-						if (!isAccountMenuSticky) showAccountMenu = true;
-						isHoveringOverMenu = true;
-					}}
-					onmouseleave={() => {
-						isHoveringOverMenu = false;
-						if (!isAccountMenuSticky) showAccountMenu = false;
-					}}
-				>
+				
+			<!-- Divider -->
+			<div class="nav-divider">
+				<i class="fas fa-grip-lines-vertical"></i>
+			</div>
+			
+			<!-- Search and Actions (together) -->
+			<div class="nav-search-container">
+				<form class="nav-search-box" onsubmit={handleSearch}>
+					<input 
+						type="text" 
+						placeholder="Search products..." 
+						bind:value={searchInput}
+						onkeypress={handleSearchKeypress}
+					/>
+					<button 
+						type="submit"
+						class="nav-search-btn" 
+						aria-label="Search Products"
+					>
+						<i class="fas fa-search"></i>
+					</button>
+				</form>
+				
+				<!-- Navigation Actions -->
+				<div class="nav-actions">
+					<!-- Account Menu -->
 					<button
 						bind:this={itemElements['account']}
-						class="nav-item nav-action-btn {(visuallyActiveItem === 'account' || showAccountMenu || isHoveringOverMenu) ? 'active' : ''}"
+						class="nav-item {visuallyActiveItem === 'account' ? 'active' : ''}"
 						onclick={() => {
-							const item = getItem('account');
-							if (item) {
-								handleItemClick('account', item);
-								// Toggle sticky mode on click
-								isAccountMenuSticky = !isAccountMenuSticky;
-								showAccountMenu = isAccountMenuSticky;
+							accountMenuLocked = !accountMenuLocked;
+							if (accountMenuLocked) {
+								showAccountMenu = true; // Keep it open when locked
+							} else {
+								showAccountMenu = false; // Close it when unlocking
 							}
 						}}
-						type="button"
-						aria-label="Account Menu"
+						onmouseenter={() => {
+							showAccountMenu = true;
+						}}
+						onmouseleave={() => {
+							if (!accountMenuLocked) showAccountMenu = false;
+						}}
 					>
 						<i class="fas fa-user"></i>
 						<span>Account</span>
+						{#if showAccountMenu}
+							<div class="dropdown-menu account-menu">
+								<a href="/account/login">Login</a>
+								<a href="/account/register">Register</a>
+								<a href="/account/profile">My Profile</a>
+								<a href="/account/orders">My Orders</a>
+							</div>
+						{/if}
 					</button>
 
-
-					<div 
-						class="dropdown-menu account-menu {(showAccountMenu || isHoveringOverMenu) ? 'visible' : ''}"
-						role="menu"
-						tabindex="-1"
+					<!-- Shopping Cart -->
+					<a
+						bind:this={itemElements['cart']}
+						href="/cart"
+						class="nav-item {visuallyActiveItem === 'cart' ? 'active' : ''}"
+						onclick={() => handleItemClick('cart')}
 					>
-						<a href="/account/login" role="menuitem" onclick={(e) => {
-							// If not sticky, keep menu visible for better UX
-							if (!isAccountMenuSticky) {
-								e.preventDefault();
-								goto('/account/login');
-								showAccountMenu = false;
-								isHoveringOverMenu = false;
-							}
-						}}>Login</a>
-						<a href="/account/register" role="menuitem" onclick={(e) => {
-							if (!isAccountMenuSticky) {
-								e.preventDefault();
-								goto('/account/register');
-								showAccountMenu = false;
-								isHoveringOverMenu = false;
-							}
-						}}>Register</a>
-						<a href="/account/profile" role="menuitem" onclick={(e) => {
-							if (!isAccountMenuSticky) {
-								e.preventDefault();
-								goto('/account/profile');
-								showAccountMenu = false;
-								isHoveringOverMenu = false;
-							}
-						}}>My Profile</a>
-						<a href="/account/orders" role="menuitem" onclick={(e) => {
-							if (!isAccountMenuSticky) {
-								e.preventDefault();
-								goto('/account/orders');
-								showAccountMenu = false;
-								isHoveringOverMenu = false;
-							}
-						}}>My Orders</a>
-					</div>
-				</div>				<!-- Shopping Cart Button -->
-				<button
-					bind:this={itemElements['cart']}
-					class="nav-item nav-action-btn {visuallyActiveItem === 'cart' ? 'active' : ''}"
-					onclick={() => {
-						const item = getItem('cart');
-						if (item) handleItemClick('cart', item);
-					}}
-					type="button"
-					aria-label="Shopping Cart"
-				>
-					<i class="fas fa-shopping-cart"></i>
-					<span>Cart</span>
-				</button>
+						<i class="fas fa-shopping-cart"></i>
+						<span>Cart</span>
+					</a>
+				</div>
 			</div>
 		{/if}
 	</div>
 </nav>
 
 <style lang="scss">
-	// ============================================
-	// SCSS VARIABLES & BREAKPOINTS
-	// ============================================
+	/*
+	 * BREAKPOINTS (defined in script section):
+	 * MOBILE_BREAKPOINT = 400px  - Mobile menu mode
+	 * WRAP_BREAKPOINT = 936px    - Search bar wraps to second row
+	 */
+	
+	// SCSS Variables for breakpoints
 	$mobile-breakpoint: 450px;
 	$wrap-breakpoint: 936px;
-	// ============================================
-	// MAIN NAVBAR LAYOUT
-	// ============================================
+
+	/* Debug indicator */
+	.debug-indicator {
+		position: fixed;
+		top: 10px;
+		right: 10px;
+		background: rgba(0, 0, 0, 0.8);
+		color: #fff;
+		padding: 8px 12px;
+		border-radius: 8px;
+		font-family: monospace;
+		font-size: 12px;
+		z-index: 9999;
+		display: flex;
+		flex-direction: column;
+		gap: 4px;
+		border: 1px solid var(--accent);
+		box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+	}
+
+	.mode-label {
+		font-weight: bold;
+		padding: 2px 6px;
+		border-radius: 4px;
+	}
+
+	.mode-label.mobile {
+		background: #ef4444;
+		color: #fff;
+	}
+
+	.mode-label.tablet {
+		background: #f59e0b;
+		color: #fff;
+	}
+
+	.mode-label.desktop {
+		background: #10b981;
+		color: #fff;
+	}
+
+	.screen-width {
+		color: var(--muted);
+		font-size: 11px;
+	}
+
+	/* Navbar layout */
 	.navbar {
-		position: sticky;
-		top: 0;
-		z-index: 1000;
+		position: sticky; // ✨ Sticks to top when scrolling
+		top: 0; // 📌 Position at top of viewport
+		z-index: 1000; // 🔝 Ensures it stays above other content
 		display: flex;
 		justify-content: center;
 		align-items: center;
 		padding: 1rem;
+		font-family: system-ui, -apple-system, sans-serif;
 		width: fit-content;
 		max-width: 85vw;
 		margin: 0 auto;
 		background: transparent;
-		font-family: system-ui, -apple-system, sans-serif;
 	}
 
+	/* container */
 	.navbar-container {
 		position: relative;
 		display: flex;
@@ -519,34 +434,30 @@
 		border: 1px solid #3d3650;
 		transition: padding 0.3s ease, gap 0.3s ease, border-radius 0.3s ease;
 		width: fit-content;
-
-		&::before {
-			content: '';
-			position: absolute;
-			inset: -1px;
-			background: linear-gradient(45deg, rgba(167, 139, 250, 0.1), transparent, rgba(167, 139, 250, 0.1));
-			border-radius: 25px;
-			z-index: -1;
-		}
+		min-width: min-content;
 	}
 
-	.navbar-container.mobile-mode {
-		flex-direction: column;
-		padding: 8px;
-		border-radius: 16px;
+	/* common panel helper to DRY-up repeated backgrounds/borders */
+	.nav-search-box,
+	.mobile-nav-item,
+	.mobile-menu,
+	.dropdown-menu {
+		background: var(--panel-bg);
+		border: 1px solid var(--panel-border);
+		border-radius: 12px;
+		backdrop-filter: blur(10px);
 	}
 
-	// ============================================
-	// NAV ITEMS & SELECTOR
-	// ============================================
+	/* nav items wrapper - contains items and selector */
 	.nav-items-wrapper {
 		position: relative;
 		display: flex;
 		align-items: center;
 		gap: 4px;
+		transition: gap 0.3s ease;
 	}
 
-	/* Animated selector background that follows active item */
+	/* selector (accented moving highlight) */
 	.selector {
 		position: absolute;
 		top: 0;
@@ -554,11 +465,12 @@
 		height: 100%;
 		background: linear-gradient(135deg, var(--accent) 0%, var(--accent-2) 100%);
 		border-radius: 12px;
-		transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+		transition: all 0.4s cubic-bezier(0.68,-0.55,0.265,1.55);
 		z-index: 1;
-		box-shadow: 0 2px 10px rgba(167, 139, 250, 0.4);
+		box-shadow: 0 2px 10px rgba(167,139,250,0.4);
 	}
 
+	/* nav items */
 	.nav-item {
 		position: relative;
 		z-index: 2;
@@ -575,342 +487,105 @@
 		min-width: fit-content;
 		text-decoration: none;
 		display: inline-block;
-
-		&:hover {
-			color: #f3f4f6;
-			transform: translateY(-1px);
-		}
-
-		&.active {
-			color: #fff;
-			font-weight: 700;
-		}
-
-		&:focus {
-			outline: none;
-		}
 	}
 
-	.nav-action-btn {
+	.nav-item:hover { color: #f3f4f6; transform: translateY(-1px); }
+	.nav-item.active { color: #fff; font-weight: 700; }
+	.nav-item:focus { outline: none; }
+
+	/* logos */
+	.logo-link { display:flex; align-items:center; gap:8px; text-decoration:none; color:#f3f4f6; font-weight:700; transition:all .2s ease; white-space:nowrap }
+	.logo-link:hover { color: var(--accent); transform: translateY(-1px) }
+
+	.nav-divider { display:flex; align-items:center; color:#64748b; padding:0 16px; font-size:16px; opacity:.6; transition:padding 0.3s ease }
+
+	.nav-actions { display:flex; align-items:center; gap:8px; margin-left:8px; transition:gap 0.3s ease, margin-left 0.3s ease }
+
+	/* account button with extended hitbox for dropdown */
+	.nav-actions .nav-item:has(.dropdown-menu) {
 		position: relative;
-		display: inline-flex;
-		align-items: center;
-		gap: 0.5rem;
+		padding-right: 1rem;
 	}
 
-	// ============================================
-	// SEARCH & DIVIDERS
-	// ============================================
-	.nav-divider {
-		display: flex;
-		align-items: center;
-		color: #64748b;
-		padding: 0 16px;
-		font-size: 16px;
-		opacity: 0.6;
-		transition: padding 0.3s ease;
-	}
-
-	.nav-search-container {
-		position: relative;
-		display: flex;
-		align-items: center;
-		gap: 8px;
-		transition: gap 0.3s ease;
-
-		&.active .nav-search-box {
-			box-shadow: 0 0 0 2px rgba(167, 139, 250, 0.3);
-			border-color: var(--accent);
-		}
-	}
-
-	.nav-search-box {
-		display: flex;
-		overflow: hidden;
-		transition: all 0.3s ease;
-		min-width: 200px;
-		padding: 0;
-		background: var(--panel-bg);
-		border: 1px solid var(--panel-border);
-		border-radius: 12px;
-		backdrop-filter: blur(10px);
-
-		&:focus-within {
-			box-shadow: 0 0 0 2px rgba(167, 139, 250, 0.2);
-			border-color: var(--accent);
-		}
-
-		input {
-			flex: 1;
-			padding: 8px 12px;
-			background: transparent;
-			border: none;
-			color: #e8e4f3;
-			outline: none;
-			font-size: 13px;
-
-			&::placeholder {
-				color: var(--muted-2);
-			}
-		}
-	}
-
-	.nav-search-btn {
-		background: transparent;
-		border: none;
-		color: var(--muted-2);
-		padding: 8px 12px;
-		cursor: pointer;
-		transition: all 0.2s;
-
-		&:hover {
-			color: var(--accent);
-		}
-	}
-
-	.nav-actions {
-		display: flex;
-		align-items: center;
-		gap: 8px;
-		margin-left: 8px;
-	}
-
-	// ============================================
-	// LOGOS & LINKS
-	// ============================================
-	.logo-link {
-		display: flex;
-		align-items: center;
-		gap: 8px;
-		text-decoration: none;
-		color: #f3f4f6;
-		font-weight: 700;
-		transition: all 0.2s ease;
-		white-space: nowrap;
-
-		&:hover {
-			color: var(--accent);
-			transform: translateY(-1px);
-		}
-	}
-
-	// ============================================
-	// DROPDOWN MENUS
-	// ============================================
-	.account-dropdown-container {
-		position: relative;
-		display: inline-block;
-		/* Extend hover area downward to cover gap between button and menu */
-		padding-bottom: 8px;
-		margin-bottom: -8px;
-	}
-
-	.dropdown-menu {
-		position: absolute;
-		left: 50%;
-		margin-left: -90px;
-		top: 100%;
-		min-width: 180px;
-		padding: 8px;
-		margin-top: 0;
-		background: var(--panel-bg);
-		border: 1px solid var(--panel-border);
-		border-radius: 12px;
-		backdrop-filter: blur(10px);
-		box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
-		z-index: 50;
-		opacity: 0;
-		visibility: hidden;
-		transform: translateY(-10px);
-		transition: opacity 0.3s ease-out, visibility 0.3s ease-out, transform 0.3s ease-out;
-		pointer-events: none;
-
-		&.visible {
-			opacity: 1;
-			visibility: visible;
-			transform: translateY(0);
-			pointer-events: auto;
-		}
-
-		a {
-			display: block;
-			color: var(--muted);
-			text-decoration: none;
-			padding: 8px 12px;
-			border-radius: 6px;
-			transition: all 0.2s;
-			font-size: 13px;
-			cursor: pointer;
-
-			&:hover {
-				color: var(--accent);
-				background: rgba(167, 139, 250, 0.1);
-			}
-		}
-	}
-
-	// ============================================
-	// MOBILE LAYOUT
-	// ============================================
-	.mobile-header {
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
-		width: 100%;
-		padding: 8px;
-	}
-
-	.mobile-menu-toggle {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		background: transparent;
-		border: 1px solid var(--panel-border);
-		color: var(--muted);
-		padding: 8px;
-		border-radius: 10px;
-		cursor: pointer;
-		font-size: 16px;
-		transition: all 0.2s;
-		margin-right: 10px;
-
-		&:hover {
-			border-color: var(--accent);
-			color: var(--accent);
-		}
-	}
-
-	.mobile-actions {
-		display: flex;
-		gap: 8px;
-	}
-
-	.mobile-menu {
+	.nav-actions .nav-item:has(.dropdown-menu)::after {
+		content: '';
 		position: absolute;
 		top: 100%;
 		left: 0;
 		right: 0;
-		background: var(--panel-bg);
-		border: 1px solid var(--panel-border);
-		border-radius: 0 0 12px 12px;
-		backdrop-filter: blur(10px);
-		z-index: 100;
-		padding: 16px;
-		animation: slideDown 0.3s ease-out;
+		height: 10px;
+		pointer-events: auto;
 	}
 
-	.mobile-nav-item {
-		display: block !important;
-		width: 100%;
-		margin-bottom: 8px;
-		text-align: left;
-		padding: 12px 16px !important;
-		border-radius: 8px !important;
-		border: 1px solid transparent;
-		text-decoration: none;
-		color: var(--muted) !important;
-		font-weight: 600;
-		font-size: 14px;
-		transition: all 0.2s ease;
+	/* search */
+	.nav-search-container { position:relative; display:flex; align-items:center; gap:8px; transition:gap 0.3s ease }
+	.nav-search-box { display:flex; overflow:hidden; transition:all .3s ease; min-width:200px; padding:0 }
+	.nav-search-box:focus-within { box-shadow:0 0 0 2px rgba(167,139,250,0.2); border-color:var(--accent) }
+	.nav-search-box input { flex:1; padding:8px 12px; background:transparent; border:none; color:#e8e4f3; outline:none; font-size:13px; transition:padding 0.3s ease, font-size 0.3s ease }
+	.nav-search-box input::placeholder { color:var(--muted-2) }
+	.nav-search-btn { background:transparent; border:none; color:var(--muted-2); padding:8px 12px; cursor:pointer; transition:all .2s }
+	.nav-search-btn:hover { color:var(--accent) }
 
-		&:hover {
-			background: rgba(167, 139, 250, 0.1);
-			border-color: var(--accent);
-			color: #f3f4f6 !important;
-			transform: translateY(-1px);
-		}
+	/* dropdown */
+	.dropdown-menu { position:absolute; left:50%; margin-left:-90px; top:calc(100% + 10px); min-width:180px; padding:8px; box-shadow:0 20px 25px -5px rgba(0,0,0,.5); z-index:100; margin-top:0px; background: rgba(30, 27, 50, 0.8); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1) }
+	.dropdown-menu a { display:block; color:var(--muted); text-decoration:none; padding:8px 12px; border-radius:6px; transition:all .2s; font-size:13px }
+	.dropdown-menu a:hover { color:var(--accent); background:rgba(167,139,250,0.1) }
 
-		&.active {
-			background: rgba(167, 139, 250, 0.2);
-			border-color: var(--accent);
-			color: #fff !important;
-			font-weight: 700;
-		}
-	}
+	@keyframes slideDown { from{opacity:0; transform:translateY(-10px)} to{opacity:1; transform:translateY(0)} }
+	@keyframes bounce-in { 0%{ transform: translateX(var(--target-x,0)) scale(.8)} 50%{ transform: translateX(var(--target-x,0)) scale(1.05)} 100%{ transform: translateX(var(--target-x,0)) scale(1)} }
 
-	// ============================================
-	// ANIMATIONS
-	// ============================================
-	@keyframes slideDown {
-		from {
-			opacity: 0;
-			transform: translateY(-10px);
-		}
-		to {
-			opacity: 1;
-			transform: translateY(0);
-		}
-	}
+	.navbar-container::before { content:''; position:absolute; inset:-1px; background:linear-gradient(45deg, rgba(167,139,250,0.1), transparent, rgba(167,139,250,0.1)); border-radius:25px; z-index:-1 }
 
-	// ============================================
-	// RESPONSIVE BREAKPOINTS
-	// ============================================
-	/* Wrapped layout: Search bar wraps to second row, compact items */
-	@media (max-width: $wrap-breakpoint) {
-		.navbar {
-			padding: 0.6rem;
-			max-width: fit-content;
-		}
+	/* mobile */
+	.mobile-header { display:flex; justify-content:space-between; align-items:center; width:100%; padding:8px }
+	.mobile-menu-toggle { display:flex; align-items:center; justify-content:center; background:transparent; border:1px solid var(--panel-border); color:var(--muted); padding:8px; border-radius:10px; cursor:pointer; font-size:16px; transition:all .2s; margin-right:10px }
+	.mobile-menu-toggle:hover { border-color:var(--accent); color:var(--accent) }
+	.mobile-actions { display:flex; gap:8px }
+	.mobile-menu { position:absolute; top:100%; left:0; right:0; border-radius:0 0 12px 12px; z-index:100; padding:16px; animation:slideDown .3s ease-out }
+	.mobile-nav-item { display:block !important; width:100%; margin-bottom:8px; text-align:left; padding:12px 16px !important; border-radius:8px !important; border:1px solid transparent; text-decoration:none }
+	.mobile-nav-item:hover { background:rgba(167,139,250,0.1); border-color:var(--accent) }
+	.mobile-nav-item.active { background:rgba(167,139,250,0.2); border-color:var(--accent) }
 
-		.navbar-container {
-			padding: 1.5em;
-			gap: 3px;
+	/* layout mode tweaks */
+	.navbar-container.mobile-mode { flex-direction:column; padding:8px; border-radius:16px; position:relative }
+
+	/* ============================================
+	   RESPONSIVE BREAKPOINTS
+	   ============================================ */
+	
+	/* Wrapped Mode: ≤$wrap-breakpoint */
+	@media (max-width: $wrap-breakpoint){ 
+		.navbar { padding: 0.6rem; max-width: fit-content }
+		.navbar-container { 
+			padding: 1.5em; 
+			gap: 3px; 
 			width: min-content;
 			flex-wrap: wrap;
 		}
-
-		.nav-items-wrapper {
-			gap: 3px;
-		}
-
-		.nav-item {
-			padding: 0.4rem;
-			font-size: 13px;
-		}
-
-		.nav-divider {
-			display: none;
-		}
-
-		.nav-search-container {
-			order: 10;
-			width: fit-content;
-			display: flex;
-			justify-content: center;
+		.nav-items-wrapper { gap: 3px }
+		.nav-item { padding: 0.4rem; font-size: 13px }
+		.nav-divider { display: none }
+		.nav-search-container { 
+			order: 10; 
+			width: fit-content; 
+			display: flex; 
+			justify-content: center; 
 			margin-top: 4px;
 			gap: 6px;
 		}
-
-		.nav-search-box {
+		.nav-search-box { 
 			min-width: auto;
 			width: fit-content;
-
-			input {
-				padding: 7px 10px;
-				font-size: 12px;
-				width: 200px;
-			}
 		}
-
-		.nav-actions {
-			gap: 6px;
-			margin-left: 6px;
-		}
+		.nav-search-box input { padding: 7px 10px; font-size: 12px; width: 200px }
+		.nav-actions { gap: 6px; margin-left: 6px }
+		.logo { margin-right:12px }
 	}
-
-	/* Mobile layout: Hamburger menu, vertical layout */
-	@media (max-width: $mobile-breakpoint) {
-		.navbar {
-			padding: 0.4rem;
-			max-width: 98vw;
-		}
-
-		.navbar-container {
-			padding: 3px;
-			gap: 2px;
-			width: 80vw;
-		}
+	
+	/* Mobile Mode: ≤$mobile-breakpoint */
+	@media (max-width: $mobile-breakpoint){ 
+		.navbar { padding: 0.4rem;  max-width: 98vw}
+		.navbar-container { padding: 3px; gap: 2px; width: 80vw; }
 	}
-
 
 </style>
