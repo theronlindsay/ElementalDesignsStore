@@ -33,6 +33,12 @@
 		link: ''
 	});
 	
+	// UI state
+	let imagePreview = $state<string | null>(null);
+	let isUploading = $state(false);
+	let uploadError = $state<string | null>(null);
+	let fileInput = $state<HTMLInputElement | undefined>(undefined);
+	
 	// Load event data when editing
 	$effect(() => {
 		if (event) {
@@ -44,6 +50,12 @@
 				image: event.image || '',
 				link: event.link || ''
 			};
+			// Set preview for existing image
+			if (event.image) {
+				imagePreview = event.image;
+			} else {
+				imagePreview = null;
+			}
         } else {
 			formData = {
 				title: '',
@@ -53,10 +65,73 @@
 				image: '',
 				link: ''
 			};
+			imagePreview = null;
 		}
+		uploadError = null;
 	});
 	
-	function handleSubmit(e: Event) {
+	// Handle file selection and upload
+	async function handleFileChange(e: Event) {
+		const target = e.target as HTMLInputElement;
+		const file = target.files?.[0];
+		
+		if (!file) return;
+		
+		// Validate file type
+		if (!file.type.startsWith('image/')) {
+			uploadError = 'Please select an image file';
+			return;
+		}
+		
+		// Validate file size (max 5MB)
+		if (file.size > 5 * 1024 * 1024) {
+			uploadError = 'Image must be smaller than 5MB';
+			return;
+		}
+		
+		// Create form data for upload
+		const formDataUpload = new FormData();
+		formDataUpload.append('file', file);
+		
+		isUploading = true;
+		uploadError = null;
+		
+		try {
+			const response = await fetch('/api/upload-event-image', {
+				method: 'POST',
+				body: formDataUpload
+			});
+			
+			if (!response.ok) {
+				throw new Error('Upload failed');
+			}
+			
+			const data = await response.json();
+			formData.image = data.imagePath;
+			
+			// Create preview
+			const reader = new FileReader();
+			reader.onload = (event) => {
+				imagePreview = event.target?.result as string;
+			};
+			reader.readAsDataURL(file);
+		} catch (error) {
+			uploadError = error instanceof Error ? error.message : 'Upload failed';
+		} finally {
+			isUploading = false;
+		}
+	}
+	
+	// Clear image
+	function clearImage() {
+		formData.image = '';
+		imagePreview = null;
+		if (fileInput) {
+			fileInput.value = '';
+		}
+	}
+	
+	async function handleSubmit(e: Event) {
 		e.preventDefault();
 		
 		const eventData = {
@@ -64,9 +139,9 @@
 			title: formData.title,
 			description: formData.description,
 			date: formData.date,
-			location: formData.location || undefined,
-			image: formData.image || undefined,
-			link: formData.link || undefined
+			location: formData.location,
+			image: formData.image,
+			link: formData.link
 		};
 		
 		onSave(eventData);
@@ -136,13 +211,51 @@
 				</div>
 				
 				<FormGroup>
-					<Label htmlFor="image">Image URL</Label>
-					<Input
-						type="text"
-						name="image"
-						bind:value={formData.image}
-						placeholder="https://example.com/image.jpg"
-					/>
+					<Label htmlFor="image">Event Image</Label>
+					<div class="image-upload-section">
+						{#if imagePreview}
+							<div class="image-preview">
+								<img src={imagePreview} alt="Event preview" />
+								<button 
+									type="button" 
+									class="clear-image-btn"
+									onclick={clearImage}
+									disabled={isUploading}
+								>
+									<i class="fas fa-trash"></i>
+									Remove Image
+								</button>
+							</div>
+						{:else}
+							<div class="upload-area">
+								<input
+									bind:this={fileInput}
+									type="file"
+									name="image"
+									accept="image/*"
+									onchange={handleFileChange}
+									disabled={isUploading}
+									class="file-input"
+									id="image-upload"
+								/>
+								<label for="image-upload" class="upload-label">
+									<i class="fas fa-cloud-upload-alt"></i>
+									<div>
+										<p class="upload-text">Click to upload or drag and drop</p>
+										<p class="upload-hint">PNG, JPG, GIF up to 5MB</p>
+									</div>
+								</label>
+							</div>
+						{/if}
+						
+						{#if uploadError}
+							<p class="error-message">{uploadError}</p>
+						{/if}
+						
+						{#if isUploading}
+							<p class="uploading-message">Uploading image...</p>
+						{/if}
+					</div>
 				</FormGroup>
 				
 				<FormGroup>
@@ -291,6 +404,114 @@
 		resize: vertical;
 		min-height: 100px;
 		font-family: inherit;
+	}
+	
+	.image-upload-section {
+		display: flex;
+		flex-direction: column;
+		gap: 1rem;
+	}
+	
+	.image-preview {
+		position: relative;
+		border-radius: 8px;
+		overflow: hidden;
+		
+		img {
+			width: 100%;
+			height: 300px;
+			object-fit: cover;
+			display: block;
+		}
+		
+		.clear-image-btn {
+			position: absolute;
+			top: 0.5rem;
+			right: 0.5rem;
+			display: flex;
+			align-items: center;
+			gap: 0.5rem;
+			padding: 0.5rem 1rem;
+			background: rgba(0, 0, 0, 0.7);
+			color: white;
+			border: none;
+			border-radius: 6px;
+			cursor: pointer;
+			font-size: 0.9rem;
+			transition: all 0.2s ease;
+			
+			&:hover:not(:disabled) {
+				background: rgba(0, 0, 0, 0.9);
+				transform: scale(1.05);
+			}
+			
+			&:disabled {
+				opacity: 0.5;
+				cursor: not-allowed;
+			}
+		}
+	}
+	
+	.upload-area {
+		position: relative;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		
+		.file-input {
+			display: none;
+		}
+		
+		.upload-label {
+			width: 100%;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+			padding: 2rem;
+			border: 2px dashed var(--border-primary);
+			border-radius: 8px;
+			cursor: pointer;
+			transition: all 0.2s ease;
+			background: var(--bg-secondary);
+			
+			i {
+				font-size: 2rem;
+				color: var(--accent);
+				margin-bottom: 0.5rem;
+			}
+			
+			&:hover {
+				border-color: var(--accent);
+				background: rgba(167, 139, 250, 0.05);
+			}
+		}
+	}
+	
+	.upload-text {
+		color: var(--text-primary);
+		font-weight: 600;
+		margin: 0;
+		font-size: 1rem;
+	}
+	
+	.upload-hint {
+		color: var(--muted);
+		font-size: 0.85rem;
+		margin: 0.25rem 0 0;
+	}
+	
+	.error-message {
+		color: #ff6b6b;
+		font-size: 0.9rem;
+		margin: 0;
+	}
+	
+	.uploading-message {
+		color: var(--accent);
+		font-size: 0.9rem;
+		margin: 0;
+		text-align: center;
 	}
 	
 	.modal-actions {

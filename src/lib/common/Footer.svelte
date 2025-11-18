@@ -11,8 +11,8 @@
 		<div class="footer-links">
 			<div class="footer-column">
 				<h4>Info</h4>
-				<a href="#schedule"><i class="fas fa-calendar"></i> Event schedule</a>
-				<a href="#about"><i class="fas fa-info"></i> About</a>
+				<a href="/#events-schedule"><i class="fas fa-calendar"></i> Event schedule</a>
+				<a href="/about"><i class="fas fa-info"></i> About</a>
 				<a href="#contact"><i class="fas fa-envelope"></i> Contact</a>
 			</div>
 			

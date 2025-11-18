@@ -17,7 +17,7 @@
 	] } = $props();
 
 	let activeItem = items.find(item => item.active)?.id || items[0]?.id;
-	let visuallyActiveItem = $state(activeItem); // Separate state for visual boldness
+	let visuallyActiveItem = $state<string | null>(activeItem); // Separate state for visual boldness
 	let selectorElement = $state<HTMLDivElement | null>(null);
 	let navElement: HTMLElement;
 	let itemElements = $state<{ [key: string]: HTMLElement }>({});
@@ -25,14 +25,18 @@
 	// Add state for dropdown menus
 	let showAccountMenu = $state(false);
 	let accountMenuLocked = $state(false); // Track if menu is locked open from click
+	let mobileAccountMenuOpen = $state(false); // Track if mobile account menu is open
 	
 	// Search state - reactive to URL changes
 	let searchInput = $state('');
+	let isSearchActive = $state(false); // Track if we're on a search results page
 	
 	// Sync search input with URL query parameter
 	$effect(() => {
 		const urlQuery = $page.url.searchParams.get('q') || '';
 		searchInput = urlQuery;
+		// Update search active state
+		isSearchActive = $page.url.pathname === '/search' && urlQuery.length > 0;
 	});
 	
 	// Update active item based on current URL
@@ -43,22 +47,27 @@
 		// Find matching item based on path and hash
 		let matchedItemId: string | null = null;
 		
-		for (const item of items) {
-			// Exact path match
-			if (item.href === currentPath) {
-				matchedItemId = item.id;
-				break;
-			}
-			
-			// Path + hash match (for search routes)
-			if (item.href === currentPath + currentHash) {
-				matchedItemId = item.id;
-				break;
-			}
-			
-			// Check if path starts with item's href (for nested routes)
-			if (currentPath.startsWith(item.href) && item.href !== '/') {
-				matchedItemId = item.id;
+		// Special case: if on /search with a query, don't highlight any nav item
+		const isSearchWithQuery = currentPath === '/search' && $page.url.searchParams.has('q');
+		
+		if (!isSearchWithQuery) {
+			for (const item of items) {
+				// Exact path match
+				if (item.href === currentPath) {
+					matchedItemId = item.id;
+					break;
+				}
+				
+				// Path + hash match (for search routes)
+				if (item.href === currentPath + currentHash) {
+					matchedItemId = item.id;
+					break;
+				}
+				
+				// Check if path starts with item's href (for nested routes)
+				if (currentPath.startsWith(item.href) && item.href !== '/') {
+					matchedItemId = item.id;
+				}
 			}
 		}
 		
@@ -75,6 +84,13 @@
 			
 			// Move selector
 			setTimeout(() => moveSelector(matchedItemId!), 50);
+		} else if (!matchedItemId && !isSearchWithQuery && visuallyActiveItem !== null) {
+			// Clear active item only if not on search page and something was previously selected
+			visuallyActiveItem = null;
+			items = items.map(item => ({
+				...item,
+				active: false
+			}));
 		}
 	});
 
@@ -162,9 +178,10 @@
 		updateResponsiveLayout();
 
 		setTimeout(() => {
-			moveSelector(activeItem);
-			// Set initial visual state without delay
-			visuallyActiveItem = activeItem;
+			// Only move selector and set visual state if there's an active item
+			if (visuallyActiveItem !== null && itemElements[visuallyActiveItem]) {
+				moveSelector(visuallyActiveItem);
+			}
 		}, 50);
 		
 		// Handle window resize
@@ -177,8 +194,10 @@
 				isMobileMenuOpen = false;
 			}
 			
-			// Update selector position
-			setTimeout(() => moveSelector(activeItem), 100);
+			// Update selector position if we have an active item
+			if (visuallyActiveItem !== null) {
+				setTimeout(() => moveSelector(visuallyActiveItem!), 100);
+			}
 		};
 		
 		window.addEventListener('resize', handleResize);
@@ -221,15 +240,12 @@
 					
 					<!-- Mobile Actions (always visible) -->
 					<div class="mobile-actions">
-						<Button class="btn mobile-action" ariaLabel="Search Products">
+						<a href="/search" class="mobile-action-btn" aria-label="Search Products">
 							<i class="fas fa-search"></i>
-						</Button>
-						<Button class="btn mobile-action" ariaLabel="User Account">
-							<i class="fas fa-user"></i>
-						</Button>
-						<Button class="btn mobile-action" ariaLabel="Shopping Cart">
+						</a>
+						<a href="/cart" class="mobile-action-btn" aria-label="Shopping Cart">
 							<i class="fas fa-shopping-cart"></i>
-						</Button>
+						</a>
 					</div>
 				</div>
 			</div>
@@ -238,17 +254,39 @@
 			{#if isMobileMenuOpen}
 				<div class="mobile-menu">
 					{#each items as item}
-						<a
-							bind:this={itemElements[item.id]}
-							href={item.href}
-							class="nav-item mobile-nav-item {visuallyActiveItem === item.id ? 'active' : ''}"
-							onclick={() => {
-								handleItemClick(item.id);
-								isMobileMenuOpen = false;
-							}}
-						>
-							{item.label}
-						</a>
+						{#if item.id === 'account'}
+							<!-- Mobile Account Menu with dropdown -->
+							<button
+								class="mobile-account-btn nav-item mobile-nav-item {mobileAccountMenuOpen ? 'active' : ''}"
+								onclick={() => {
+									mobileAccountMenuOpen = !mobileAccountMenuOpen;
+								}}
+								style="cursor: pointer; width: calc(100% - 24px); text-align: left; display: block; background: transparent; border: 1px solid transparent; color: inherit; font: inherit; padding: 12px 12px; border-radius: 8px; transition: all 0.2s;"
+							>
+								{item.label}
+								<i class="fas {mobileAccountMenuOpen ? 'fa-chevron-up' : 'fa-chevron-down'}" style="margin-left: 8px; font-size: 12px;"></i>
+								{#if mobileAccountMenuOpen}
+									<div class="mobile-account-menu">
+										<a href="/account/login" onclick={() => { mobileAccountMenuOpen = false; isMobileMenuOpen = false; }}>Login</a>
+										<a href="/account/register" onclick={() => { mobileAccountMenuOpen = false; isMobileMenuOpen = false; }}>Register</a>
+										<a href="/account/profile" onclick={() => { mobileAccountMenuOpen = false; isMobileMenuOpen = false; }}>My Profile</a>
+										<a href="/account/orders" onclick={() => { mobileAccountMenuOpen = false; isMobileMenuOpen = false; }}>My Orders</a>
+									</div>
+								{/if}
+							</button>
+						{:else}
+							<a
+								bind:this={itemElements[item.id]}
+								href={item.href}
+								class="nav-item mobile-nav-item {visuallyActiveItem === item.id ? 'active' : ''}"
+								onclick={() => {
+									handleItemClick(item.id);
+									isMobileMenuOpen = false;
+								}}
+							>
+								{item.label}
+							</a>
+						{/if}
 					{/each}
 				</div>
 			{/if}
@@ -258,7 +296,7 @@
 			<!-- Nav Items Section (with selector) -->
 			<div class="nav-items-wrapper">
 				<div 
-					class="selector" 
+					class="selector {isSearchActive ? 'hidden' : ''}" 
 					bind:this={selectorElement}
 				></div>
 				
@@ -281,7 +319,7 @@
 			
 			<!-- Search and Actions (together) -->
 			<div class="nav-search-container">
-				<form class="nav-search-box" onsubmit={handleSearch}>
+				<form class="nav-search-box {isSearchActive ? 'active' : ''}" onsubmit={handleSearch}>
 					<input 
 						type="text" 
 						placeholder="Search products..." 
@@ -470,6 +508,11 @@
 		box-shadow: 0 2px 10px rgba(167,139,250,0.4);
 	}
 
+	.selector.hidden {
+		opacity: 0;
+		pointer-events: none;
+	}
+
 	/* nav items */
 	.nav-item {
 		position: relative;
@@ -521,6 +564,7 @@
 	.nav-search-container { position:relative; display:flex; align-items:center; gap:8px; transition:gap 0.3s ease }
 	.nav-search-box { display:flex; overflow:hidden; transition:all .3s ease; min-width:200px; padding:0 }
 	.nav-search-box:focus-within { box-shadow:0 0 0 2px rgba(167,139,250,0.2); border-color:var(--accent) }
+	.nav-search-box.active { box-shadow:0 0 0 2px rgba(167,139,250,0.3); border-color:var(--accent); background: rgba(167, 139, 250, 0.1) }
 	.nav-search-box input { flex:1; padding:8px 12px; background:transparent; border:none; color:#e8e4f3; outline:none; font-size:13px; transition:padding 0.3s ease, font-size 0.3s ease }
 	.nav-search-box input::placeholder { color:var(--muted-2) }
 	.nav-search-btn { background:transparent; border:none; color:var(--muted-2); padding:8px 12px; cursor:pointer; transition:all .2s }
@@ -541,10 +585,17 @@
 	.mobile-menu-toggle { display:flex; align-items:center; justify-content:center; background:transparent; border:1px solid var(--panel-border); color:var(--muted); padding:8px; border-radius:10px; cursor:pointer; font-size:16px; transition:all .2s; margin-right:10px }
 	.mobile-menu-toggle:hover { border-color:var(--accent); color:var(--accent) }
 	.mobile-actions { display:flex; gap:8px }
-	.mobile-menu { position:absolute; top:100%; left:0; right:0; border-radius:0 0 12px 12px; z-index:100; padding:16px; animation:slideDown .3s ease-out }
-	.mobile-nav-item { display:block !important; width:100%; margin-bottom:8px; text-align:left; padding:12px 16px !important; border-radius:8px !important; border:1px solid transparent; text-decoration:none }
+	.mobile-action-btn { display:flex; align-items:center; justify-content:center; background:transparent; border:1px solid var(--panel-border); color:var(--muted); padding:8px; border-radius:10px; cursor:pointer; font-size:16px; transition:all .2s; text-decoration:none }
+	.mobile-action-btn:hover { border-color:var(--accent); color:var(--accent) }
+	.mobile-menu { position:absolute; top:100%; left:0; right:0; border-radius:0 0 12px 12px; z-index:100; padding:16px; animation:slideDown .3s ease-out; background:rgba(30,27,50,0.8); backdrop-filter:blur(10px); border:1px solid rgba(167,139,250,0.2); border-top:none; overflow:hidden; box-sizing:border-box }
+	.mobile-nav-item { display:block !important; width:calc(100% - 24px); margin-bottom:8px; text-align:left; padding:12px 12px !important; border-radius:8px !important; border:1px solid transparent; text-decoration:none; box-sizing:border-box }
 	.mobile-nav-item:hover { background:rgba(167,139,250,0.1); border-color:var(--accent) }
 	.mobile-nav-item.active { background:rgba(167,139,250,0.2); border-color:var(--accent) }
+	.mobile-account-btn { position: relative; background: transparent !important; border: 1px solid transparent !important }
+	.mobile-account-btn:hover { background: rgba(167,139,250,0.1) !important; border-color: var(--accent) !important }
+	.mobile-account-menu { position: static; background: rgba(167,139,250,0.05); border: 1px solid rgba(167,139,250,0.2); border-radius: 6px; margin-top: 8px; padding: 4px; box-shadow: none; left: auto; min-width: auto; margin-left: 0 }
+	.mobile-account-menu a { display: block; color: var(--muted); text-decoration: none; padding: 8px 12px; border-radius: 4px; transition: all 0.2s; font-size: 13px; border: 1px solid transparent }
+	.mobile-account-menu a:hover { color: var(--accent); background: rgba(167,139,250,0.15); border-color: var(--accent) }
 
 	/* layout mode tweaks */
 	.navbar-container.mobile-mode { flex-direction:column; padding:8px; border-radius:16px; position:relative }

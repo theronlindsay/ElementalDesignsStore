@@ -14,7 +14,7 @@
 	{type}
 	{name}
 	{placeholder}
-	{value}
+	bind:value
 	{required}
 	aria-label={ariaLabel}
 	{autocomplete}

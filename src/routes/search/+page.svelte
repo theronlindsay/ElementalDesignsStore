@@ -7,11 +7,15 @@
 	
 	let { data }: { data: PageData } = $props();
 	
-	// Active category state - defaults to 'jewelry'
-	let activeCategory = $state<string>('jewelry');
+	// Active category state - defaults to 'all' to show all items
+	let activeCategory = $state<string>('all');
 	
 	// Search query from URL parameter
 	let searchQuery = $derived($page.url.searchParams.get('q') || '');
+	
+	// Local search input for mobile
+	let mobileSearchInput = $state('');
+	let searchInputElement = $state<HTMLInputElement | undefined>(undefined);
 	
 	// Track if data has been loaded
 	let dataLoaded = $state(false);
@@ -72,6 +76,9 @@
 			const hash = window.location.hash.slice(1); // Remove the #
 			if (hash && categories.some(cat => cat.slug === hash)) {
 				activeCategory = hash;
+				resetFilters();
+			} else if (!hash) {
+				activeCategory = 'all'; // Default to all if no hash
 				resetFilters();
 			}
 		};
@@ -203,6 +210,20 @@
 		minRating = 0;
 		sortBy = 'name';
 	}
+	
+	// Handle mobile search submission
+	function handleMobileSearch() {
+		if (mobileSearchInput.trim()) {
+			goto(`/search?q=${encodeURIComponent(mobileSearchInput.trim())}`);
+		}
+	}
+	
+	// Handle Enter key in mobile search input
+	function handleSearchKeypress(e: KeyboardEvent) {
+		if (e.key === 'Enter') {
+			handleMobileSearch();
+		}
+	}
 </script>
 
 <div class="search-page">
@@ -219,8 +240,16 @@
 				<p>Loading products...</p>
 			</div>
 		</div>
-	{:else if allCategoriesData[activeCategory]}
-		{@const currentCategoryData = allCategoriesData[activeCategory]}
+	{:else if activeCategory === 'all' || allCategoriesData[activeCategory]}
+		{@const currentCategoryData = activeCategory === 'all' 
+			? { 
+				name: 'All Products',
+				items: Object.values(allCategoriesData).flatMap((cat: any) => cat.items || []),
+				subcategories: Object.values(allCategoriesData).flatMap((cat: any) => cat.subcategories || []),
+				success: true
+			}
+			: allCategoriesData[activeCategory]
+		}
 		<div class="page-header">
 			{#if searchQuery}
 				<div class="search-header">
@@ -234,17 +263,38 @@
 							{/if}
 						</p>
 					</div>
-					<button class="clear-search" onclick={() => goto('/search#' + activeCategory)}>
+					<button class="clear-search" onclick={() => goto('/search#all')}>
 						Clear Search
 					</button>
 				</div>
 			{:else}
-				<h1>{currentCategoryData.name} Collection</h1>
-				<p class="subtitle">Browse our selection of {currentCategoryData.name.toLowerCase()}</p>
+				<h1>{currentCategoryData.name}</h1>
+				<p class="subtitle">
+					{#if activeCategory === 'all'}
+						Browse our entire collection
+					{:else}
+						Browse our selection of {currentCategoryData.name.toLowerCase()}
+					{/if}
+				</p>
 			{/if}
 		</div>
-			
-			<div class="search-container">
+		
+		<!-- Mobile Search Bar -->
+		<div class="mobile-search-bar">
+			<input
+				bind:this={searchInputElement}
+				bind:value={mobileSearchInput}
+				type="search"
+				placeholder="Search products..."
+				onkeypress={handleSearchKeypress}
+				class="mobile-search-input"
+			/>
+		<button class="mobile-search-btn" onclick={handleMobileSearch} aria-label="Search">
+			<i class="fas fa-search"></i>
+		</button>
+		</div>
+		
+		<div class="search-container">
 				<!-- Sidebar Filters -->
 				<aside class="filters-sidebar" class:collapsed={!showFilters}>
 					<div class="filters-header">
@@ -464,7 +514,6 @@
 				transition: all $transition-fast ease;
 				
 				&:hover {
-					background: lighten($accent-primary, 10%);
 					transform: translateY(-2px);
 					box-shadow: $shadow-md;
 				}
@@ -472,6 +521,65 @@
 				&:active {
 					transform: translateY(0);
 				}
+			}
+		}
+	}
+	
+	/* Mobile Search Bar */
+	.mobile-search-bar {
+		display: none;
+		max-width: $desktop-breakpoint;
+		margin: 0 auto $spacing-lg;
+		flex-direction: row;
+		gap: $spacing-md;
+		
+		@media (max-width: $tablet-breakpoint) {
+			display: flex;
+		}
+		
+		.mobile-search-input {
+			flex: 1;
+			background: $bg-secondary;
+			border: 1px solid $border-secondary;
+			color: $text-secondary;
+			padding: $spacing-md $spacing-lg;
+			border-radius: $radius-lg;
+			outline: none;
+			font-size: 1rem;
+			transition: all $transition-fast;
+			
+			&:focus {
+				border-color: $accent-primary;
+				box-shadow: 0 0 0 3px rgba(167, 139, 250, 0.1);
+			}
+			
+			&::placeholder {
+				color: $text-muted;
+			}
+		}
+		
+		.mobile-search-btn {
+			background: $accent-primary;
+			border: none;
+			color: white;
+			padding: $spacing-md $spacing-lg;
+			border-radius: $radius-lg;
+			cursor: pointer;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			font-size: 1.1rem;
+			transition: all $transition-fast;
+			white-space: nowrap;
+			
+			&:hover {
+				background: lighten($accent-primary, 10%);
+				transform: translateY(-2px);
+				box-shadow: $shadow-md;
+			}
+			
+			&:active {
+				transform: translateY(0);
 			}
 		}
 	}

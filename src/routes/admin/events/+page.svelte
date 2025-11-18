@@ -1,31 +1,17 @@
 <script lang="ts">
 	import { EventCard, EventModal } from '$lib';
+	import type { PageData } from './$types';
+
+	let { data }: { data: PageData } = $props();
 	
-	// Mock events data (in production, this would come from a database)
-	let events = $state([
-		{
-			id: '1',
-			title: 'Renaissance Fair 2025',
-			description: 'Join us for a spectacular Renaissance fair featuring chainmail demonstrations, medieval crafts, and artisan vendors.',
-			date: '2025-06-15',
-			location: 'Heritage Park, Portland',
-			image: 'https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?w=800',
-			link: 'https://example.com/renaissance-fair'
-		},
-		{
-			id: '2',
-			title: 'Maker Faire Summer Edition',
-			description: 'Discover unique handcrafted items, watch live demonstrations of laser engraving, and meet local artisans.',
-			date: '2025-07-20',
-			location: 'Downtown Convention Center',
-			image: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800',
-			link: 'https://example.com/maker-faire'
-		}
-	]);
+	// Load initial events from server
+	let events = $state(data.events || []);
 	
 	// Modal state
 	let isModalOpen = $state(false);
 	let editingEvent = $state<any>(null);
+	let isSaving = $state(false);
+	let isDeleting = $state(false);
 	
 	function openAddModal() {
 		editingEvent = null;
@@ -33,7 +19,7 @@
 	}
 	
 	function openEditModal(id: string) {
-		const event = events.find(e => e.id === id);
+		const event = events.find((e: any) => e.id === id);
 		if (event) {
 			editingEvent = { ...event };
 			isModalOpen = true;
@@ -45,34 +31,76 @@
 		editingEvent = null;
 	}
 	
-	function handleSave(eventData: any) {
-		if (editingEvent) {
-			// Update existing event
-			events = events.map(e => e.id === eventData.id ? eventData : e);
-		} else {
-			// Add new event
-			events = [...events, eventData];
+	async function handleSave(eventData: any) {
+		isSaving = true;
+		try {
+			const response = await fetch('/admin/events', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify(eventData)
+			});
+
+			if (!response.ok) {
+				throw new Error('Failed to save event');
+			}
+
+			const result = await response.json();
+
+			if (editingEvent) {
+				// Update existing event
+				events = events.map((e: any) => e.id === eventData.id ? eventData : e);
+			} else {
+				// Add new event
+				events = [...events, eventData];
+			}
+			closeModal();
+		} catch (error) {
+			console.error('Error saving event:', error);
+			alert('Failed to save event. Please try again.');
+		} finally {
+			isSaving = false;
 		}
-		closeModal();
 	}
 	
-	function handleDelete(id: string) {
-		if (confirm('Are you sure you want to delete this event?')) {
-			events = events.filter(e => e.id !== id);
+	async function handleDelete(id: string) {
+		if (!confirm('Are you sure you want to delete this event?')) return;
+
+		isDeleting = true;
+		try {
+			const response = await fetch('/admin/events', {
+				method: 'DELETE',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({ id })
+			});
+
+			if (!response.ok) {
+				throw new Error('Failed to delete event');
+			}
+
+			events = events.filter((e: any) => e.id !== id);
+		} catch (error) {
+			console.error('Error deleting event:', error);
+			alert('Failed to delete event. Please try again.');
+		} finally {
+			isDeleting = false;
 		}
 	}
 	
 	// Derived state
 	let upcomingEvents = $derived(
 		events
-			.filter(e => new Date(e.date) >= new Date())
-			.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+			.filter((e: any) => new Date(e.date) >= new Date())
+			.sort((a: any, b: any) => new Date(a.date).getTime() - new Date(b.date).getTime())
 	);
 	
 	let pastEvents = $derived(
 		events
-			.filter(e => new Date(e.date) < new Date())
-			.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+			.filter((e: any) => new Date(e.date) < new Date())
+			.sort((a: any, b: any) => new Date(b.date).getTime() - new Date(a.date).getTime())
 	);
 </script>
 

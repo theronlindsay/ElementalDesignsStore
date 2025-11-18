@@ -1,39 +1,27 @@
 <script lang="ts">
 	import { EventCard, CategoryGrid } from '$lib';
+	import type { PageData } from './$types';
+
+	let { data }: { data: PageData } = $props();
 	
-	let showAccountMenu = false;
-	let showMainMenus = {};
+	// Load events from server
+	let events = $state(data.events || []);
 	
-	// Mock events data (in production, this would be fetched from API/database)
-	// This should match the events created in admin panel
-	let events = [
-		{
-			id: '1',
-			title: 'Renaissance Fair 2025',
-			description: 'Join us for a spectacular Renaissance fair featuring chainmail demonstrations, medieval crafts, and artisan vendors.',
-			date: '2026-06-15',
-			location: 'Heritage Park, Portland',
-			image: 'https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?w=800',
-			link: 'https://example.com/renaissance-fair'
-		},
-		{
-			id: '2',
-			title: 'Maker Faire Summer Edition',
-			description: 'Discover unique handcrafted items, watch live demonstrations of laser engraving, and meet local artisans.',
-			date: '2026-07-20',
-			location: 'Downtown Convention Center',
-			image: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800',
-			link: 'https://example.com/maker-faire'
-		}
-	];
+	// Print events on page load
+	$effect(() => {
+		console.log('Events loaded:', events);
+	});
 	
 	// Filter for upcoming events only
 	let upcomingEvents = $derived(
 		events
-			.filter(e => new Date(e.date) >= new Date())
-			.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+			.filter((e: any) => new Date(e.date) >= new Date())
+			.sort((a: any, b: any) => new Date(a.date).getTime() - new Date(b.date).getTime())
 			.slice(0, 3) // Show max 3 events on homepage
 	);
+
+	
+	
 </script>
     
 <!-- Hero Section -->
@@ -75,7 +63,7 @@
 <!-- Content Grid -->
 <div class="content-grid">
 	<!-- Events Section -->
-	<section class="events-section">
+	<section class="events-section" id="events-schedule">
 		<h3>Upcoming Events</h3>
 		
 		{#if upcomingEvents.length > 0}
