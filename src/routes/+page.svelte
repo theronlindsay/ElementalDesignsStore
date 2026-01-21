@@ -19,9 +19,6 @@
 			.sort((a: any, b: any) => new Date(a.date).getTime() - new Date(b.date).getTime())
 			.slice(0, 3) // Show max 3 events on homepage
 	);
-
-	
-	
 </script>
     
 <!-- Hero Section -->
@@ -39,10 +36,10 @@
 				Each piece is carefully crafted with attention to detail and quality.
 			</p>
 			
-			<div class="hero-actions">
+			<!-- <div class="hero-actions">
 				<button class="btn-primary">Shop Now</button>
 				<button class="btn-secondary">Custom Orders</button>
-			</div>
+			</div> -->
 		</div>
 		
 		<div class="hero-panels">
@@ -58,7 +55,7 @@
 
 
 <!-- Product Categories Grid -->
-<CategoryGrid />
+<!-- <CategoryGrid /> -->
 
 <!-- Content Grid -->
 <div class="content-grid">

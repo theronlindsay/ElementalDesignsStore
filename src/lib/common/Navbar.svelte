@@ -7,13 +7,13 @@
 	// Navbar Routes
 	let { items = [
 		{ id: 'home', label: 'Home', href: '/', active: true },
-		{ id: 'jewelry', label: 'Jewelry', href: '/search#jewelry', active: false },
-		{ id: 'armor', label: 'Armor', href: '/search#armor', active: false },
-		{ id: 'laser', label: 'Laser Engraving', href: '/search#laser', active: false },
-		{ id: 'more', label: 'More', href: '/search#more', active: false},
+		// { id: 'jewelry', label: 'Jewelry', href: '/search#jewelry', active: false },
+		// { id: 'armor', label: 'Armor', href: '/search#armor', active: false },
+		// { id: 'laser', label: 'Laser Engraving', href: '/search#laser', active: false },
+		// { id: 'more', label: 'More', href: '/search#more', active: false},
 		{ id: 'about', label: 'About', href: '/about', active: false },
-		{ id: 'account', label: 'Account', href: '/account', active: false },
-		{ id: 'cart', label: 'Cart', href: '/cart', active: false }
+		// { id: 'account', label: 'Account', href: '/account', active: false },
+		// { id: 'cart', label: 'Cart', href: '/cart', active: false }
 	] } = $props();
 
 	let activeItem = items.find(item => item.active)?.id || items[0]?.id;
@@ -313,12 +313,12 @@
 			</div>
 				
 			<!-- Divider -->
-			<div class="nav-divider">
+			<!-- <div class="nav-divider">
 				<i class="fas fa-grip-lines-vertical"></i>
 			</div>
 			
-			<!-- Search and Actions (together) -->
-			<div class="nav-search-container">
+			 Search and Actions (together)
+			 <div class="nav-search-container">
 				<form class="nav-search-box {isSearchActive ? 'active' : ''}" onsubmit={handleSearch}>
 					<input 
 						type="text" 
@@ -335,9 +335,9 @@
 					</button>
 				</form>
 				
-				<!-- Navigation Actions -->
-				<div class="nav-actions">
-					<!-- Account Menu -->
+				 Navigation Actions 
+				<!-- <div class="nav-actions">
+					Account Menu 
 					<button
 						bind:this={itemElements['account']}
 						class="nav-item {visuallyActiveItem === 'account' ? 'active' : ''}"
@@ -368,7 +368,7 @@
 						{/if}
 					</button>
 
-					<!-- Shopping Cart -->
+					Shopping Cart
 					<a
 						bind:this={itemElements['cart']}
 						href="/cart"
@@ -378,8 +378,8 @@
 						<i class="fas fa-shopping-cart"></i>
 						<span>Cart</span>
 					</a>
-				</div>
-			</div>
+				</div> 
+			</div> -->
 		{/if}
 	</div>
 </nav>
