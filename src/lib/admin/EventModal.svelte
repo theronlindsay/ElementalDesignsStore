@@ -7,6 +7,8 @@
 		description: string;
 		date: Date;
 		location?: string;
+		address?: string;
+		mapsLink?: string;
 		image?: string;
 		link?: string;
 	}
@@ -29,6 +31,8 @@
 		description: '',
         date: new Date().toISOString().split('T')[0],
 		location: '',
+		address: '',
+		mapsLink: '',
 		image: '',
 		link: ''
 	});
@@ -47,6 +51,8 @@
 				description: event.description || '',
 				date: event.date ? new Date(event.date).toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
 				location: event.location || '',
+				address: event.address || '',
+				mapsLink: event.mapsLink || '',
 				image: event.image || '',
 				link: event.link || ''
 			};
@@ -62,6 +68,8 @@
 				description: '',
 				date: new Date().toISOString().split('T')[0],
 				location: '',
+				address: '',
+				mapsLink: '',
 				image: '',
 				link: ''
 			};
@@ -140,6 +148,8 @@
 			description: formData.description,
 			date: formData.date,
 			location: formData.location,
+			address: formData.address,
+			mapsLink: formData.mapsLink,
 			image: formData.image,
 			link: formData.link
 		};
@@ -183,80 +193,101 @@
 						bind:value={formData.description}
 						placeholder="Describe your event..."
 						required
-						class="input textarea"
-						rows="4"
-					></textarea>
+					class="textarea"
+					rows="5"
+				></textarea>
+			</FormGroup>
+			
+			<div class="form-row">
+				<FormGroup>
+					<Label htmlFor="date" required>Event Date</Label>
+					<Input
+						type="date"
+						name="date"
+						bind:value={formData.date}
+						required
+					/>
 				</FormGroup>
-				
-				<div class="form-row">
-					<FormGroup>
-						<Label htmlFor="date" required>Event Date</Label>
-						<Input
-							type="date"
-							name="date"
-							bind:value={formData.date}
-							required
-						/>
-					</FormGroup>
-					
-					<FormGroup>
-						<Label htmlFor="location">Location</Label>
-						<Input
-							type="text"
-							name="location"
-							bind:value={formData.location}
-							placeholder="e.g., Downtown Plaza"
-						/>
-					</FormGroup>
-				</div>
 				
 				<FormGroup>
-					<Label htmlFor="image">Event Image</Label>
-					<div class="image-upload-section">
-						{#if imagePreview}
-							<div class="image-preview">
-								<img src={imagePreview} alt="Event preview" />
-								<button 
-									type="button" 
-									class="clear-image-btn"
-									onclick={clearImage}
-									disabled={isUploading}
-								>
-									<i class="fas fa-trash"></i>
-									Remove Image
-								</button>
-							</div>
-						{:else}
-							<div class="upload-area">
-								<input
-									bind:this={fileInput}
-									type="file"
-									name="image"
-									accept="image/*"
-									onchange={handleFileChange}
-									disabled={isUploading}
-									class="file-input"
-									id="image-upload"
-								/>
-								<label for="image-upload" class="upload-label">
-									<i class="fas fa-cloud-upload-alt"></i>
-									<div>
-										<p class="upload-text">Click to upload or drag and drop</p>
-										<p class="upload-hint">PNG, JPG, GIF up to 5MB</p>
-									</div>
-								</label>
-							</div>
-						{/if}
-						
-						{#if uploadError}
-							<p class="error-message">{uploadError}</p>
-						{/if}
-						
-						{#if isUploading}
-							<p class="uploading-message">Uploading image...</p>
-						{/if}
-					</div>
+					<Label htmlFor="location">Location Name</Label>
+					<Input
+						type="text"
+						name="location"
+						bind:value={formData.location}
+						placeholder="e.g., Downtown Plaza"
+					/>
 				</FormGroup>
+			</div>
+			
+			<!-- Address and Maps Link -->
+			<FormGroup>
+				<Label htmlFor="address">Street Address</Label>
+				<Input
+					type="text"
+					name="address"
+					bind:value={formData.address}
+					placeholder="e.g., 123 Main St, City, State 12345"
+				/>
+			</FormGroup>
+			
+			<FormGroup>
+				<Label htmlFor="mapsLink">Google Maps Link</Label>
+				<Input
+					type="text"
+					name="mapsLink"
+					bind:value={formData.mapsLink}
+					placeholder="https://maps.google.com/..."
+				/>
+			</FormGroup>
+			
+			<FormGroup>
+				<Label htmlFor="image">Event Image</Label>
+				<div class="image-upload-section">
+					{#if imagePreview}
+						<div class="image-preview">
+							<img src={imagePreview} alt="Event preview" />
+							<button 
+								type="button" 
+								class="clear-image-btn"
+								onclick={clearImage}
+								disabled={isUploading}
+							>
+								<i class="fas fa-trash"></i>
+								Remove Image
+							</button>
+						</div>
+					{:else}
+						<div class="upload-area">
+							<input
+								bind:this={fileInput}
+								type="file"
+								name="image"
+								accept="image/*"
+								onchange={handleFileChange}
+								disabled={isUploading}
+								class="file-input"
+								id="image-upload"
+							/>
+							<label for="image-upload" class="upload-label">
+								<i class="fas fa-cloud-upload-alt"></i>
+								<div>
+									<p class="upload-text">Click to upload or drag and drop</p>
+									<p class="upload-hint">PNG, JPG, GIF up to 5MB</p>
+								</div>
+							</label>
+						</div>
+					{/if}
+					
+					{#if uploadError}
+						<p class="error-message">{uploadError}</p>
+					{/if}
+					
+					{#if isUploading}
+						<p class="uploading-message">Uploading image...</p>
+					{/if}
+				</div>
+			</FormGroup>
 				
 				<FormGroup>
 					<Label htmlFor="link">Event Link</Label>
@@ -388,6 +419,7 @@
 		padding: 2rem;
 		display: flex;
 		flex-direction: column;
+		gap: 1.5rem;
 	}
 	
 	.form-row {
@@ -401,9 +433,33 @@
 	}
 	
 	.textarea {
-		resize: vertical;
-		min-height: 100px;
+		width: 100%;
+		padding: 0.75rem 1rem;
+		background: var(--bg-secondary);
+		border: 1px solid var(--border-secondary);
+		border-radius: 12px;
+		color: var(--text-secondary);
+		font-size: 1rem;
+		outline: none;
+		transition: all 0.3s ease;
 		font-family: inherit;
+		resize: vertical;
+		min-height: 120px;
+		line-height: 1.5;
+		
+		&:focus {
+			border-color: var(--accent);
+			box-shadow: 0 0 0 3px rgba(167, 139, 250, 0.1);
+			background: var(--bg-primary);
+		}
+		
+		&::placeholder {
+			color: var(--muted-2);
+		}
+		
+		&:hover:not(:focus) {
+			border-color: var(--border-primary);
+		}
 	}
 	
 	.image-upload-section {

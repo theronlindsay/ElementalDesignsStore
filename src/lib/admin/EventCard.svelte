@@ -5,6 +5,8 @@
 		description: string;
 		date: string;
 		location?: string;
+		address?: string;
+		mapsLink?: string;
 		image?: string;
 		link?: string;
 	}
@@ -64,9 +66,20 @@
 		<p class="event-description">{event.description}</p>
 		
 		{#if event.location}
-			<div class="event-location">
-				<i class="fas fa-map-marker-alt"></i>
-				<span>{event.location}</span>
+			<div class="event-location-section">
+				<div class="event-location" title={event.address}>
+					<i class="fas fa-map-marker-alt"></i>
+					<span>{event.location}</span>
+					{#if event.address}
+						<span class="location-address">{event.address}</span>
+					{/if}
+				</div>
+				{#if event.mapsLink}
+					<a href={event.mapsLink} class="directions-btn" target="_blank" rel="noopener noreferrer" aria-label="Get directions">
+						<i class="fas fa-directions"></i>
+						Directions
+					</a>
+				{/if}
 			</div>
 		{/if}
 		
@@ -186,15 +199,74 @@
 		line-height: 1.6;
 	}
 	
+	.event-location-section {
+		display: flex;
+		align-items: center;
+		gap: 0.75rem;
+		flex-wrap: wrap;
+	}
+	
 	.event-location {
 		display: flex;
 		align-items: center;
 		gap: 0.5rem;
 		color: var(--muted-2);
 		font-size: 0.9rem;
+		position: relative;
+		cursor: help;
 		
 		i {
 			color: var(--accent);
+		}
+	}
+	
+	.location-address {
+		position: absolute;
+		bottom: 100%;
+		left: 0;
+		margin-bottom: 0.5rem;
+		padding: 0.5rem 0.75rem;
+		background: var(--bg-secondary);
+		border: 1px solid var(--border-primary);
+		border-radius: 6px;
+		color: var(--text-secondary);
+		font-size: 0.85rem;
+		white-space: nowrap;
+		opacity: 0;
+		pointer-events: none;
+		transition: opacity 0.2s ease;
+		z-index: 100;
+		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+	}
+	
+	.event-location:hover .location-address {
+		opacity: 1;
+		pointer-events: auto;
+	}
+	
+	.directions-btn {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.5rem;
+		padding: 0.5rem 0.75rem;
+		background: rgba(167, 139, 250, 0.1);
+		border: 1px solid var(--accent);
+		border-radius: 6px;
+		color: var(--accent);
+		text-decoration: none;
+		font-size: 0.85rem;
+		font-weight: 600;
+		cursor: pointer;
+		transition: all 0.2s ease;
+		
+		i {
+			font-size: 0.8rem;
+		}
+		
+		&:hover {
+			background: rgba(167, 139, 250, 0.2);
+			border-color: var(--accent-2);
+			color: var(--accent-2);
 		}
 	}
 	
