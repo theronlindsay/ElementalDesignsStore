@@ -175,6 +175,7 @@
           "listId": "61b0bc6b-7dea-468e-a393-464d8fcc95ba",
           "title": "Custom Order Modal",
           "description": "Develop a Modal that will collect an Email or phone number to automatically email elementalchaindesigns@gmail.com",
+          "dueDate": "2026-01-28T21:43:00.000Z",
           "labels": [
             {
               "id": "161d00dd-61cb-46e4-bfed-a1f5dc0a5362",
@@ -183,24 +184,12 @@
             }
           ],
           "checkboxes": [],
-          "comments": [],
-          "dueDate": "2026-01-28T21:43:00.000Z"
-        },
-        {
-          "id": "470fd32c-7457-43b6-b1da-5a9a85f0664f",
-          "listId": "61b0bc6b-7dea-468e-a393-464d8fcc95ba",
-          "title": "Add a Section to make Custom Orders on the about page",
-          "description": "",
-          "labels": [
+          "comments": [
             {
-              "id": "9283b76f-b2ac-4a32-a6f8-0a640a161baf",
-              "title": "Grace",
-              "color": "#c377e0"
+              "id": "601e158d-ae5f-4476-9f21-21aa7871639e",
+              "comment": "Ask for name, email, and request box.\n\nAllow uploading referrence images. (Example is in EventModal.svelet)\n\nSend requests to: \nelementalchaindesigns@gmail.com"
             }
-          ],
-          "checkboxes": [],
-          "comments": [],
-          "dueDate": "2026-01-26T21:43:00.000Z"
+          ]
         },
         {
           "id": "79815b41-027d-4e42-beb2-cf41f53e8654",
@@ -228,6 +217,7 @@
           "listId": "61b0bc6b-7dea-468e-a393-464d8fcc95ba",
           "title": "Add a testamonial section that shows on the home page and can be edited from the admin panel",
           "description": "",
+          "dueDate": "2026-01-26T21:43:00.000Z",
           "labels": [
             {
               "id": "161d00dd-61cb-46e4-bfed-a1f5dc0a5362",
@@ -241,8 +231,12 @@
             }
           ],
           "checkboxes": [],
-          "comments": [],
-          "dueDate": "2026-01-26T21:43:00.000Z"
+          "comments": [
+            {
+              "id": "e483f4fd-17c3-4d6b-b2ff-2bd2de1ed6a1",
+              "comment": "Referrences to how this can be done can be found in EventModal.svelte and +page.server.ts in the /routes/admin/events folder."
+            }
+          ]
         },
         {
           "id": "9f99fa9d-f2c3-4f1a-bf9e-af058e447f50",
@@ -281,6 +275,22 @@
               "id": "b9d41b27-c554-4b44-9a6c-6ff30dfe7aab",
               "title": "Theron",
               "color": "#00c2e0"
+            }
+          ],
+          "checkboxes": [],
+          "comments": []
+        },
+        {
+          "id": "470fd32c-7457-43b6-b1da-5a9a85f0664f",
+          "listId": "89f342e9-a12f-4ad7-8f8f-77bee9d11c03",
+          "title": "Add a Section to make Custom Orders on the about page",
+          "description": "",
+          "dueDate": "2026-01-26T21:43:00.000Z",
+          "labels": [
+            {
+              "id": "9283b76f-b2ac-4a32-a6f8-0a640a161baf",
+              "title": "Grace",
+              "color": "#c377e0"
             }
           ],
           "checkboxes": [],
