@@ -1,11 +1,15 @@
 <script lang="ts">
 	import { EventCard, CategoryGrid } from '$lib';
+	import OrderModal from '$lib/common/OrderModal.svelte';
 	import type { PageData } from './$types';
 
 	let { data }: { data: PageData } = $props();
 	
 	// Load events from server
 	let events = $state(data.events || []);
+	
+	// Order modal state
+	let showOrderModal = $state(false);
 	
 	// Print events on page load
 	$effect(() => {
@@ -19,6 +23,26 @@
 			.sort((a: any, b: any) => new Date(a.date).getTime() - new Date(b.date).getTime())
 			.slice(0, 3) // Show max 3 events on homepage
 	);
+	
+	// Handle order submission
+	function handleOrderSubmit(orderData: any) {
+		console.log('Order submitted:', orderData);
+		
+		// TODO: Send order data to server
+		// For now, just close the modal and show a success message
+		showOrderModal = false;
+		alert('Thank you for your order request! We will contact you soon at ' + orderData.email);
+	}
+	
+	// Open order modal
+	function openOrderModal() {
+		showOrderModal = true;
+	}
+	
+	// Close order modal
+	function closeOrderModal() {
+		showOrderModal = false;
+	}
 </script>
     
 <!-- Hero Section -->
@@ -83,8 +107,9 @@
 			<h2>Custom orders</h2>
 			<p>Have something specific in mind? We create custom chainmail and laser-engraved pieces tailored to your vision. From personalized jewelry to unique gifts.</p>
 			
+			
 			<div class="custom-actions">
-				<button class="btn-custom">Start a custom request</button>
+				<button class="btn-custom" onclick={openOrderModal}>Start a custom request</button>
 				<button class="btn-past-work">See past work</button>
 			</div>
 		</section>
@@ -98,5 +123,11 @@
 		</section>
 	</div>
 </div>
+
+<OrderModal
+	isOpen={showOrderModal}
+	onSave={handleOrderSubmit}
+	onCancel={closeOrderModal}
+	/>
 
 
