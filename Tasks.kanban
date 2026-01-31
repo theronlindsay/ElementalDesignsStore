@@ -171,48 +171,6 @@
       "title": "Priority",
       "cards": [
         {
-          "id": "41f892bb-2ddb-4ac6-babc-e7a132d3cef6",
-          "listId": "61b0bc6b-7dea-468e-a393-464d8fcc95ba",
-          "title": "Custom Order Modal",
-          "description": "Develop a Modal that will collect an Email or phone number to automatically email elementalchaindesigns@gmail.com",
-          "dueDate": "2026-01-28T21:43:00.000Z",
-          "labels": [
-            {
-              "id": "161d00dd-61cb-46e4-bfed-a1f5dc0a5362",
-              "title": "Lukas",
-              "color": "#61bd4f"
-            }
-          ],
-          "checkboxes": [],
-          "comments": [
-            {
-              "id": "601e158d-ae5f-4476-9f21-21aa7871639e",
-              "comment": "Ask for name, email, and request box.\n\nAllow uploading referrence images. (Example is in EventModal.svelet)\n\nSend requests to: \nelementalchaindesigns@gmail.com"
-            }
-          ]
-        },
-        {
-          "id": "79815b41-027d-4e42-beb2-cf41f53e8654",
-          "listId": "61b0bc6b-7dea-468e-a393-464d8fcc95ba",
-          "title": "Allow Dragging Images into Event Modal",
-          "description": "",
-          "dueDate": "2026-01-30T21:43:00.000Z",
-          "labels": [
-            {
-              "id": "d5e814d3-5d4e-4fc7-bc76-ebe773a936ac",
-              "title": "Jerry",
-              "color": "#eb5a46"
-            },
-            {
-              "id": "b9d41b27-c554-4b44-9a6c-6ff30dfe7aab",
-              "title": "Theron",
-              "color": "#00c2e0"
-            }
-          ],
-          "checkboxes": [],
-          "comments": []
-        },
-        {
           "id": "b97fd52b-0dc7-46a9-927a-668aa680d8b3",
           "listId": "61b0bc6b-7dea-468e-a393-464d8fcc95ba",
           "title": "Add a testamonial section that shows on the home page and can be edited from the admin panel",
@@ -259,7 +217,29 @@
     {
       "id": "14eb3634-a79b-44c2-a864-4153b621f427",
       "title": "In Progress",
-      "cards": []
+      "cards": [
+        {
+          "id": "41f892bb-2ddb-4ac6-babc-e7a132d3cef6",
+          "listId": "14eb3634-a79b-44c2-a864-4153b621f427",
+          "title": "Custom Order Modal",
+          "description": "Develop a Modal that will collect an Email or phone number to automatically email elementalchaindesigns@gmail.com",
+          "dueDate": "2026-01-28T21:43:00.000Z",
+          "labels": [
+            {
+              "id": "161d00dd-61cb-46e4-bfed-a1f5dc0a5362",
+              "title": "Lukas",
+              "color": "#61bd4f"
+            }
+          ],
+          "checkboxes": [],
+          "comments": [
+            {
+              "id": "601e158d-ae5f-4476-9f21-21aa7871639e",
+              "comment": "Ask for name, email, and request box.\n\nAllow uploading referrence images. (Example is in EventModal.svelet)\n\nSend requests to: \nelementalchaindesigns@gmail.com"
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "89f342e9-a12f-4ad7-8f8f-77bee9d11c03",
@@ -271,6 +251,27 @@
           "title": "Make event locations allow a Google Maps Link",
           "description": "",
           "labels": [
+            {
+              "id": "b9d41b27-c554-4b44-9a6c-6ff30dfe7aab",
+              "title": "Theron",
+              "color": "#00c2e0"
+            }
+          ],
+          "checkboxes": [],
+          "comments": []
+        },
+        {
+          "id": "79815b41-027d-4e42-beb2-cf41f53e8654",
+          "listId": "89f342e9-a12f-4ad7-8f8f-77bee9d11c03",
+          "title": "Allow Dragging Images into Event Modal",
+          "description": "",
+          "dueDate": "2026-01-30T21:43:00.000Z",
+          "labels": [
+            {
+              "id": "d5e814d3-5d4e-4fc7-bc76-ebe773a936ac",
+              "title": "Jerry",
+              "color": "#eb5a46"
+            },
             {
               "id": "b9d41b27-c554-4b44-9a6c-6ff30dfe7aab",
               "title": "Theron",
