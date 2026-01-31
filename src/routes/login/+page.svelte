@@ -92,11 +92,10 @@
 	.login-page {
 		min-height: 100vh;
 		display: flex;
-		align-items: center;
 		justify-content: center;
 		padding: 2rem;
 		margin-top: -1rem;
-		background: var(--bg-primary);
+		background: linear-gradient(135deg, #1a1625 0%, #2a2438 100%);
 	}
 	
 	.login-container {
@@ -109,7 +108,6 @@
 	
 	.login-card {
 		padding: 3rem;
-		width: 100%;
 	}
 	
 	.login-header {

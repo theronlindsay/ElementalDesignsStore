@@ -9,5 +9,6 @@
 <style lang="scss">
 	.form-group {
 		margin-bottom: 1.5rem;
+		width: 100%;
 	}
 </style>

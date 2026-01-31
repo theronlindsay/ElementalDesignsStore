@@ -24,7 +24,7 @@
 
 <style lang="scss">
 	.input {
-		width: 100%;
+		width: -webkit-fill-available;	
 		padding: 0.75rem 1rem;
 		background: var(--bg-secondary);
 		border: 1px solid var(--border-secondary);
