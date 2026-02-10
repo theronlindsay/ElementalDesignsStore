@@ -41,6 +41,7 @@
 	},
 	"dependencies": {
 		"@fortawesome/fontawesome-free": "^7.1.0",
+		"@sveltejs/adapter-node": "^5.5.2",
 		"square": "^43.2.0"
 	}
 }
