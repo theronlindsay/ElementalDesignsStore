@@ -11,6 +11,7 @@
 		{ href: '/admin/orders', icon: 'fa-shopping-bag', label: 'Orders' },
 		{ href: '/admin/customers', icon: 'fa-users', label: 'Customers' },
 		{ href: '/admin/events', icon: 'fa-calendar-alt', label: 'Events' },
+		{ href: '/admin/testimonials', icon: 'fa-start-alt', label: 'Testimonials'},
 		{ href: '/admin/coupons', icon: 'fa-ticket-alt', label: 'Coupons' },
 		{ href: '/admin/settings', icon: 'fa-cog', label: 'Settings' }
 	];

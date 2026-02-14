@@ -19,6 +19,8 @@ export { default as EmptyCart } from './cart/EmptyCart.svelte';
 export { default as AdminSidebar } from './admin/AdminSidebar.svelte';
 export { default as EventCard } from './admin/EventCard.svelte';
 export { default as EventModal } from './admin/EventModal.svelte';
+export { default as TestimonialCard } from './admin/TestimonialCard.svelte';
+export { default as TestimonialModal } from './admin/TestimonialModal.svelte';
 
 // You can also re-export specific things if needed:
 // export { someFunction } from './utils.js';

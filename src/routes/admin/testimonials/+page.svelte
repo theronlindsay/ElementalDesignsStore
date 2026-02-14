@@ -1,12 +1,11 @@
 <script lang="ts">
-import { EventCard, EventModal } from '$lib';
-import type { PageData } from './$types';
-import { onMount } from 'svelte';
+import { TestimonialCard, TestimonialModal } from '$lib';
 
-export let data: PageData;
 
-// Load initial events from server
-let events: any[] = data.events || [];
+export let data: any;
+
+// Load initial testimonials from server
+let testimonials: any[] = data.testimonials || [];
 
 // Modal state
 let isModalOpen = false;
@@ -20,9 +19,9 @@ function openAddModal() {
 }
 
 function openEditModal(id: string) {
-	const event = events.find((e: any) => e.id === id || e._id === id);
-	if (event) {
-		editingEvent = { ...event };
+	const testimonial = testimonials.find((e: any) => e.id === id || e._id === id);
+	if (testimonial) {
+		editingEvent = { ...testimonial };
 		isModalOpen = true;
 	}
 }
@@ -32,45 +31,45 @@ function closeModal() {
 	editingEvent = null;
 }
 
-async function handleSave(eventData: any) {
+async function handleSave(testamonialData: any) {
 	isSaving = true;
 	try {
-		const response = await fetch('/admin/events', {
+		const response = await fetch('/admin/testimonials', {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json'
 			},
-			body: JSON.stringify(eventData)
+			body: JSON.stringify(testamonialData)
 		});
 
 		if (!response.ok) {
-			throw new Error('Failed to save event');
+			throw new Error('Failed to save testimonial');
 		}
 
 		const result = await response.json();
 
 		if (editingEvent) {
-			// Update existing event
-			events = events.map((e: any) => (e.id === eventData.id || e._id === eventData._id) ? eventData : e);
+			// Update existing testimonial
+			testimonials = testimonials.map((e: any) => (e.id === testamonialData.id || e._id === testamonialData._id) ? testamonialData : e);
 		} else {
-			// Add new event
-			events = [...events, eventData];
+			// Add new testimonial
+			testimonials = [...testimonials, testamonialData];
 		}
 		closeModal();
 	} catch (error) {
-		console.error('Error saving event:', error);
-		alert('Failed to save event. Please try again.');
+		console.error('Error saving testimonial:', error);
+		alert('Failed to save testimonial. Please try again.');
 	} finally {
 		isSaving = false;
 	}
 }
 
 async function handleDelete(id: string) {
-	if (!confirm('Are you sure you want to delete this event?')) return;
+	if (!confirm('Are you sure you want to delete this testimonial?')) return;
 
 	isDeleting = true;
 	try {
-		const response = await fetch('/admin/events', {
+		const response = await fetch('/admin/testimonials', {
 			method: 'DELETE',
 			headers: {
 				'Content-Type': 'application/json'
@@ -79,55 +78,55 @@ async function handleDelete(id: string) {
 		});
 
 		if (!response.ok) {
-			throw new Error('Failed to delete event');
+			throw new Error('Failed to delete testimonial');
 		}
 
-		events = events.filter((e: any) => e.id !== id && e._id !== id);
+		testimonials = testimonials.filter((e: any) => e.id !== id && e._id !== id);
 	} catch (error) {
-		console.error('Error deleting event:', error);
-		alert('Failed to delete event. Please try again.');
+		console.error('Error deleting testimonial:', error);
+		alert('Failed to delete testimonial. Please try again.');
 	} finally {
 		isDeleting = false;
 	}
 }
 
-$: upcomingEvents = events
+$: upcomingtestamonials = testimonials
 	.filter((e: any) => new Date(e.date) >= new Date())
 	.sort((a: any, b: any) => new Date(a.date).getTime() - new Date(b.date).getTime());
 
-$: pastEvents = events
+$: pasttestamonials = testimonials
 	.filter((e: any) => new Date(e.date) < new Date())
 	.sort((a: any, b: any) => new Date(b.date).getTime() - new Date(a.date).getTime());
 </script>
 
 <svelte:head>
-	<title>Events - Admin</title>
+	<title>testimonials - Admin</title>
 </svelte:head>
 
-<div class="events-page">
+<div class="testimonials-page">
 	<!-- Page Header -->
 	<div class="page-header">
 		<div class="header-left">
-			<h2 class="page-subtitle">Manage events displayed on your homepage</h2>
+			<h2 class="page-subtitle">Manage testimonials displayed on your homepage</h2>
 		</div>
 		<button class="btn-primary" onclick={openAddModal}>
 			<i class="fas fa-plus"></i>
-			Add Event
+			Add Testimonial
 		</button>
 	</div>
 	
-	<!-- Upcoming Events -->
-	<section class="events-section">
+	<!-- Upcoming testimonials -->
+	<section class="testimonials-section">
 		<h3 class="section-title">
 			<i class="fas fa-calendar-check"></i>
-			Upcoming Events ({upcomingEvents.length})
+			Upcoming testimonials ({upcomingtestamonials.length})
 		</h3>
 		
-		{#if upcomingEvents.length > 0}
-			<div class="events-grid">
-				{#each upcomingEvents as event (event.id)}
-					<EventCard 
-						{event}
+		{#if upcomingtestamonials.length > 0}
+			<div class="testimonials-grid">
+				{#each upcomingtestamonials as testimonial (testimonial.id)}
+					<TestimonialCard
+						{testimonial}
 						editable={true}
 						onEdit={openEditModal}
 						onDelete={handleDelete}
@@ -137,26 +136,26 @@ $: pastEvents = events
 		{:else}
 			<div class="empty-state theme-glass">
 				<i class="fas fa-calendar-plus"></i>
-				<p>No upcoming events</p>
+				<p>No upcoming testimonials</p>
 				<button class="add-first-btn" onclick={openAddModal}>
-					Add Your First Event
+					Add Your First Testimonial
 				</button>
 			</div>
 		{/if}
 	</section>
 	
-	<!-- Past Events -->
-	{#if pastEvents.length > 0}
-		<section class="events-section">
+	<!-- Past testimonials -->
+	{#if pasttestamonials.length > 0}
+		<section class="testimonials-section">
 			<h3 class="section-title">
 				<i class="fas fa-history"></i>
-				Past Events ({pastEvents.length})
+				Past testimonials ({pasttestamonials.length})
 			</h3>
 			
-			<div class="events-grid">
-				{#each pastEvents as event (event.id)}
-					<EventCard 
-						{event}
+			<div class="testimonials-grid">
+				{#each pasttestamonials as testimonial (testimonial.id)}
+					<TestimonialCard
+						{testimonial}
 						editable={true}
 						onEdit={openEditModal}
 						onDelete={handleDelete}
@@ -167,16 +166,16 @@ $: pastEvents = events
 	{/if}
 </div>
 
-<!-- Event Modal -->
-<EventModal 
+<!-- Testimonial Modal -->
+<TestimonialModal 
 	isOpen={isModalOpen}
-	event={editingEvent}
+	testimonial={editingEvent}
 	onSave={handleSave}
 	onCancel={closeModal}
 />
 
 <style lang="scss">
-	.events-page {
+	.testimonials-page {
 		width: 100%;
 	}
 	
@@ -220,7 +219,7 @@ $: pastEvents = events
 		}
 	}
 	
-	.events-section {
+	.testimonials-section {
 		margin-bottom: 3rem;
 	}
 	
@@ -238,7 +237,7 @@ $: pastEvents = events
 		}
 	}
 	
-	.events-grid {
+	.testimonials-grid {
 		display: grid;
 		grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
 		gap: 1.5rem;
@@ -282,7 +281,7 @@ $: pastEvents = events
 	}
 	
 	@media (max-width: 768px) {
-		.events-grid {
+		.testimonials-grid {
 			grid-template-columns: 1fr;
 		}
 	}

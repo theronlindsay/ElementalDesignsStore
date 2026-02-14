@@ -3,7 +3,7 @@ import { getCollection } from '$lib/mongo';
 
 export const load: PageServerLoad = async () => {
 	try {
-		const collection = await getCollection('Events');
+		const collection = await getCollection("Testimonials");
 		const events = await collection.find({}).toArray();
 		// Convert _id to string for serialization
 		const serializableEvents = events.map((event) => ({

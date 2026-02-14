@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { derived } from 'svelte/store';
 	import { EventCard, CategoryGrid } from '$lib';
 	import OrderModal from '$lib/common/OrderModal.svelte';
 	import type { PageData } from './$types';
@@ -8,6 +9,18 @@
 	
 	// Load events from server
 	let events = $state(data.events || []);
+
+	interface Event {
+		id: string;
+		title: string;
+		description: string;
+		date: string;
+		location?: string;
+		address?: string;
+		mapsLink?: string;
+		image?: string;
+		link?: string;
+	}
 	
 	// Order modal state
 	let showOrderModal = $state(false);
@@ -18,12 +31,12 @@
 	});
 	
 	// Filter for upcoming events only
-	let upcomingEvents = $derived(
-		events
-			.filter((e: any) => new Date(e.date) >= new Date())
-			.sort((a: any, b: any) => new Date(a.date).getTime() - new Date(b.date).getTime())
-			.slice(0, 3) // Show max 3 events on homepage
-	);
+
+	// Compute upcoming events reactively
+	$: upcomingEvents = (events || [])
+		.filter((e: Event) => new Date(e.date) >= new Date())
+		.sort((a: Event, b: Event) => new Date(a.date).getTime() - new Date(b.date).getTime())
+		.slice(0, 3);
 	
 	// Handle order submission
 	function handleOrderSubmit(orderData: any) {
@@ -88,12 +101,12 @@
 	<section class="events-section" id="events-schedule">
 		<h3>Upcoming Events</h3>
 		
-		{#if upcomingEvents.length > 0}
-			<div class="events-list">
-				{#each upcomingEvents as event (event.id)}
-					<EventCard {event} editable={false} />
-				{/each}
-			</div>
+		   {#if $upcomingEvents.length > 0}
+			   <div class="events-list">
+				   {#each $upcomingEvents as event (event.id)}
+					   <EventCard {event} editable={false} />
+				   {/each}
+			   </div>
 		{:else}
 			<div class="no-events">
 				<p>No upcoming events at this time. Check back soon!</p>
