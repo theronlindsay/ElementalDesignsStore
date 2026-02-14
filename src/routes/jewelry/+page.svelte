@@ -1,22 +1,22 @@
-<script lang="ts">
+<script>
 	//importing PageData library
-	import type { PageData } from './$types';
+
 	import { cart } from '$lib/cart/cartStore';
 	// this is saying, let data
 	// Destructures 'data' from props and uses TypeScript to assert that the props object contains a 'data' property of type PageData
-	let { data }: { data: PageData } = $props();
+	let { data } = $props();
 	
 	// Filter state
 	let selectedType = $state('All');
 	let minPrice = $state(0);
 	let maxPrice = $state(999999);
 	let minRating = $state(0);
-	let sortBy = $state<'name' | 'price-low' | 'price-high' | 'rating'>('name');
+	let sortBy = $state('name');
 	let showFilters = $state(true);
 	
 	// Mock function to extract price from Square item
 	// You'll need to adjust this based on actual Square item structure
-	function getItemPrice(item: any): number {
+	function getItemPrice(item) {
 		try {
 			// Square items have variations with pricing
 			const variation = item.itemData?.variations?.[0];
@@ -28,7 +28,7 @@
 	}
 	
 	// Mock function to get item rating (you may need to store this separately)
-	function getItemRating(item: any): number {
+	function getItemRating(item) {
 		// This would come from your own database or custom attributes
 		// For now, returning a placeholder
 		return item.customAttributeValues?.rating?.numberValue || 0;
@@ -36,7 +36,7 @@
 	
 	// Function to get jewelry type from item
 	// Pass categories to look up the actual category name
-	function getJewelryType(item: any, categories: any[] = []): string {
+	function getJewelryType(item, categories = []) {
 		// First, try to get the actual category from Square
 		const categoryId = item.itemData?.categoryId;
 		
@@ -55,7 +55,7 @@
 		}
 		
 		if (categoryId && categories.length > 0) {
-			const category = categories.find((cat: any) => cat.id === categoryId);
+			const category = categories.find((cat) => cat.id === categoryId);
 			console.log('Found category match:', category?.categoryData?.name || 'NOT FOUND');
 			
 			if (category?.categoryData?.name) {
@@ -99,10 +99,10 @@
 	});
 	
 	// Function to filter items from resolved data
-	function filterItems(items: any[], categories: any[] = []) {
+	function filterItems(items, categories = []) {
 		if (!items || items.length === 0) return [];
 		
-		let filtered = items.filter((item: any) => {
+		let filtered = items.filter((item) => {
 			// Ensure item is actually a catalog ITEM type (not IMAGE or other types)
 			if (item.type !== 'ITEM') {
 				console.log('Filtering out non-ITEM:', item.type, item.id);
@@ -126,7 +126,7 @@
 		});
 		
 		// Sort items
-		filtered.sort((a: any, b: any) => {
+		filtered.sort((a, b) => {
 			switch (sortBy) {
 				case 'name':
 					return (a.itemData?.name || '').localeCompare(b.itemData?.name || '');
@@ -144,7 +144,7 @@
 		return filtered;
 	}
 	
-	function formatPrice(price: number): string {
+	function formatPrice(price) {
 		return `$${price.toFixed(2)}`;
 	}
 	
@@ -182,7 +182,7 @@
 					<h3>Jewelry Type</h3>
 					<div class="type-filters">
 						{#await data.itemsPromise then itemsData}
-							{@const categoryNames = (itemsData.categories || []).map((cat: any) => cat.categoryData?.name).filter(Boolean)}
+							{@const categoryNames = (itemsData.categories || []).map((cat) => cat.categoryData?.name).filter(Boolean)}
 							{@const jewelryTypes = ['All', ...categoryNames]}
 							{#each jewelryTypes as type}
 								<button 
@@ -301,7 +301,7 @@
 				{:else}
 					<div class="jewelry-grid">
 						{#each filtered as item (item.id)}
-							{@const itemData = (item as any).itemData || {}}
+							{@const itemData = item.itemData || {}}
 							{@const itemPrice = getItemPrice(item)}
 							{@const itemRating = getItemRating(item)}
 							{@const itemType = getJewelryType(item, itemsData.categories)}

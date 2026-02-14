@@ -1,4 +1,4 @@
-<script lang="ts">
+<script>
 	import { AdminSidebar } from '$lib';
 	import { enhance } from '$app/forms';
 	import { Button } from '$lib';

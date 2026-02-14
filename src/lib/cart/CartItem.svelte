@@ -1,18 +1,7 @@
-<script lang="ts">
+<script>
 	import { Button } from '$lib';
 	
-	let { item, onUpdateQuantity, onRemove } = $props<{
-		item: {
-			id: string;
-			name: string;
-			price: number;
-			quantity: number;
-			image?: string;
-			variant?: string;
-		};
-		onUpdateQuantity: (id: string, quantity: number) => void;
-		onRemove: (id: string, quantity: number) => void;
-	}>();
+	let { item, onUpdateQuantity, onRemove } = $props();
 	
 	let subtotal = $derived(item.price * item.quantity);
 	

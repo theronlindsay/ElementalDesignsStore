@@ -1,4 +1,4 @@
-<script lang="ts">
+<script>
 	import { onMount } from 'svelte';
 	import { page } from '$app/stores';
 	// import '../app.scss';
@@ -17,10 +17,10 @@
 	] } = $props();
 
 	let activeItem = items.find(item => item.active)?.id || items[0]?.id;
-	let visuallyActiveItem = $state<string | null>(activeItem); // Separate state for visual boldness
-	let selectorElement = $state<HTMLDivElement | null>(null);
-	let navElement: HTMLElement;
-	let itemElements = $state<{ [key: string]: HTMLElement }>({});
+	let visuallyActiveItem = $state(activeItem); // Separate state for visual boldness
+	let selectorElement = $state(null);
+	let navElement;
+	let itemElements = $state({});
 	
 	// Add state for dropdown menus
 	let showAccountMenu = $state(false);
@@ -45,7 +45,7 @@
 		const currentHash = $page.url.hash;
 		
 		// Find matching item based on path and hash
-		let matchedItemId: string | null = null;
+		let matchedItemId = null;
 		
 		// Special case: if on /search with a query, don't highlight any nav item
 		const isSearchWithQuery = currentPath === '/search' && $page.url.searchParams.has('q');
@@ -83,7 +83,7 @@
 			}));
 			
 			// Move selector
-			setTimeout(() => moveSelector(matchedItemId!), 50);
+			setTimeout(() => moveSelector(matchedItemId), 50);
 		} else if (!matchedItemId && !isSearchWithQuery && visuallyActiveItem !== null) {
 			// Clear active item only if not on search page and something was previously selected
 			visuallyActiveItem = null;
@@ -117,7 +117,7 @@
 	}
 	
 	// Handle search submit
-	function handleSearch(event?: Event) {
+	function handleSearch(event) {
 		if (event) event.preventDefault();
 		
 		const trimmedQuery = searchInput.trim();
@@ -128,14 +128,14 @@
 	}
 	
 	// Handle search input keypress
-	function handleSearchKeypress(event: KeyboardEvent) {
+	function handleSearchKeypress(event) {
 		if (event.key === 'Enter') {
 			handleSearch();
 		}
 	}
 
 	// Function to move the selector to the active item
-	function moveSelector(targetId: string) {
+	function moveSelector(targetId) {
 		if (!selectorElement || !itemElements[targetId]) return;
 
 		const targetElement = itemElements[targetId];
@@ -155,7 +155,7 @@
 	}
 
 	// Handle item click
-	function handleItemClick(itemId: string) {
+	function handleItemClick(itemId) {
 		activeItem = itemId;
 		moveSelector(itemId);
 		
@@ -196,7 +196,7 @@
 			
 			// Update selector position if we have an active item
 			if (visuallyActiveItem !== null) {
-				setTimeout(() => moveSelector(visuallyActiveItem!), 100);
+				setTimeout(() => moveSelector(visuallyActiveItem), 100);
 			}
 		};
 		

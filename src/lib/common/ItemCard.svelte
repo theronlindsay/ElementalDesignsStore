@@ -1,18 +1,9 @@
-<script lang="ts">
+<script>
 	import { cart } from '$lib/cart/cartStore';
 
-	interface Props {
-		item: any;
-		itemData: any;
-		itemPrice: number;
-		itemRating: number;
-		itemType: string;
-		formatPrice: (price: number) => string;
-	}
+	let { item, itemData, itemPrice, itemRating, itemType, formatPrice } = $props();
 
-	let { item, itemData, itemPrice, itemRating, itemType, formatPrice }: Props = $props();
-
-	function handleAddToCart(e: MouseEvent) {
+	function handleAddToCart(e) {
 		e.preventDefault();
 		e.stopPropagation();
 		console.log('--- ADD TO CART CLICKED ---');

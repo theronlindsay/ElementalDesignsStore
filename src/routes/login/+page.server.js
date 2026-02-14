@@ -1,6 +1,6 @@
 import { fail, redirect } from '@sveltejs/kit';
-import type { Actions } from './$types';
 
+/** @type {import('./$types').Actions} */
 export const actions = {
 	default: async ({ request, cookies }) => {
 		const data = await request.formData();
@@ -30,4 +30,4 @@ export const actions = {
 		
 		return fail(401, { incorrect: true });
 	}
-} satisfies Actions;
+};

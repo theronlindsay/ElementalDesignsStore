@@ -1,4 +1,4 @@
-<script lang="ts">
+<script>
 	// TODO: Load orders from server
 	const orders = [
 		{
@@ -24,7 +24,7 @@
 		}
 	];
 
-	function getStatusColor(status: string): string {
+	function getStatusColor(status) {
 		switch (status) {
 			case 'Delivered':
 				return 'delivered';

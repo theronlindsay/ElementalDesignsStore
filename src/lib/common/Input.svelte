@@ -1,13 +1,11 @@
-<script lang="ts">
-	import type { HTMLInputAttributes } from 'svelte/elements';
-	
-	export let type: 'date' | 'text' | 'password' | 'email' | 'number' = 'text';
-	export let name: string;
-	export let placeholder: string = '';
-	export let value: string = '';
-	export let required: boolean = false;
-	export let ariaLabel: string | undefined = undefined;
-	export let autocomplete: HTMLInputAttributes['autocomplete'] = undefined;
+<script>
+	export let type = 'text';
+	export let name;
+	export let placeholder = '';
+	export let value = '';
+	export let required = false;
+	export let ariaLabel = undefined;
+	export let autocomplete = undefined;
 </script>
 
 <input

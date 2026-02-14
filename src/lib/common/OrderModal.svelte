@@ -1,21 +1,10 @@
-<script lang="ts">
+<script>
 	import { Button, Input, Label, FormGroup } from '$lib';
-	
-	interface OrderData {
-		name: string;
-		email: string;
-		request: string;
-		referenceImages: string[];
-	}
 	
 	let {
 		isOpen = false,
 		onSave,
 		onCancel
-	}: {
-		isOpen?: boolean;
-		onSave: (order: OrderData) => void;
-		onCancel: () => void;
 	} = $props();
 	
 	// Form state
@@ -26,12 +15,12 @@
 	});
 	
 	// UI state
-	let referenceImages = $state<string[]>([]);
-	let imagePreview = $state<{ [key: number]: string }>({});
+	let referenceImages = $state([]);
+	let imagePreview = $state({});
 	let isUploading = $state(false);
-	let uploadError = $state<string | null>(null);
-	let fileInput = $state<HTMLInputElement | undefined>(undefined);
-	let uploadedFiles = $state<File[]>([]);
+	let uploadError = $state(null);
+	let fileInput = $state(undefined);
+	let uploadedFiles = $state([]);
 	
 	// Reset form when modal closes
 	$effect(() => {
@@ -49,14 +38,14 @@
 	});
 	
 	// Handle file selection and upload
-	async function handleFileChange(e: Event) {
-		const target = e.target as HTMLInputElement;
+	async function handleFileChange(e) {
+		const target = e.target;
 		const files = Array.from(target.files || []);
 		
 		if (files.length === 0) return;
 		
 		// Validate and process each file
-		const validFiles: File[] = [];
+		const validFiles = [];
 		for (const file of files) {
 			// Validate file type
 			if (!file.type.startsWith('image/')) {
@@ -84,7 +73,7 @@
 			const reader = new FileReader();
 			reader.onload = (event) => {
 				const index = referenceImages.length + i;
-				imagePreview[index] = event.target?.result as string;
+				imagePreview[index] = event.target?.result;
 			};
 			reader.readAsDataURL(file);
 		}
@@ -100,10 +89,10 @@
 	}
 	
 	// Remove a reference image
-	function removeImage(index: number) {
+	function removeImage(index) {
 		uploadedFiles = uploadedFiles.filter((_, i) => i !== index);
 		referenceImages = referenceImages.filter((_, i) => i !== index);
-		const newPreview: { [key: number]: string } = {};
+		const newPreview = {};
 		Object.entries(imagePreview).forEach(([key, value]) => {
 			const keyNum = parseInt(key);
 			if (keyNum < index) {
@@ -115,11 +104,11 @@
 		imagePreview = newPreview;
 	}
 	
-	async function handleSubmit(e: Event) {
+	async function handleSubmit(e) {
 		e.preventDefault();
 		
 		// Upload images if there are any
-		let uploadedImagePaths: string[] = [];
+		let uploadedImagePaths = [];
 		
 		if (uploadedFiles.length > 0) {
 			isUploading = true;
@@ -151,7 +140,7 @@
 			isUploading = false;
 		}
 		
-		const orderData: OrderData = {
+		const orderData = {
 			name: formData.name,
 			email: formData.email,
 			request: formData.request,

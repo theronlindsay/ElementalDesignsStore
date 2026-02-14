@@ -1,6 +1,6 @@
-<script lang="ts">
-	export let htmlFor: string;
-	export let required: boolean = false;
+<script>
+	export let htmlFor;
+	export let required = false;
 </script>
 
 <label for={htmlFor} class="label">

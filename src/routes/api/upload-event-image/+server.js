@@ -1,5 +1,4 @@
 import { json, error } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
 import { writeFileSync, mkdirSync } from 'fs';
 import { join } from 'path';
 import { cwd } from 'process';
@@ -16,15 +15,16 @@ function ensureDataDir() {
 }
 
 // Generate unique filename
-function generateFilename(): string {
+function generateFilename() {
 	return `event-${Date.now()}-${Math.random().toString(36).substr(2, 9)}.webp`;
 }
 
-export const POST: RequestHandler = async ({ request }) => {
+/** @type {import('./$types').RequestHandler} */
+export const POST = async ({ request }) => {
 	try {
 		// Get the uploaded file
 		const formData = await request.formData();
-		const file = formData.get('file') as File;
+		const file = formData.get('file');
 
 		if (!file) {
 			throw error(400, 'No file provided');

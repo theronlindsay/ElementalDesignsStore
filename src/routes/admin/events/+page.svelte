@@ -1,16 +1,16 @@
-<script lang="ts">
+<script>
 import { EventCard, EventModal } from '$lib';
-import type { PageData } from './$types';
+
 import { onMount } from 'svelte';
 
-export let data: PageData;
+export let data;
 
 // Load initial events from server
-let events: any[] = data.events || [];
+let events = data.events || [];
 
 // Modal state
 let isModalOpen = false;
-let editingEvent: any = null;
+let editingEvent = null;
 let isSaving = false;
 let isDeleting = false;
 
@@ -19,8 +19,8 @@ function openAddModal() {
 	isModalOpen = true;
 }
 
-function openEditModal(id: string) {
-	const event = events.find((e: any) => e.id === id || e._id === id);
+function openEditModal(id) {
+	const event = events.find((e) => e.id === id || e._id === id);
 	if (event) {
 		editingEvent = { ...event };
 		isModalOpen = true;
@@ -32,7 +32,7 @@ function closeModal() {
 	editingEvent = null;
 }
 
-async function handleSave(eventData: any) {
+async function handleSave(eventData) {
 	isSaving = true;
 	try {
 		const response = await fetch('/admin/events', {
@@ -51,7 +51,7 @@ async function handleSave(eventData: any) {
 
 		if (editingEvent) {
 			// Update existing event
-			events = events.map((e: any) => (e.id === eventData.id || e._id === eventData._id) ? eventData : e);
+			events = events.map((e) => (e.id === eventData.id || e._id === eventData._id) ? eventData : e);
 		} else {
 			// Add new event
 			events = [...events, eventData];
@@ -65,7 +65,7 @@ async function handleSave(eventData: any) {
 	}
 }
 
-async function handleDelete(id: string) {
+async function handleDelete(id) {
 	if (!confirm('Are you sure you want to delete this event?')) return;
 
 	isDeleting = true;
@@ -82,7 +82,7 @@ async function handleDelete(id: string) {
 			throw new Error('Failed to delete event');
 		}
 
-		events = events.filter((e: any) => e.id !== id && e._id !== id);
+		events = events.filter((e) => e.id !== id && e._id !== id);
 	} catch (error) {
 		console.error('Error deleting event:', error);
 		alert('Failed to delete event. Please try again.');
@@ -92,12 +92,12 @@ async function handleDelete(id: string) {
 }
 
 $: upcomingEvents = events
-	.filter((e: any) => new Date(e.date) >= new Date())
-	.sort((a: any, b: any) => new Date(a.date).getTime() - new Date(b.date).getTime());
+	.filter((e) => new Date(e.date) >= new Date())
+	.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
 
 $: pastEvents = events
-	.filter((e: any) => new Date(e.date) < new Date())
-	.sort((a: any, b: any) => new Date(b.date).getTime() - new Date(a.date).getTime());
+	.filter((e) => new Date(e.date) < new Date())
+	.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 </script>
 
 <svelte:head>

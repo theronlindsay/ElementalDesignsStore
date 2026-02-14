@@ -1,6 +1,6 @@
 import { redirect } from '@sveltejs/kit';
-import type { Actions } from './$types';
 
+/** @type {import('./$types').Actions} */
 export const actions = {
   logout: async ({ cookies }) => {
     // Clear the admin session cookie
@@ -11,4 +11,4 @@ export const actions = {
     // Redirect to login page
     throw redirect(303, '/login');
   }
-} satisfies Actions;
+};

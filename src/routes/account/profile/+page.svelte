@@ -1,4 +1,4 @@
-<script lang="ts">
+<script>
 	// TODO: Load user profile data from server
 	const user = {
 		name: 'John Doe',
@@ -15,7 +15,7 @@
 		isEditing = true;
 	}
 
-	function handleSave(event: Event) {
+	function handleSave(event) {
 		event.preventDefault();
 		// TODO: Implement profile update logic
 		console.log('Profile updated:', formData);

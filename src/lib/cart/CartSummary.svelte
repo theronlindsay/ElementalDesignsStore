@@ -1,9 +1,9 @@
-<script lang="ts">
+<script>
 	import { Button } from '$lib';
 	
-	export let subtotal: number;
-	export let shipping: number = 0;
-	export let tax: number = 0;
+	export let subtotal;
+	export let shipping = 0;
+	export let tax = 0;
 	
 	$: total = subtotal + shipping + tax;
 </script>

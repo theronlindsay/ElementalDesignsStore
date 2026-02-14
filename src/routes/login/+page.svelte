@@ -1,9 +1,8 @@
-<script lang="ts">
+<script>
 	import { Button, Input, Label, FormGroup } from '$lib';
 	import { enhance } from '$app/forms';
-	import type { ActionData } from './$types';
-	
-	export let form: ActionData;
+
+	export let form;
 </script>
 
 <svelte:head>

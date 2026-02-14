@@ -1,4 +1,4 @@
-<script lang="ts">
+<script>
 	import { Button } from '$lib';
 	import { goto } from '$app/navigation';
 </script>

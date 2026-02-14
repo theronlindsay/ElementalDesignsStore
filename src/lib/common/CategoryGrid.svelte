@@ -1,4 +1,4 @@
-<script lang="ts">
+<script>
 	const categories = [
 		{
 			name: 'Jewelry',

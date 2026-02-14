@@ -1,4 +1,4 @@
-<script lang="ts">
+<script>
 	import { page } from '$app/stores';
 	import { Button } from '$lib';
 	
@@ -25,7 +25,7 @@
 	}
 	
 	// Check if route is active
-	$: isActive = (href: string) => {
+	$: isActive = (href) => {
 		if (href === '/admin') {
 			return $page.url.pathname === '/admin';
 		}

@@ -1,30 +1,14 @@
-<script lang="ts">
-	interface Event {
-		id: string;
-		title: string;
-		description: string;
-		date: string;
-		location?: string;
-		address?: string;
-		mapsLink?: string;
-		image?: string;
-		link?: string;
-	}
-	
+<script>
+
 	let {
 		event,
 		editable = false,
 		onEdit = undefined,
 		onDelete = undefined
-	}: {
-		event: Event;
-		editable?: boolean;
-		onEdit?: ((id: string) => void) | undefined;
-		onDelete?: ((id: string) => void) | undefined;
 	} = $props();
 	
 	// Format date for display
-	function formatDate(dateString: string) {
+	function formatDate(dateString) {
 		const date = new Date(dateString);
 		return date.toLocaleDateString('en-US', { 
 			weekday: 'short', 

@@ -1,32 +1,32 @@
-<script lang="ts">
-	import type { PageData } from './$types';
+<script>
+
 	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
 	import ItemCard from '$lib/common/ItemCard.svelte';
 	
-	let { data }: { data: PageData } = $props();
+	let { data } = $props();
 	
 	// Active category state - defaults to 'all' to show all items
-	let activeCategory = $state<string>('all');
+	let activeCategory = $state('all');
 	
 	// Search query from URL parameter
 	let searchQuery = $derived($page.url.searchParams.get('q') || '');
 	
 	// Local search input for mobile
 	let mobileSearchInput = $state('');
-	let searchInputElement = $state<HTMLInputElement | undefined>(undefined);
+	let searchInputElement = $state(undefined);
 	
 	// Track if data has been loaded
 	let dataLoaded = $state(false);
-	let allCategoriesData = $state<any>({});
+	let allCategoriesData = $state({});
 	
 	// Filter state
 	let selectedType = $state('All');
 	let minPrice = $state(0);
 	let maxPrice = $state(999999);
 	let minRating = $state(0);
-	let sortBy = $state<'name' | 'price-low' | 'price-high' | 'rating'>('name');
+	let sortBy = $state('name');
 	let showFilters = $state(true);
 	
 	// Available categories
@@ -41,11 +41,11 @@
 	let allSubcategories = $derived.by(() => {
 		if (!dataLoaded) return [];
 		
-		const subcats: Array<{ name: string; categorySlug: string }> = [];
-		const seenNames = new Set<string>();
+		const subcats = [];
+		const seenNames = new Set();
 		
 		// First add main category names
-		Object.entries(allCategoriesData).forEach(([slug, data]: [string, any]) => {
+		Object.entries(allCategoriesData).forEach(([slug, data]) => {
 			const mainCategory = categories.find(c => c.slug === slug);
 			if (mainCategory && data?.name && !seenNames.has(data.name)) {
 				seenNames.add(data.name);
@@ -54,9 +54,9 @@
 		});
 		
 		// Then add all unique subcategories from all loaded categories
-		Object.entries(allCategoriesData).forEach(([slug, data]: [string, any]) => {
+		Object.entries(allCategoriesData).forEach(([slug, data]) => {
 			if (data?.subcategories) {
-				data.subcategories.forEach((subcat: any) => {
+				data.subcategories.forEach((subcat) => {
 					const name = subcat.categoryData?.name;
 					if (name && !seenNames.has(name)) {
 						seenNames.add(name);
@@ -108,7 +108,7 @@
 	});
 	
 	// Extract price from Square item
-	function getItemPrice(item: any): number {
+	function getItemPrice(item) {
 		try {
 			const variation = item.itemData?.variations?.[0];
 			const price = variation?.itemVariationData?.priceMoney?.amount || 0;
@@ -119,17 +119,17 @@
 	}
 	
 	// Get item rating from custom attributes
-	function getItemRating(item: any): number {
+	function getItemRating(item) {
 		return item.customAttributeValues?.rating?.numberValue || 0;
 	}
 	
 	// Get item category/type from Square categories
-	function getItemType(item: any, categories: any[] = []): string {
+	function getItemType(item, categories = []) {
 		const categoryId = item.itemData?.categoryId;
 		
 		// First try to find subcategory match
 		if (categoryId && categories.length > 0) {
-			const category = categories.find((cat: any) => cat.id === categoryId);
+			const category = categories.find((cat) => cat.id === categoryId);
 			if (category?.categoryData?.name) {
 				return category.categoryData.name;
 			}
@@ -139,8 +139,8 @@
 		if (categoryId) {
 			// Check which primary category this item belongs to based on where we found it
 			for (const [slug, data] of Object.entries(allCategoriesData)) {
-				if ((data as any)?.itemIds?.has?.(item.id)) {
-					return (data as any).name;
+				if (data?.itemIds?.has?.(item.id)) {
+					return data.name;
 				}
 			}
 		}
@@ -152,10 +152,10 @@
 	}
 	
 	// Filter items based on current filter state
-	function filterItems(items: any[], categories: any[] = []) {
+	function filterItems(items, categories = []) {
 		if (!items || items.length === 0) return [];
 		
-		let filtered = items.filter((item: any) => {
+		let filtered = items.filter((item) => {
 			if (item.type !== 'ITEM') return false;
 			
 			const price = getItemPrice(item);
@@ -181,7 +181,7 @@
 		});
 		
 		// Sort items
-		filtered.sort((a: any, b: any) => {
+		filtered.sort((a, b) => {
 			switch (sortBy) {
 				case 'name':
 					return (a.itemData?.name || '').localeCompare(b.itemData?.name || '');
@@ -199,7 +199,7 @@
 		return filtered;
 	}
 	
-	function formatPrice(price: number): string {
+	function formatPrice(price) {
 		return `$${price.toFixed(2)}`;
 	}
 	
@@ -219,7 +219,7 @@
 	}
 	
 	// Handle Enter key in mobile search input
-	function handleSearchKeypress(e: KeyboardEvent) {
+	function handleSearchKeypress(e) {
 		if (e.key === 'Enter') {
 			handleMobileSearch();
 		}
@@ -244,8 +244,8 @@
 		{@const currentCategoryData = activeCategory === 'all' 
 			? { 
 				name: 'All Products',
-				items: Object.values(allCategoriesData).flatMap((cat: any) => cat.items || []),
-				subcategories: Object.values(allCategoriesData).flatMap((cat: any) => cat.subcategories || []),
+				items: Object.values(allCategoriesData).flatMap((cat) => cat.items || []),
+				subcategories: Object.values(allCategoriesData).flatMap((cat) => cat.subcategories || []),
 				success: true
 			}
 			: allCategoriesData[activeCategory]
@@ -307,7 +307,7 @@
 					{#if showFilters}
 						{@const categoryNames = searchQuery 
 							? allSubcategories.map(s => s.name)
-							: (currentCategoryData.subcategories || []).map((cat: any) => cat.categoryData?.name).filter(Boolean)
+							: (currentCategoryData.subcategories || []).map((cat) => cat.categoryData?.name).filter(Boolean)
 						}
 						{@const productTypes = ['All', ...categoryNames]}
 						<div class="filter-section">
@@ -395,11 +395,11 @@
 				<main class="search-content">
 					{#key activeCategory + searchQuery}
 						{@const itemsToFilter = searchQuery 
-							? Object.values(allCategoriesData).flatMap((cat: any) => cat.items || [])
+							? Object.values(allCategoriesData).flatMap((cat) => cat.items || [])
 							: currentCategoryData.items
 						}
 						{@const subcatsToUse = searchQuery
-							? Object.values(allCategoriesData).flatMap((cat: any) => cat.subcategories || [])
+							? Object.values(allCategoriesData).flatMap((cat) => cat.subcategories || [])
 							: currentCategoryData.subcategories
 						}
 						{@const filtered = filterItems(itemsToFilter, subcatsToUse)}
@@ -433,7 +433,7 @@
 					{:else}
 						<div class="product-grid">
 							{#each filtered as item (item.id)}
-								{@const itemData = (item as any).itemData || {}}
+								{@const itemData = item.itemData || {}}
 								{@const itemPrice = getItemPrice(item)}
 								{@const itemRating = getItemRating(item)}
 								{@const itemType = getItemType(item, currentCategoryData.subcategories)}

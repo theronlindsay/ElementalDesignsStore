@@ -1,9 +1,9 @@
-import type { PageServerLoad } from './$types';
 import { getCollection } from '$lib/mongo';
 
-export const load: PageServerLoad = async () => {
+/** @type {import('./$types').PageServerLoad} */
+export const load = async () => {
 	try {
-		const col = await getCollection('Events');
+		const col = await getCollection('events');
 		const events = (await col.find({}).toArray()).map(e => ({
 			...e,
 			_id: e._id?.toString?.() ?? e._id

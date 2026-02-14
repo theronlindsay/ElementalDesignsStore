@@ -1,7 +1,7 @@
 import { getAllCategories, getItemsByCategoryIncludingSubcategories, getAllItems, getSubcategories } from '$lib/square';
-import type { PageServerLoad } from './$types';
 
-export const load: PageServerLoad = async () => {
+/** @type {import('./$types').PageServerLoad} */
+export const load = async () => {
     // Jewelry category ID
     const categoryId = 'GBU37Q2KSWR7QHCCA2SRTZB3';
     
@@ -24,14 +24,14 @@ export const load: PageServerLoad = async () => {
             return {
                 items: jewelryItems,
                 categories: jewelrySubcategories, // Only jewelry subcategories
-                success: true as const
+                success: true
             };
         } catch (error) {
             console.error('Error loading jewelry items:', error);
             return {
                 items: [],
                 categories: [],
-                success: false as const,
+                success: false,
                 error: error instanceof Error ? error.message : 'Failed to load jewelry items'
             };
         }

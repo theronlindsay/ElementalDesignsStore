@@ -1,4 +1,4 @@
-<script lang="ts">
+<script>
 	// Form group wraps label + input for consistent spacing
 </script>
 

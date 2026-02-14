@@ -1,9 +1,9 @@
 import { json, error } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
 import { getCollection } from '$lib/mongo';
 
 // GET - fetch all events
-export const GET: RequestHandler = async () => {
+/** @type {import('./$types').RequestHandler} */
+export const GET = async () => {
 	try {
 		const col = await getCollection('Events');
 		const events = await col.find({}).toArray();
@@ -15,7 +15,8 @@ export const GET: RequestHandler = async () => {
 };
 
 // POST - add or update an event
-export const POST: RequestHandler = async ({ request }) => {
+/** @type {import('./$types').RequestHandler} */
+export const POST = async ({ request }) => {
 	try {
 		const eventData = await request.json();
 		const col = await getCollection('Events');
@@ -33,7 +34,8 @@ export const POST: RequestHandler = async ({ request }) => {
 };
 
 // DELETE - remove an event
-export const DELETE: RequestHandler = async ({ request }) => {
+/** @type {import('./$types').RequestHandler} */
+export const DELETE = async ({ request }) => {
 	try {
 		const { id } = await request.json();
 		const col = await getCollection('Events');

@@ -1,4 +1,4 @@
-<script lang="ts">
+<script>
 	import { CartItem, CartSummary, EmptyCart, Button } from '$lib';
 	import { cart } from '$lib/cart/cartStore';
 	import { onMount } from 'svelte';
@@ -9,13 +9,13 @@
 	// $effect - Runs side effects when dependencies change (replaces $: for side effects)
 	
 	// Subscribe to cart store and transform it with Square item data
-	let cartStoreItems = $state<any[]>([]);
-	let cartItems = $state<any[]>([]);
-	let itemsMap = $state<Record<string, any>>({});
+	let cartStoreItems = $state([]);
+	let cartItems = $state([]);
+	let itemsMap = $state({});
 	let isDataReady = $state(false);
 	
 	// Subscribe to cart store on mount
-	let unsubscribe: (() => void) | null = null;
+	let unsubscribe = null;
 	
 	$effect(() => {
 		// Subscribe to cart store and update cartStoreItems whenever it changes
@@ -45,7 +45,7 @@
 	
 	// Map store items to include Square data whenever cartStoreItems or itemsMap changes
 	$effect(() => {
-		cartItems = cartStoreItems.map((cartItem: any) => {
+		cartItems = cartStoreItems.map((cartItem) => {
 			const squareData = itemsMap?.[cartItem.id];
 			
 			return {
@@ -63,11 +63,11 @@
     let taxRate = 0;
 	
 	// Cart functions - these update the cart store
-	function updateQuantity(id: string, quantity: number) {
+	function updateQuantity(id, quantity) {
 		cart.updateQuantity(id, quantity);
 	}
 	
-	function removeItem(id: string, quantity: number) {
+	function removeItem(id, quantity) {
 		console.log('Removing item:', id);
 		cart.removeItem(id);
 	}

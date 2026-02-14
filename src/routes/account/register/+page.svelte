@@ -1,4 +1,4 @@
-<script lang="ts">
+<script>
 	import { goto } from '$app/navigation';
 
 	let email = $state('');
@@ -6,7 +6,7 @@
 	let confirmPassword = $state('');
 	let error = $state('');
 
-	function handleRegister(event: Event) {
+	function handleRegister(event) {
 		event.preventDefault();
 		if (!email || !password || !confirmPassword) {
 			error = 'Please fill in all fields';

@@ -1,5 +1,4 @@
 import { json } from '@sveltejs/kit';
-import type { RequestHandler } from '@sveltejs/kit';
 import { getAllItems } from '$lib/square';
 import { SquareClient, SquareEnvironment } from 'square';
 import { env } from '$env/dynamic/private';
@@ -12,14 +11,14 @@ const client = new SquareClient({
 /**
  * Enrich items with their actual image URLs by fetching related image objects
  */
-async function enrichItemsWithImages(items: any[]) {
+async function enrichItemsWithImages(items) {
 	try {
 		// Collect all unique image IDs from all items
-		const imageIds = new Set<string>();
+		const imageIds = new Set();
 		items.forEach(item => {
 			const itemData = item.itemData;
 			if (itemData?.imageIds) {
-				itemData.imageIds.forEach((id: string) => imageIds.add(id));
+				itemData.imageIds.forEach((id) => imageIds.add(id));
 			}
 		});
 		
@@ -36,9 +35,9 @@ async function enrichItemsWithImages(items: any[]) {
 		});
 		
 		// Create a map of imageId -> imageUrl
-		const imageMap = new Map<string, string>();
+		const imageMap = new Map();
 		if (response.objects) {
-			response.objects.forEach((obj: any) => {
+			response.objects.forEach((obj) => {
 				if (obj.type === 'IMAGE' && obj.imageData?.url) {
 					imageMap.set(obj.id, obj.imageData.url);
 				}
@@ -49,8 +48,8 @@ async function enrichItemsWithImages(items: any[]) {
 		const enrichedItems = items.map(item => {
 			const imageIds = item.itemData?.imageIds || [];
 			const imageUrls = imageIds
-				.map((id: string) => imageMap.get(id))
-				.filter((url: string | undefined) => url !== undefined);
+				.map((id) => imageMap.get(id))
+				.filter((url) => url !== undefined);
 			
 			return {
 				...item,
@@ -68,7 +67,8 @@ async function enrichItemsWithImages(items: any[]) {
 	}
 }
 
-export const GET: RequestHandler = async () => {
+/** @type {import('./$types').RequestHandler} */
+export const GET = async () => {
 	try {
 		let items = await getAllItems();
 		
@@ -76,7 +76,7 @@ export const GET: RequestHandler = async () => {
 		items = await enrichItemsWithImages(items);
 		
 		// Transform items into a lookup map
-		const itemsMap: Record<string, any> = {};
+		const itemsMap = {};
 		
 		items.forEach((item) => {
 			const variation = item.itemData?.variations?.[0];

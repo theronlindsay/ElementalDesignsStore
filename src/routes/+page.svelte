@@ -1,26 +1,16 @@
-<script lang="ts">
+<script>
 	import { derived } from 'svelte/store';
 	import { EventCard, CategoryGrid } from '$lib';
 	import OrderModal from '$lib/common/OrderModal.svelte';
-	import type { PageData } from './$types';
+
 	import logo from '$lib/assets/LogoTextAbove.png';
 
-	let { data }: { data: PageData } = $props();
+	let { data } = $props();
 	
 	// Load events from server
 	let events = $state(data.events || []);
 
-	interface Event {
-		id: string;
-		title: string;
-		description: string;
-		date: string;
-		location?: string;
-		address?: string;
-		mapsLink?: string;
-		image?: string;
-		link?: string;
-	}
+
 	
 	// Order modal state
 	let showOrderModal = $state(false);
@@ -33,13 +23,13 @@
 	// Filter for upcoming events only
 
 	// Compute upcoming events reactively
-	$: upcomingEvents = (events || [])
-		.filter((e: Event) => new Date(e.date) >= new Date())
-		.sort((a: Event, b: Event) => new Date(a.date).getTime() - new Date(b.date).getTime())
-		.slice(0, 3);
+	let upcomingEvents = $derived((events || [])
+		.filter((e) => new Date(e.date) >= new Date())
+		.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+		.slice(0, 3));
 	
 	// Handle order submission
-	function handleOrderSubmit(orderData: any) {
+	function handleOrderSubmit(orderData) {
 		console.log('Order submitted:', orderData);
 		
 		// TODO: Send order data to server
@@ -101,9 +91,9 @@
 	<section class="events-section" id="events-schedule">
 		<h3>Upcoming Events</h3>
 		
-		   {#if $upcomingEvents.length > 0}
+		   {#if upcomingEvents.length > 0}
 			   <div class="events-list">
-				   {#each $upcomingEvents as event (event.id)}
+				   {#each upcomingEvents as event (event.id)}
 					   <EventCard {event} editable={false} />
 				   {/each}
 			   </div>

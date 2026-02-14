@@ -1,11 +1,11 @@
-<script lang="ts">
+<script>
 	import { goto } from '$app/navigation';
 
 	let email = $state('');
 	let password = $state('');
 	let error = $state('');
 
-	function handleLogin(event: Event) {
+	function handleLogin(event) {
 		event.preventDefault();
 		if (!email || !password) {
 			error = 'Please fill in all fields';

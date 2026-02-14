@@ -1,23 +1,10 @@
-<script lang="ts">
-	interface Testamonial {
-		id: string;
-		name: string;
-		text: string;
-		stars?: string;
-		image?: string;
-		link?: string;
-	}
+<script>
 
 	let {
 		testimonial,
 		editable = false,
 		onEdit = undefined,
 		onDelete = undefined
-	}: {
-		testimonial: Testamonial;
-		editable?: boolean;
-		onEdit?: ((id: string) => void) | undefined;
-		onDelete?: ((id: string) => void) | undefined;
 	} = $props();
 </script>
 

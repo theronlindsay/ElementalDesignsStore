@@ -1,9 +1,10 @@
-<script lang="ts">
-  export let variant: 'default' | 'ghost' | 'primary' = 'default';
-  export let size: 'sm' | 'md' = 'md';
-  export let type: 'button' | 'submit' | 'reset' = 'button';
-  export let ariaLabel: string | undefined = undefined;
-  export let onclick: ((event: MouseEvent) => void) | undefined = undefined;
+<script>
+  export let variant = 'default';
+  export let size = 'md';
+  /** @type {'button' | 'submit' | 'reset'} */
+  export let type = 'button';
+  export let ariaLabel = undefined;
+  export let onclick = undefined;
   
   // $$restProps is automatically available - no need to export it
   $: classes = [

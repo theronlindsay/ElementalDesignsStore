@@ -1,11 +1,11 @@
-<script lang="ts">
-	import type { PageData } from './$types';
+<script>
 
-	let { data }: { data: PageData } = $props();
+
+	let { data } = $props();
 
 	// Extract item details from Square data (cast to any to handle custom properties)
-	let item = $state(data.item as any);
-	let selectedImage = $state<string>('');
+	let item = $state(data.item);
+	let selectedImage = $state('');
 
 	// Initialize selected image from the item's images
 	$effect(() => {
@@ -15,7 +15,7 @@
 	});
 
 	// Extract price from Square item
-	function getItemPrice(): number {
+	function getItemPrice() {
 		try {
 			const variation = item?.itemData?.variations?.[0];
 			const price = variation?.itemVariationData?.priceMoney?.amount || 0;
@@ -26,16 +26,16 @@
 	}
 
 	// Get item rating from custom attributes
-	function getItemRating(): number {
+	function getItemRating() {
 		const rating = item?.customAttributeValues?.rating?.numberValue;
 		return typeof rating === 'number' ? rating : 0;
 	}
 
-	function formatPrice(price: number): string {
+	function formatPrice(price) {
 		return `$${price.toFixed(2)}`;
 	}
 
-	function selectImage(img: string) {
+	function selectImage(img) {
 		selectedImage = img;
 	}
 </script>

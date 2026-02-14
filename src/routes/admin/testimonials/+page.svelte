@@ -1,15 +1,15 @@
-<script lang="ts">
+<script>
 import { TestimonialCard, TestimonialModal } from '$lib';
 
 
-export let data: any;
+export let data;
 
 // Load initial testimonials from server
-let testimonials: any[] = data.testimonials || [];
+let testimonials = data.testimonials || [];
 
 // Modal state
 let isModalOpen = false;
-let editingEvent: any = null;
+let editingEvent = null;
 let isSaving = false;
 let isDeleting = false;
 
@@ -18,8 +18,8 @@ function openAddModal() {
 	isModalOpen = true;
 }
 
-function openEditModal(id: string) {
-	const testimonial = testimonials.find((e: any) => e.id === id || e._id === id);
+function openEditModal(id) {
+	const testimonial = testimonials.find((e) => e.id === id || e._id === id);
 	if (testimonial) {
 		editingEvent = { ...testimonial };
 		isModalOpen = true;
@@ -31,7 +31,7 @@ function closeModal() {
 	editingEvent = null;
 }
 
-async function handleSave(testamonialData: any) {
+async function handleSave(testamonialData) {
 	isSaving = true;
 	try {
 		const response = await fetch('/admin/testimonials', {
@@ -50,7 +50,7 @@ async function handleSave(testamonialData: any) {
 
 		if (editingEvent) {
 			// Update existing testimonial
-			testimonials = testimonials.map((e: any) => (e.id === testamonialData.id || e._id === testamonialData._id) ? testamonialData : e);
+			testimonials = testimonials.map((e) => (e.id === testamonialData.id || e._id === testamonialData._id) ? testamonialData : e);
 		} else {
 			// Add new testimonial
 			testimonials = [...testimonials, testamonialData];
@@ -64,7 +64,7 @@ async function handleSave(testamonialData: any) {
 	}
 }
 
-async function handleDelete(id: string) {
+async function handleDelete(id) {
 	if (!confirm('Are you sure you want to delete this testimonial?')) return;
 
 	isDeleting = true;
@@ -81,7 +81,7 @@ async function handleDelete(id: string) {
 			throw new Error('Failed to delete testimonial');
 		}
 
-		testimonials = testimonials.filter((e: any) => e.id !== id && e._id !== id);
+		testimonials = testimonials.filter((e) => e.id !== id && e._id !== id);
 	} catch (error) {
 		console.error('Error deleting testimonial:', error);
 		alert('Failed to delete testimonial. Please try again.');
@@ -91,12 +91,12 @@ async function handleDelete(id: string) {
 }
 
 $: upcomingtestamonials = testimonials
-	.filter((e: any) => new Date(e.date) >= new Date())
-	.sort((a: any, b: any) => new Date(a.date).getTime() - new Date(b.date).getTime());
+	.filter((e) => new Date(e.date) >= new Date())
+	.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
 
 $: pasttestamonials = testimonials
-	.filter((e: any) => new Date(e.date) < new Date())
-	.sort((a: any, b: any) => new Date(b.date).getTime() - new Date(a.date).getTime());
+	.filter((e) => new Date(e.date) < new Date())
+	.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 </script>
 
 <svelte:head>

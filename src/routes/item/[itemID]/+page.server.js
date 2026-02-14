@@ -1,5 +1,4 @@
 import { redirect, error } from '@sveltejs/kit';
-import type { PageServerLoad } from './$types';
 import { SquareClient, SquareEnvironment, SquareError } from 'square';
 import { env } from '$env/dynamic/private';
 
@@ -14,7 +13,7 @@ const client = new SquareClient({
  * @param itemId - The Square item ID
  * @returns Item object with image URLs
  */
-async function getItemById(itemId: string) {
+async function getItemById(itemId) {
     try {
         // Batch get the item
         const response = await client.catalog.batchGet({
@@ -28,8 +27,8 @@ async function getItemById(itemId: string) {
         const item = response.objects[0];
 
         // If item has images, fetch the image URLs
-        if ((item as any).itemData?.imageIds && (item as any).itemData.imageIds.length > 0) {
-            const imageIds = (item as any).itemData.imageIds;
+        if (item.itemData?.imageIds && item.itemData.imageIds.length > 0) {
+            const imageIds = item.itemData.imageIds;
             
             // Batch get all images
             const imageResponse = await client.catalog.batchGet({
@@ -37,9 +36,9 @@ async function getItemById(itemId: string) {
             });
 
             // Map image IDs to URLs
-            const imageUrls: string[] = [];
+            const imageUrls = [];
             if (imageResponse.objects) {
-                imageResponse.objects.forEach((imgObj: any) => {
+                imageResponse.objects.forEach((imgObj) => {
                     if (imgObj.type === 'IMAGE' && imgObj.imageData?.url) {
                         imageUrls.push(imgObj.imageData.url);
                     }
@@ -52,7 +51,10 @@ async function getItemById(itemId: string) {
             };
         }
 
-        return item;
+        return {
+            ...item,
+            imageUrls: []
+        };
     } catch (err) {
         if (err instanceof SquareError) {
             console.error('Square API Error:', err.message);
@@ -62,7 +64,8 @@ async function getItemById(itemId: string) {
     }
 }
 
-export const load: PageServerLoad = async ({ params }) => {
+/** @type {import('./$types').PageServerLoad} */
+export const load = async ({ params }) => {
     const id = params.itemID;
 
     if (!id) {

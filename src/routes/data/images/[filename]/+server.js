@@ -1,10 +1,10 @@
 import { error } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
 import { readFileSync, existsSync } from 'fs';
 import { join } from 'path';
 import { cwd } from 'process';
 
-export const GET: RequestHandler = async ({ params }) => {
+/** @type {import('./$types').RequestHandler} */
+export const GET = async ({ params }) => {
 	try {
 		const filename = params.filename;
 		
@@ -25,7 +25,7 @@ export const GET: RequestHandler = async ({ params }) => {
 
 		// Determine MIME type based on extension
 		const ext = filename.split('.').pop()?.toLowerCase() || '';
-		const mimeTypes: Record<string, string> = {
+		const mimeTypes = {
 			'jpg': 'image/jpeg',
 			'jpeg': 'image/jpeg',
 			'png': 'image/png',

@@ -1,9 +1,9 @@
-import type { PageServerLoad } from './$types';
 import { getCollection } from '$lib/mongo';
 
-export const load: PageServerLoad = async () => {
+/** @type {import('./$types').PageServerLoad} */
+export const load = async () => {
 	try {
-		const collection = await getCollection("Testimonials");
+		const collection = await getCollection('Events');
 		const events = await collection.find({}).toArray();
 		// Convert _id to string for serialization
 		const serializableEvents = events.map((event) => ({
