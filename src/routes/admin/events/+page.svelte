@@ -1,7 +1,6 @@
 <script>
 import { EventCard, EventModal } from '$lib';
 
-import { onMount } from 'svelte';
 
 export let data;
 

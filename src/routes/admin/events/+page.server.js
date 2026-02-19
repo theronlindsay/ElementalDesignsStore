@@ -1,6 +1,5 @@
 import { getCollection } from '$lib/mongo';
 
-/** @type {import('./$types').PageServerLoad} */
 export const load = async () => {
 	try {
 		const collection = await getCollection('Events');

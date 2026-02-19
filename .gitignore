@@ -19,3 +19,5 @@ vite.config.ts.timestamp-*
 #data
 /src/data/
 
+.env
+

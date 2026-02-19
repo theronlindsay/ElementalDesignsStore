@@ -46,3 +46,28 @@ export const DELETE = async ({ request }) => {
 		throw error(500, 'Failed to delete Testimonials');
 	}
 };
+
+// PUT - update order of Testimonials
+/** @type {import('./$types').RequestHandler} */
+export const PUT = async ({ request }) => {
+	try {
+		const { updates } = await request.json();
+		const col = await getCollection('Testimonials');
+		
+		const operations = updates.map((update) => ({
+			updateOne: {
+				filter: { id: update.id },
+				update: { $set: { order: update.order } }
+			}
+		}));
+		
+		if (operations.length > 0) {
+			await col.bulkWrite(operations);
+		}
+		
+		return json({ success: true });
+	} catch (err) {
+		console.error('Error saving Testimonial order to MongoDB:', err);
+		throw error(500, 'Failed to save Testimonial order');
+	}
+};
