@@ -4,6 +4,9 @@ import { sveltekit } from '@sveltejs/kit/vite';
 
 export default defineConfig({
 	plugins: [sveltekit(), devtoolsJson()],
+	server: {
+		port: 8080
+	},
 	test: {
 		expect: { requireAssertions: true },
 		projects: [
