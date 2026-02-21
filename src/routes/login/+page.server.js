@@ -21,7 +21,7 @@ export const actions = {
 			cookies.set('admin_session', 'authenticated', {
 				path: '/',
 				httpOnly: true,
-				secure: process.env.NODE_ENV === 'production',
+				secure: env.NODE_ENV === 'production',
 				sameSite: 'strict',
 				maxAge
 			});
