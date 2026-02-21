@@ -1,4 +1,5 @@
 import { fail, redirect } from '@sveltejs/kit';
+import { env } from '$env/dynamic/private';
 
 /** @type {import('./$types').Actions} */
 export const actions = {
@@ -9,9 +10,9 @@ export const actions = {
 		const remember = data.get('remember');
 		
 		// TODO: In production, check against hashed password in database
-		// For now, using environment variables
-		const validUsername = import.meta.env.VITE_ADMIN_USERNAME || 'admin';
-		const validPassword = import.meta.env.VITE_ADMIN_PASSWORD || 'admin123';
+		// Prefer server-side env vars (ADMIN_...) but fall back to VITE_ values for local dev
+		const validUsername = env.VITE_ADMIN_USERNAME || 'admin';
+		const validPassword = env.VITE_ADMIN_PASSWORD || 'admin123';
 		
 		if (username === validUsername && password === validPassword) {
 			// Set secure HTTP-only cookie
