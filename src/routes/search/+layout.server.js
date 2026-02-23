@@ -3,15 +3,17 @@ import { getSubcategories, getItemsByCategoryIncludingSubcategories, getAllItems
 // Define category IDs for each product type
 const CATEGORY_IDS = {
     jewelry: 'GBU37Q2KSWR7QHCCA2SRTZB3',
-    armor: 'NKJL2C6NSWFX6ATLLVEMW5CZ',
-    laser: 'LLAQJ5FM7NTM6FYP4NGDM23A'
+    chainmail: '',
+    laser: 'LLAQJ5FM7NTM6FYP4NGDM23A',
+    games: ''
 };
 
 // Define display names for each category
 const CATEGORY_NAMES = {
     jewelry: 'Jewelry',
-    armor: 'Armor',
-    laser: 'Laser Cut Products',
+    chainmail: 'Chainmail',
+    laser: 'Laser Engraving',
+    games: 'Games',
     more: 'Other Products'
 };
 

@@ -3,14 +3,16 @@
 	import { page } from '$app/stores';
 	// import '../app.scss';
 	import { Button } from '$lib';
+	import OrderModal from './OrderModal.svelte';
 
 	// Navbar Routes
 	let { items = [
 		{ id: 'home', label: 'Home', href: '/', active: true },
-		// { id: 'jewelry', label: 'Jewelry', href: '/search#jewelry', active: false },
-		// { id: 'armor', label: 'Armor', href: '/search#armor', active: false },
-		// { id: 'laser', label: 'Laser Engraving', href: '/search#laser', active: false },
-		// { id: 'more', label: 'More', href: '/search#more', active: false},
+		{ id: 'jewelry', label: 'Jewelry', href: '/search#jewelry', active: false },
+		{ id: 'chainmail', label: 'Chainmail', href: '/search#chainmail', active: false },
+		{ id: 'laser', label: 'Laser Engraving', href: '/search#laser', active: false },
+		{ id: 'games', label: 'Games', href: '/search#games', active: false },
+		{ id: 'custom', label: 'Custom Orders', href: '/search#custom', active: false},
 		{ id: 'about', label: 'About', href: '/about', active: false },
 		// { id: 'account', label: 'Account', href: '/account', active: false },
 		// { id: 'cart', label: 'Cart', href: '/cart', active: false }
@@ -26,6 +28,9 @@
 	let showAccountMenu = $state(false);
 	let accountMenuLocked = $state(false); // Track if menu is locked open from click
 	let mobileAccountMenuOpen = $state(false); // Track if mobile account menu is open
+	
+	// Order Modal state
+	let isOrderModalOpen = $state(false);
 	
 	// Search state - reactive to URL changes
 	let searchInput = $state('');
@@ -171,6 +176,23 @@
 		}));
 	}
 
+	// Handle custom order click - opens modal instead of navigating
+	function handleCustomOrderClick(e) {
+		e.preventDefault();
+		isOrderModalOpen = true;
+		handleItemClick('custom');
+	}
+
+	// Handle OrderModal save
+	function handleOrderModalSave(orderData) {
+		isOrderModalOpen = false;
+	}
+
+	// Handle OrderModal cancel
+	function handleOrderModalCancel() {
+		isOrderModalOpen = false;
+	}
+
 	// Initialize selector position and responsive behavior
 	onMount(() => {
 		// Set initial screen width
@@ -274,6 +296,17 @@
 									</div>
 								{/if}
 							</button>
+						{:else if item.id === 'custom'}
+							<!-- Mobile Custom Orders: Open Modal Instead of Navigate -->
+							<button
+								class="nav-item mobile-nav-item {visuallyActiveItem === item.id ? 'active' : ''}"
+								onclick={() => {
+									handleCustomOrderClick({ preventDefault: () => {} });
+									isMobileMenuOpen = false;
+								}}
+							>
+								{item.label}
+							</button>
 						{:else}
 							<a
 								bind:this={itemElements[item.id]}
@@ -301,14 +334,25 @@
 				></div>
 				
 				{#each items.filter(item => item.id !== 'account' && item.id !== 'cart') as item}
-					<a
-						bind:this={itemElements[item.id]}
-						href={item.href}
-						class="nav-item {visuallyActiveItem === item.id ? 'active' : ''}"
-						onclick={() => handleItemClick(item.id)}
-					>
-						{item.label}
-					</a>
+					{#if item.id === 'custom'}
+						<!-- Custom Orders: Open Modal Instead of Navigate -->
+						<button
+							bind:this={itemElements[item.id]}
+							class="nav-item {visuallyActiveItem === item.id ? 'active' : ''}"
+							onclick={handleCustomOrderClick}
+						>
+							{item.label}
+						</button>
+					{:else}
+						<a
+							bind:this={itemElements[item.id]}
+							href={item.href}
+							class="nav-item {visuallyActiveItem === item.id ? 'active' : ''}"
+							onclick={() => handleItemClick(item.id)}
+						>
+							{item.label}
+						</a>
+					{/if}
 				{/each}
 			</div>
 				
@@ -383,6 +427,13 @@
 		{/if}
 	</div>
 </nav>
+
+<!-- Order Modal -->
+<OrderModal 
+	isOpen={isOrderModalOpen}
+	onSave={handleOrderModalSave}
+	onCancel={handleOrderModalCancel}
+/>
 
 <style lang="scss">
 	/*
