@@ -22,7 +22,7 @@
 			</div>
 			
 			<!-- Login Form -->
-			<form method="POST" class="login-form">
+			<form method="POST" class="login-form" use:enhance>
 				<FormGroup>
 					<Label htmlFor="username" required>Username</Label>
 					<Input
