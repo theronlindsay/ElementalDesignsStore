@@ -1,10 +1,13 @@
 <script>
-
 	let {
 		testimonial,
 		editable = false,
 		onEdit = undefined,
-		onDelete = undefined
+		onDelete = undefined,
+		onMoveUp = undefined,
+		onMoveDown = undefined,
+		isFirst = false,
+		isLast = false
 	} = $props();
 </script>
 
@@ -21,14 +24,28 @@
 				<i class="fas fa-user-circle"></i>
 				<span>{testimonial.name}</span>
 			</div>
-			{#if editable && onEdit && onDelete}
+			{#if editable}
 				<div class="testimonial-actions">
-					<button class="action-btn edit" onclick={() => onEdit?.(testimonial.id)} aria-label="Edit testimonial">
+					{#if onMoveUp}
+						<button class="action-btn" disabled={isFirst} onclick={() => onMoveUp?.(testimonial.id || testimonial._id)} aria-label="Move up">
+							<i class="fas fa-arrow-up"></i>
+						</button>
+					{/if}
+					{#if onMoveDown}
+						<button class="action-btn" disabled={isLast} onclick={() => onMoveDown?.(testimonial.id || testimonial._id)} aria-label="Move down">
+							<i class="fas fa-arrow-down"></i>
+						</button>
+					{/if}
+					{#if onEdit}
+					<button class="action-btn edit" onclick={() => onEdit?.(testimonial.id || testimonial._id)} aria-label="Edit testimonial">
 						<i class="fas fa-edit"></i>
 					</button>
-					<button class="action-btn delete" onclick={() => onDelete?.(testimonial.id)} aria-label="Delete testimonial">
+					{/if}
+					{#if onDelete}
+					<button class="action-btn delete" onclick={() => onDelete?.(testimonial.id || testimonial._id)} aria-label="Delete testimonial">
 						<i class="fas fa-trash"></i>
 					</button>
+					{/if}
 				</div>
 			{/if}
 		</div>
@@ -59,6 +76,8 @@
 		flex-direction: column;
 		overflow: hidden;
 		transition: all 0.3s ease;
+		break-inside: avoid;
+		margin-bottom: 1.5rem;
 		&:hover {
 			transform: translateY(-4px);
 			box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);
@@ -66,10 +85,13 @@
 	}
 
 	.testimonial-image {
-		width: 100%;
-		height: 160px;
+		width: 100px;
+		height: 100px;
+		border-radius: 50%;
 		overflow: hidden;
 		background: var(--border-primary);
+		margin: 1.25rem auto 0 auto;
+		border: 2px solid var(--accent);
 		img {
 			width: 100%;
 			height: 100%;
@@ -131,6 +153,16 @@
 			color: #ef4444;
 			background: rgba(239, 68, 68, 0.1);
 		}
+		
+		&:disabled {
+			opacity: 0.3;
+			cursor: not-allowed;
+			&:hover {
+				background: transparent;
+				border-color: var(--border-secondary);
+				color: var(--muted);
+			}
+		}
 	}
 
 	.testimonial-text {
@@ -166,7 +198,8 @@
 
 	@media (max-width: 768px) {
 		.testimonial-image {
-			height: 120px;
+			width: 80px;
+			height: 80px;
 		}
 		.testimonial-content {
 			padding: 0.75rem;

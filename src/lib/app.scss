@@ -469,7 +469,7 @@ body > * {
   margin: 0 auto;
 }
 
-.events-section, .custom-orders, .newsletter-signup {
+.events-section, .testimonials-section, .custom-orders, .newsletter-signup {
   background: rgba(42, 36, 56, 0.5);
   border: 1px solid $border-primary;
   border-radius: $radius-lg;
@@ -489,6 +489,21 @@ body > * {
   gap: $spacing-md;
   align-items: start; /* keep card tops aligned */
   margin-top: $spacing-sm;
+}
+
+/* Masonry layout for testimonials */
+.testimonials-list {
+  column-count: 3;
+  column-gap: $spacing-md;
+  
+  /* Responsive columns */
+  @media (max-width: $wrap-breakpoint) {
+    column-count: 2;
+  }
+  
+  @media (max-width: $mobile-breakpoint) {
+    column-count: 1;
+  }
 }
 
 .event-item {

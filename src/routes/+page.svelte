@@ -1,17 +1,14 @@
 <script>
 	import { derived } from 'svelte/store';
-	import { EventCard, CategoryGrid } from '$lib';
+	import { EventCard, CategoryGrid, TestimonialCard } from '$lib';
 	import OrderModal from '$lib/common/OrderModal.svelte';
 
 	import logo from '$lib/assets/LogoTextAbove.png';
-
 	let { data } = $props();
 	
-	// Load events from server
+	// Load events and testimonials from server
 	let events = $state(data.events || []);
-
-
-	
+	let testimonials = $state(data.testimonials || []);
 	// Order modal state
 	let showOrderModal = $state(false);
 	
@@ -103,6 +100,18 @@
 			</div>
 		{/if}
 	</section>
+
+	<!-- Testimonials Section -->
+	{#if testimonials.length > 0}
+	<section class="testimonials-section" id="testimonials">
+		<h3>Customer Testimonials</h3>
+		<div class="testimonials-list">
+			{#each testimonials as testimonial (testimonial.id || testimonial._id)}
+				<TestimonialCard {testimonial} editable={false} />
+			{/each}
+		</div>
+	</section>
+	{/if}
 
 	<div class ="hgrid">
 

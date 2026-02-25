@@ -1,18 +1,18 @@
 import { getCollection } from '$lib/mongo';
 
-/** @type {import('./$types').PageServerLoad} */
 export const load = async () => {
 	try {
 		const collection = await getCollection("Testimonials");
-		const events = await collection.find({}).toArray();
+		const testimonials = await collection.find({}).sort({ order: 1 }).toArray();
 		// Convert _id to string for serialization
-		const serializableEvents = events.map((event) => ({
-			...event,
-			_id: event._id?.toString?.() ?? event._id
+		const serializableTestimonials = testimonials.map((testimonial) => ({
+			...testimonial,
+			id: testimonial.id || testimonial._id?.toString?.() || testimonial._id,
+			_id: testimonial._id?.toString?.() ?? testimonial._id
 		}));
-		return { events: serializableEvents };
+		return { testimonials: serializableTestimonials };
 	} catch (err) {
-		console.error('Error loading events from MongoDB:', err);
-		return { events: [] };
+		console.error('Error loading testimonials from MongoDB:', err);
+		return { testimonials: [] };
 	}
 };

@@ -1,0 +1,2561 @@
+DEPRECATION WARNING [import]: Sass @import rules are deprecated and will be removed in Dart Sass 3.0.0.
+
+More info and automated migrator: https://sass-lang.com/d/import
+
+  ╷
+3 │     @import '$lib/app.scss';
+  │             ^^^^^^^^^^^^^^^
+  ╵
+    src/routes/search/+page.svelte.vite-preprocess.scss 3:13  root stylesheet
+
+DEPRECATION WARNING [global-builtin]: Global built-in functions are deprecated and will be removed in Dart Sass 3.0.0.
+Use color.adjust instead.
+
+More info and automated migrator: https://sass-lang.com/d/import
+
+    ╷
+111 │                 background: lighten($accent-primary, 10%);
+    │                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ╵
+    src/routes/search/+page.svelte.vite-preprocess.scss 111:17  root stylesheet
+
+DEPRECATION WARNING [color-functions]: lighten() is deprecated. Suggestions:
+
+color.scale($color, $lightness: 42.1487603306%)
+color.adjust($color, $lightness: 10%)
+
+More info: https://sass-lang.com/d/color-functions
+
+    ╷
+111 │                 background: lighten($accent-primary, 10%);
+    │                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ╵
+    src/routes/search/+page.svelte.vite-preprocess.scss 111:17  root stylesheet
+
+Loading svelte-check in workspace: /run/media/system/Crucial/Github/ElementalDesignsStore
+Getting Svelte diagnostics...
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/square.js:48:54
+Error: Argument of type '{ objectTypes: string[]; limit: number; includeRelatedObjects: boolean; }' is not assignable to parameter of type 'SearchCatalogObjectsRequest'.
+  Types of property 'objectTypes' are incompatible.
+    Type 'string[]' is not assignable to type 'CatalogObjectType[]'.
+      Type 'string' is not assignable to type 'CatalogObjectType'. 
+        // Execute the catalog search using the correct method
+        const response = await client.catalog.search(searchRequest);
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/square.js:53:73
+Error: Property 'itemData' does not exist on type 'CatalogObject'.
+  Property 'itemData' does not exist on type 'Image'. 
+            console.log("Sample item structure:", response.objects[0]);
+            console.log("Sample item categoryId:", response.objects[0]?.itemData?.categoryId);
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/square.js:82:21
+Error: Property 'itemData' does not exist on type 'CatalogObject'.
+  Property 'itemData' does not exist on type 'Image'. 
+        itemData: {
+            ...item.itemData,
+            categoryId: categoryId // Manually add the category ID we searched for
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/square.js:99:17
+Error: Property 'categoryData' does not exist on type 'Item | Image | Category | ItemVariation | Tax | Discount | ModifierList | Modifier | PricingRule | ... 9 more ... | AvailabilityPeriod'.
+  Property 'categoryData' does not exist on type 'Item'. 
+        const subcategories = allCategories.filter((cat) => 
+            cat.categoryData?.parentCategory?.id === parentCategoryId
+        );
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/square.js:103:57
+Error: Property 'categoryData' does not exist on type 'Item | Image | Category | ItemVariation | Tax | Discount | ModifierList | Modifier | PricingRule | ... 9 more ... | AvailabilityPeriod'.
+  Property 'categoryData' does not exist on type 'Item'. 
+        console.log(`Found ${subcategories.length} subcategories for ${parentCategoryId}:`, 
+            subcategories.map(c => ({ id: c.id, name: c.categoryData?.name })));
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/square.js:132:78
+Error: Property 'categoryData' does not exist on type 'Item | Image | Category | ItemVariation | Tax | Discount | ModifierList | Modifier | PricingRule | ... 9 more ... | AvailabilityPeriod'.
+  Property 'categoryData' does not exist on type 'Item'. 
+            const items = await getItemsByCategory(subcat.id);
+            console.log(`Found ${items.length} items in subcategory ${subcat.categoryData?.name}`);
+            subcategoryItems.push(...items);
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/square.js:182:58
+Error: Property 'imageData' does not exist on type '{ itemData: any; type: "ITEM"; id: string; updatedAt?: string; version?: bigint; isDeleted?: boolean; customAttributeValues?: Record<string, CatalogCustomAttributeValue>; ... 4 more ...; imageId?: string; } | ... 17 more ... | { ...; }'.
+  Property 'imageData' does not exist on type '{ itemData: any; type: "ITEM"; id: string; updatedAt?: string; version?: bigint; isDeleted?: boolean; customAttributeValues?: Record<string, CatalogCustomAttributeValue>; ... 4 more ...; imageId?: string; }'. 
+            console.log('  - imageIds:', uniqueItems[0].itemData?.imageIds);
+            console.log('  - imageData:', uniqueItems[0].imageData);
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/square.js:289:21
+Error: Property 'categoryData' does not exist on type 'Item | Image | Category | ItemVariation | Tax | Discount | ModifierList | Modifier | PricingRule | ... 9 more ... | AvailabilityPeriod'.
+  Property 'categoryData' does not exist on type 'Item'. 
+            id: c.id,
+            name: c.categoryData?.name
+        })));
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/Navbar.svelte:387:20
+Warn: Unused CSS selector ".debug-indicator"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	/*
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/Navbar.svelte:387:20
+Warn: Unused CSS selector ".mode-label"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	/*
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/Navbar.svelte:387:20
+Warn: Unused CSS selector ".mode-label.mobile"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	/*
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/Navbar.svelte:387:20
+Warn: Unused CSS selector ".mode-label.tablet"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	/*
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/Navbar.svelte:387:20
+Warn: Unused CSS selector ".mode-label.desktop"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	/*
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/Navbar.svelte:387:20
+Warn: Unused CSS selector ".screen-width"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	/*
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/Navbar.svelte:387:20
+Warn: Unused CSS selector ".nav-search-box"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	/*
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/Navbar.svelte:387:20
+Warn: Unused CSS selector ".dropdown-menu"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	/*
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/Navbar.svelte:387:20
+Warn: Unused CSS selector ".nav-divider"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	/*
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/Navbar.svelte:387:20
+Warn: Unused CSS selector ".nav-actions"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	/*
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/Navbar.svelte:387:20
+Warn: Unused CSS selector ".nav-actions .nav-item:has(.dropdown-menu)"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	/*
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/Navbar.svelte:387:20
+Warn: Unused CSS selector ".nav-actions .nav-item:has(.dropdown-menu)::after"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	/*
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/Navbar.svelte:387:20
+Warn: Unused CSS selector ".nav-search-container"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	/*
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/Navbar.svelte:387:20
+Warn: Unused CSS selector ".nav-search-box"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	/*
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/Navbar.svelte:387:20
+Warn: Unused CSS selector ".nav-search-box:focus-within"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	/*
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/Navbar.svelte:387:20
+Warn: Unused CSS selector ".nav-search-box.active"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	/*
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/Navbar.svelte:387:20
+Warn: Unused CSS selector ".nav-search-box input"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	/*
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/Navbar.svelte:387:20
+Warn: Unused CSS selector ".nav-search-box input::placeholder"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	/*
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/Navbar.svelte:387:20
+Warn: Unused CSS selector ".nav-search-btn"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	/*
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/Navbar.svelte:387:20
+Warn: Unused CSS selector ".nav-search-btn:hover"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	/*
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/Navbar.svelte:387:20
+Warn: Unused CSS selector ".dropdown-menu"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	/*
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/Navbar.svelte:387:20
+Warn: Unused CSS selector ".dropdown-menu a"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	/*
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/Navbar.svelte:387:20
+Warn: Unused CSS selector ".dropdown-menu a:hover"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	/*
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/Navbar.svelte:387:20
+Warn: Unused CSS selector ".nav-divider"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	/*
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/Navbar.svelte:387:20
+Warn: Unused CSS selector ".nav-search-container"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	/*
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/Navbar.svelte:387:20
+Warn: Unused CSS selector ".nav-search-box"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	/*
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/Navbar.svelte:387:20
+Warn: Unused CSS selector ".nav-search-box input"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	/*
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/Navbar.svelte:387:20
+Warn: Unused CSS selector ".nav-actions"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	/*
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/CategoryGrid.svelte:41:20
+Warn: Unused CSS selector ".theme-glass"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	// Import only variables, not the full stylesheet
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/CategoryGrid.svelte:41:20
+Warn: Unused CSS selector "body"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	// Import only variables, not the full stylesheet
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/CategoryGrid.svelte:41:20
+Warn: Unused CSS selector "body::before"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	// Import only variables, not the full stylesheet
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/CategoryGrid.svelte:41:20
+Warn: Unused CSS selector "body > *"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	// Import only variables, not the full stylesheet
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/CategoryGrid.svelte:41:20
+Warn: Unused CSS selector ".elemental-store"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	// Import only variables, not the full stylesheet
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/CategoryGrid.svelte:41:20
+Warn: Unused CSS selector ".header"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	// Import only variables, not the full stylesheet
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/CategoryGrid.svelte:41:20
+Warn: Unused CSS selector ".header-content"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	// Import only variables, not the full stylesheet
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/CategoryGrid.svelte:41:20
+Warn: Unused CSS selector ".logo h1"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	// Import only variables, not the full stylesheet
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/CategoryGrid.svelte:41:20
+Warn: Unused CSS selector ".search-container"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	// Import only variables, not the full stylesheet
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/CategoryGrid.svelte:41:20
+Warn: Unused CSS selector ".search-box"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	// Import only variables, not the full stylesheet
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/CategoryGrid.svelte:41:20
+Warn: Unused CSS selector ".search-box:focus-within"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	// Import only variables, not the full stylesheet
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/CategoryGrid.svelte:41:20
+Warn: Unused CSS selector ".search-box input"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	// Import only variables, not the full stylesheet
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/CategoryGrid.svelte:41:20
+Warn: Unused CSS selector ".search-box input::placeholder"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	// Import only variables, not the full stylesheet
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/CategoryGrid.svelte:41:20
+Warn: Unused CSS selector ".search-btn"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	// Import only variables, not the full stylesheet
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/CategoryGrid.svelte:41:20
+Warn: Unused CSS selector ".search-btn:hover"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	// Import only variables, not the full stylesheet
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/CategoryGrid.svelte:41:20
+Warn: Unused CSS selector ".header-actions"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	// Import only variables, not the full stylesheet
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/CategoryGrid.svelte:41:20
+Warn: Unused CSS selector ".header-btn"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	// Import only variables, not the full stylesheet
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/CategoryGrid.svelte:41:20
+Warn: Unused CSS selector ".header-btn:hover"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	// Import only variables, not the full stylesheet
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/CategoryGrid.svelte:41:20
+Warn: Unused CSS selector ".main-nav"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	// Import only variables, not the full stylesheet
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/CategoryGrid.svelte:41:20
+Warn: Unused CSS selector ".nav-content"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	// Import only variables, not the full stylesheet
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/CategoryGrid.svelte:41:20
+Warn: Unused CSS selector ".nav-item"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	// Import only variables, not the full stylesheet
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/CategoryGrid.svelte:41:20
+Warn: Unused CSS selector ".nav-link"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	// Import only variables, not the full stylesheet
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/CategoryGrid.svelte:41:20
+Warn: Unused CSS selector ".nav-link:hover"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	// Import only variables, not the full stylesheet
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/CategoryGrid.svelte:41:20
+Warn: Unused CSS selector ".nav-link i"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	// Import only variables, not the full stylesheet
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/CategoryGrid.svelte:41:20
+Warn: Unused CSS selector ".nav-item:hover .nav-link i"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	// Import only variables, not the full stylesheet
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/CategoryGrid.svelte:41:20
+Warn: Unused CSS selector ".dropdown-menu"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	// Import only variables, not the full stylesheet
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/CategoryGrid.svelte:41:20
+Warn: Unused CSS selector ".dropdown-grid"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	// Import only variables, not the full stylesheet
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/CategoryGrid.svelte:41:20
+Warn: Unused CSS selector ".dropdown-column a"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	// Import only variables, not the full stylesheet
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/CategoryGrid.svelte:41:20
+Warn: Unused CSS selector ".dropdown-content a"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	// Import only variables, not the full stylesheet
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/CategoryGrid.svelte:41:20
+Warn: Unused CSS selector ".dropdown-column a:hover"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	// Import only variables, not the full stylesheet
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/CategoryGrid.svelte:41:20
+Warn: Unused CSS selector ".dropdown-content a:hover"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	// Import only variables, not the full stylesheet
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/CategoryGrid.svelte:41:20
+Warn: Unused CSS selector ".account-menu"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	// Import only variables, not the full stylesheet
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/CategoryGrid.svelte:41:20
+Warn: Unused CSS selector ".hero"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	// Import only variables, not the full stylesheet
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/CategoryGrid.svelte:41:20
+Warn: Unused CSS selector ".hero-content"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	// Import only variables, not the full stylesheet
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/CategoryGrid.svelte:41:20
+Warn: Unused CSS selector ".hero-title"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	// Import only variables, not the full stylesheet
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/CategoryGrid.svelte:41:20
+Warn: Unused CSS selector ".hero-subtitle"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	// Import only variables, not the full stylesheet
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/CategoryGrid.svelte:41:20
+Warn: Unused CSS selector ".hero-description"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	// Import only variables, not the full stylesheet
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/CategoryGrid.svelte:41:20
+Warn: Unused CSS selector ".hero-actions"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	// Import only variables, not the full stylesheet
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/CategoryGrid.svelte:41:20
+Warn: Unused CSS selector ".btn-primary"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	// Import only variables, not the full stylesheet
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/CategoryGrid.svelte:41:20
+Warn: Unused CSS selector ".btn-secondary"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	// Import only variables, not the full stylesheet
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/CategoryGrid.svelte:41:20
+Warn: Unused CSS selector ".btn-primary"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	// Import only variables, not the full stylesheet
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/CategoryGrid.svelte:41:20
+Warn: Unused CSS selector ".btn-primary:hover"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	// Import only variables, not the full stylesheet
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/CategoryGrid.svelte:41:20
+Warn: Unused CSS selector ".btn-secondary"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	// Import only variables, not the full stylesheet
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/CategoryGrid.svelte:41:20
+Warn: Unused CSS selector ".btn-secondary:hover"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	// Import only variables, not the full stylesheet
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/CategoryGrid.svelte:41:20
+Warn: Unused CSS selector ".hero-panels"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	// Import only variables, not the full stylesheet
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/CategoryGrid.svelte:41:20
+Warn: Unused CSS selector ".search-panel"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	// Import only variables, not the full stylesheet
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/CategoryGrid.svelte:41:20
+Warn: Unused CSS selector ".product-images"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	// Import only variables, not the full stylesheet
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/CategoryGrid.svelte:41:20
+Warn: Unused CSS selector ".product-placeholder"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	// Import only variables, not the full stylesheet
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/CategoryGrid.svelte:41:20
+Warn: Unused CSS selector ".content-grid"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	// Import only variables, not the full stylesheet
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/CategoryGrid.svelte:41:20
+Warn: Unused CSS selector ".hgrid"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	// Import only variables, not the full stylesheet
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/CategoryGrid.svelte:41:20
+Warn: Unused CSS selector ".events-section"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	// Import only variables, not the full stylesheet
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/CategoryGrid.svelte:41:20
+Warn: Unused CSS selector ".testimonials-section"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	// Import only variables, not the full stylesheet
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/CategoryGrid.svelte:41:20
+Warn: Unused CSS selector ".custom-orders"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	// Import only variables, not the full stylesheet
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/CategoryGrid.svelte:41:20
+Warn: Unused CSS selector ".newsletter-signup"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	// Import only variables, not the full stylesheet
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/CategoryGrid.svelte:41:20
+Warn: Unused CSS selector ".events-section h3"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	// Import only variables, not the full stylesheet
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/CategoryGrid.svelte:41:20
+Warn: Unused CSS selector ".testimonials-section h3"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	// Import only variables, not the full stylesheet
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/CategoryGrid.svelte:41:20
+Warn: Unused CSS selector ".custom-orders h3"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	// Import only variables, not the full stylesheet
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/CategoryGrid.svelte:41:20
+Warn: Unused CSS selector ".newsletter-signup h3"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	// Import only variables, not the full stylesheet
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/CategoryGrid.svelte:41:20
+Warn: Unused CSS selector ".events-list"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	// Import only variables, not the full stylesheet
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/CategoryGrid.svelte:41:20
+Warn: Unused CSS selector ".testimonials-list"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	// Import only variables, not the full stylesheet
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/CategoryGrid.svelte:41:20
+Warn: Unused CSS selector ".testimonials-list"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	// Import only variables, not the full stylesheet
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/CategoryGrid.svelte:41:20
+Warn: Unused CSS selector ".testimonials-list"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	// Import only variables, not the full stylesheet
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/CategoryGrid.svelte:41:20
+Warn: Unused CSS selector ".event-item"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	// Import only variables, not the full stylesheet
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/CategoryGrid.svelte:41:20
+Warn: Unused CSS selector ".event-item:last-child"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	// Import only variables, not the full stylesheet
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/CategoryGrid.svelte:41:20
+Warn: Unused CSS selector ".event-date"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	// Import only variables, not the full stylesheet
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/CategoryGrid.svelte:41:20
+Warn: Unused CSS selector ".event-details strong"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	// Import only variables, not the full stylesheet
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/CategoryGrid.svelte:41:20
+Warn: Unused CSS selector ".event-details small"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	// Import only variables, not the full stylesheet
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/CategoryGrid.svelte:41:20
+Warn: Unused CSS selector ".newsletter-signup"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	// Import only variables, not the full stylesheet
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/CategoryGrid.svelte:41:20
+Warn: Unused CSS selector ".newsletter-signup input"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	// Import only variables, not the full stylesheet
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/CategoryGrid.svelte:41:20
+Warn: Unused CSS selector ".newsletter-signup input:focus"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	// Import only variables, not the full stylesheet
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/CategoryGrid.svelte:41:20
+Warn: Unused CSS selector ".newsletter-signup small"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	// Import only variables, not the full stylesheet
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/CategoryGrid.svelte:41:20
+Warn: Unused CSS selector ".btn-signup"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	// Import only variables, not the full stylesheet
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/CategoryGrid.svelte:41:20
+Warn: Unused CSS selector ".btn-custom"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	// Import only variables, not the full stylesheet
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/CategoryGrid.svelte:41:20
+Warn: Unused CSS selector ".btn-past-work"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	// Import only variables, not the full stylesheet
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/CategoryGrid.svelte:41:20
+Warn: Unused CSS selector ".btn-signup:hover"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	// Import only variables, not the full stylesheet
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/CategoryGrid.svelte:41:20
+Warn: Unused CSS selector ".btn-custom:hover"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	// Import only variables, not the full stylesheet
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/CategoryGrid.svelte:41:20
+Warn: Unused CSS selector ".btn-past-work:hover"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	// Import only variables, not the full stylesheet
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/CategoryGrid.svelte:41:20
+Warn: Unused CSS selector ".custom-orders p"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	// Import only variables, not the full stylesheet
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/CategoryGrid.svelte:41:20
+Warn: Unused CSS selector ".custom-actions"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	// Import only variables, not the full stylesheet
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/CategoryGrid.svelte:41:20
+Warn: Unused CSS selector ".btn-past-work"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	// Import only variables, not the full stylesheet
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/CategoryGrid.svelte:41:20
+Warn: Unused CSS selector ".btn-past-work:hover"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	// Import only variables, not the full stylesheet
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/CategoryGrid.svelte:41:20
+Warn: Unused CSS selector ".header-content"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	// Import only variables, not the full stylesheet
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/CategoryGrid.svelte:41:20
+Warn: Unused CSS selector ".search-container"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	// Import only variables, not the full stylesheet
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/CategoryGrid.svelte:41:20
+Warn: Unused CSS selector ".nav-content"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	// Import only variables, not the full stylesheet
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/CategoryGrid.svelte:41:20
+Warn: Unused CSS selector ".hero-content"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	// Import only variables, not the full stylesheet
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/CategoryGrid.svelte:41:20
+Warn: Unused CSS selector ".hero-title"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	// Import only variables, not the full stylesheet
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/CategoryGrid.svelte:41:20
+Warn: Unused CSS selector ".content-grid"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	// Import only variables, not the full stylesheet
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/CategoryGrid.svelte:41:20
+Warn: Unused CSS selector ".footer-links"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	// Import only variables, not the full stylesheet
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/CategoryGrid.svelte:41:20
+Warn: Unused CSS selector ".hero-actions"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	// Import only variables, not the full stylesheet
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/CategoryGrid.svelte:41:20
+Warn: Unused CSS selector ".btn-primary"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	// Import only variables, not the full stylesheet
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/CategoryGrid.svelte:41:20
+Warn: Unused CSS selector ".btn-secondary"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	// Import only variables, not the full stylesheet
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/CategoryGrid.svelte:41:20
+Warn: Unused CSS selector ".hero .logo"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	// Import only variables, not the full stylesheet
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/cart/CartItem.svelte:61:20
+Warn: Unused CSS selector ".item-unit-price"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	.cart-item {
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/admin/EventModal.svelte:273:20
+Warn: Unused CSS selector ".upload-area.dragging .upload-label"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	.modal-overlay {
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/admin/EventModal.svelte:273:20
+Warn: Unused CSS selector ".upload-area.dragging .upload-label i"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	.modal-overlay {
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/admin/EventModal.svelte:273:20
+Warn: Unused CSS selector ".upload-area .file-input"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	.modal-overlay {
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/admin/EventModal.svelte:273:20
+Warn: Unused CSS selector ".upload-area .upload-label"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	.modal-overlay {
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/admin/EventModal.svelte:273:20
+Warn: Unused CSS selector ".upload-area .upload-label i"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	.modal-overlay {
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/admin/EventModal.svelte:273:20
+Warn: Unused CSS selector ".upload-area .upload-label:hover"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	.modal-overlay {
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/admin/EventModal.svelte:273:20
+Warn: Unused CSS selector ".upload-text"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	.modal-overlay {
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/admin/EventModal.svelte:273:20
+Warn: Unused CSS selector ".upload-hint"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	.modal-overlay {
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/admin/TestimonialModal.svelte:185:20
+Warn: Unused CSS selector ".form-row"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	.modal-overlay {
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/admin/TestimonialModal.svelte:185:20
+Warn: Unused CSS selector ".form-row"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	.modal-overlay {
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/admin/TestimonialModal.svelte:185:20
+Warn: Unused CSS selector ".upload-area.dragging .upload-label"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	.modal-overlay {
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/admin/TestimonialModal.svelte:185:20
+Warn: Unused CSS selector ".upload-area.dragging .upload-label i"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	.modal-overlay {
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/admin/TestimonialModal.svelte:185:20
+Warn: Unused CSS selector ".upload-area .file-input"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	.modal-overlay {
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/admin/TestimonialModal.svelte:185:20
+Warn: Unused CSS selector ".upload-area .upload-label"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	.modal-overlay {
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/admin/TestimonialModal.svelte:185:20
+Warn: Unused CSS selector ".upload-area .upload-label i"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	.modal-overlay {
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/admin/TestimonialModal.svelte:185:20
+Warn: Unused CSS selector ".upload-area .upload-label:hover"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	.modal-overlay {
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/admin/TestimonialModal.svelte:185:20
+Warn: Unused CSS selector ".upload-text"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	.modal-overlay {
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/admin/TestimonialModal.svelte:185:20
+Warn: Unused CSS selector ".upload-hint"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	.modal-overlay {
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/admin/TestimonialModal.svelte:185:20
+Warn: Unused CSS selector ".field-hint"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	.modal-overlay {
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/admin/TestimonialModal.svelte:185:20
+Warn: Unused CSS selector ".field-hint i"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	.modal-overlay {
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/routes/api/items/+server.js:82:27
+Error: Property 'itemData' does not exist on type 'Item | Image | Category | ItemVariation | Tax | Discount | ModifierList | Modifier | PricingRule | ... 9 more ... | AvailabilityPeriod'.
+  Property 'itemData' does not exist on type 'Image'. 
+		items.forEach((item) => {
+			const variation = item.itemData?.variations?.[0];
+			const itemVariationData = variation?.itemVariationData;
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/routes/api/items/+server.js:90:26
+Error: Property 'imageUrls' does not exist on type 'Item | Image | Category | ItemVariation | Tax | Discount | ModifierList | Modifier | PricingRule | ... 9 more ... | AvailabilityPeriod'.
+  Property 'imageUrls' does not exist on type 'Item'. 
+			// Get first image URL from the enriched imageUrls array
+			const imageUrl = item.imageUrls?.[0] || '';
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/routes/api/items/+server.js:94:16
+Error: Property 'itemData' does not exist on type 'Item | Image | Category | ItemVariation | Tax | Discount | ModifierList | Modifier | PricingRule | ... 9 more ... | AvailabilityPeriod'.
+  Property 'itemData' does not exist on type 'Image'. 
+				id: item.id,
+				name: item.itemData?.name || '',
+				description: item.itemData?.description || '',
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/routes/api/items/+server.js:95:23
+Error: Property 'itemData' does not exist on type 'Item | Image | Category | ItemVariation | Tax | Discount | ModifierList | Modifier | PricingRule | ... 9 more ... | AvailabilityPeriod'.
+  Property 'itemData' does not exist on type 'Image'. 
+				name: item.itemData?.name || '',
+				description: item.itemData?.description || '',
+				price: priceAmount,
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/routes/api/items/+server.js:98:20
+Error: Property 'itemData' does not exist on type 'Item | Image | Category | ItemVariation | Tax | Discount | ModifierList | Modifier | PricingRule | ... 9 more ... | AvailabilityPeriod'.
+  Property 'itemData' does not exist on type 'Image'. 
+				imageUrl: imageUrl,
+				category: item.itemData?.categoryId || ''
+			};
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/routes/api/uploadthing/core.js:9:7
+Error: Type '"80MB"' is not assignable to type '"1B" | "1KB" | "1MB" | "1GB" | "2B" | "2KB" | "2MB" | "2GB" | "4B" | "4KB" | "4MB" | "4GB" | "8B" | "8KB" | "8MB" | "8GB" | "16B" | "16KB" | "16MB" | "16GB" | "32B" | "32KB" | "32MB" | ... 20 more ... | "1024GB"'. Did you mean '"8MB"'? 
+    image: {
+      maxFileSize: "80MB",
+      maxFileCount: 1,
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/routes/api/uploadthing/core.js:14:48
+Error: 'metadata' is possibly 'undefined'. 
+    // This code RUNS ON YOUR SERVER after upload
+    console.log("Upload complete for userId:", metadata?.userId);
+    console.log("file url", file.url);
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/routes/api/uploadthing/core.js:17:26
+Error: 'metadata' is possibly 'undefined'. 
+    // Return something if you want it to be accessible inside the client-side onClientUploadComplete callback
+    return { uploadedBy: metadata?.userId, url: file.url };
+  }),
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/routes/data/images/[filename]/+server.js:2:42
+Error: Cannot find module 'fs' or its corresponding type declarations. 
+import { error } from '@sveltejs/kit';
+import { readFileSync, existsSync } from 'fs';
+import { join } from 'path';
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/routes/data/images/[filename]/+server.js:3:22
+Error: Cannot find module 'path' or its corresponding type declarations. 
+import { readFileSync, existsSync } from 'fs';
+import { join } from 'path';
+import { cwd } from 'process';
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/routes/data/images/[filename]/+server.js:4:10
+Error: Module '"process"' has no exported member 'cwd'. 
+import { join } from 'path';
+import { cwd } from 'process';
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/routes/data/images/[filename]/+server.js:4:21
+Error: This module can only be referenced with ECMAScript imports/exports by turning on the 'allowSyntheticDefaultImports' flag and referencing its default export. 
+import { join } from 'path';
+import { cwd } from 'process';
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/routes/item/[itemID]/+page.server.js:30:18
+Error: Property 'itemData' does not exist on type 'CatalogObject'.
+  Property 'itemData' does not exist on type 'Image'. 
+        // If item has images, fetch the image URLs
+        if (item.itemData?.imageIds && item.itemData.imageIds.length > 0) {
+            const imageIds = item.itemData.imageIds;
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/routes/item/[itemID]/+page.server.js:30:45
+Error: Property 'itemData' does not exist on type 'CatalogObject'.
+  Property 'itemData' does not exist on type 'Image'. 
+        // If item has images, fetch the image URLs
+        if (item.itemData?.imageIds && item.itemData.imageIds.length > 0) {
+            const imageIds = item.itemData.imageIds;
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/routes/item/[itemID]/+page.server.js:31:35
+Error: Property 'itemData' does not exist on type 'CatalogObject'.
+  Property 'itemData' does not exist on type 'Image'. 
+        if (item.itemData?.imageIds && item.itemData.imageIds.length > 0) {
+            const imageIds = item.itemData.imageIds;
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/routes/login/+page.server.js:23:13
+Error: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node`. 
+				httpOnly: true,
+				secure: process.env.NODE_ENV === 'production',
+				sameSite: 'strict',
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/ItemCard.svelte:61:20
+Warn: Unused CSS selector ".theme-glass"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	@use '$lib/app.scss' as *;
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/ItemCard.svelte:61:20
+Warn: Unused CSS selector "body"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	@use '$lib/app.scss' as *;
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/ItemCard.svelte:61:20
+Warn: Unused CSS selector "body::before"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	@use '$lib/app.scss' as *;
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/ItemCard.svelte:61:20
+Warn: Unused CSS selector "body > *"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	@use '$lib/app.scss' as *;
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/ItemCard.svelte:61:20
+Warn: Unused CSS selector ".elemental-store"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	@use '$lib/app.scss' as *;
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/ItemCard.svelte:61:20
+Warn: Unused CSS selector ".header"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	@use '$lib/app.scss' as *;
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/ItemCard.svelte:61:20
+Warn: Unused CSS selector ".header-content"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	@use '$lib/app.scss' as *;
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/ItemCard.svelte:61:20
+Warn: Unused CSS selector ".logo h1"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	@use '$lib/app.scss' as *;
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/ItemCard.svelte:61:20
+Warn: Unused CSS selector ".search-container"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	@use '$lib/app.scss' as *;
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/ItemCard.svelte:61:20
+Warn: Unused CSS selector ".search-box"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	@use '$lib/app.scss' as *;
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/ItemCard.svelte:61:20
+Warn: Unused CSS selector ".search-box:focus-within"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	@use '$lib/app.scss' as *;
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/ItemCard.svelte:61:20
+Warn: Unused CSS selector ".search-box input"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	@use '$lib/app.scss' as *;
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/ItemCard.svelte:61:20
+Warn: Unused CSS selector ".search-box input::placeholder"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	@use '$lib/app.scss' as *;
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/ItemCard.svelte:61:20
+Warn: Unused CSS selector ".search-btn"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	@use '$lib/app.scss' as *;
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/ItemCard.svelte:61:20
+Warn: Unused CSS selector ".search-btn:hover"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	@use '$lib/app.scss' as *;
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/ItemCard.svelte:61:20
+Warn: Unused CSS selector ".header-actions"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	@use '$lib/app.scss' as *;
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/ItemCard.svelte:61:20
+Warn: Unused CSS selector ".header-btn"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	@use '$lib/app.scss' as *;
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/ItemCard.svelte:61:20
+Warn: Unused CSS selector ".header-btn:hover"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	@use '$lib/app.scss' as *;
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/ItemCard.svelte:61:20
+Warn: Unused CSS selector ".main-nav"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	@use '$lib/app.scss' as *;
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/ItemCard.svelte:61:20
+Warn: Unused CSS selector ".nav-content"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	@use '$lib/app.scss' as *;
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/ItemCard.svelte:61:20
+Warn: Unused CSS selector ".nav-item"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	@use '$lib/app.scss' as *;
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/ItemCard.svelte:61:20
+Warn: Unused CSS selector ".nav-link"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	@use '$lib/app.scss' as *;
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/ItemCard.svelte:61:20
+Warn: Unused CSS selector ".nav-link:hover"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	@use '$lib/app.scss' as *;
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/ItemCard.svelte:61:20
+Warn: Unused CSS selector ".nav-link i"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	@use '$lib/app.scss' as *;
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/ItemCard.svelte:61:20
+Warn: Unused CSS selector ".nav-item:hover .nav-link i"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	@use '$lib/app.scss' as *;
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/ItemCard.svelte:61:20
+Warn: Unused CSS selector ".dropdown-menu"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	@use '$lib/app.scss' as *;
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/ItemCard.svelte:61:20
+Warn: Unused CSS selector ".dropdown-grid"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	@use '$lib/app.scss' as *;
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/ItemCard.svelte:61:20
+Warn: Unused CSS selector ".dropdown-column a"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	@use '$lib/app.scss' as *;
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/ItemCard.svelte:61:20
+Warn: Unused CSS selector ".dropdown-content a"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	@use '$lib/app.scss' as *;
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/ItemCard.svelte:61:20
+Warn: Unused CSS selector ".dropdown-column a:hover"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	@use '$lib/app.scss' as *;
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/ItemCard.svelte:61:20
+Warn: Unused CSS selector ".dropdown-content a:hover"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	@use '$lib/app.scss' as *;
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/ItemCard.svelte:61:20
+Warn: Unused CSS selector ".account-menu"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	@use '$lib/app.scss' as *;
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/ItemCard.svelte:61:20
+Warn: Unused CSS selector ".hero"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	@use '$lib/app.scss' as *;
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/ItemCard.svelte:61:20
+Warn: Unused CSS selector ".hero-content"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	@use '$lib/app.scss' as *;
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/ItemCard.svelte:61:20
+Warn: Unused CSS selector ".hero-title"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	@use '$lib/app.scss' as *;
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/ItemCard.svelte:61:20
+Warn: Unused CSS selector ".hero-subtitle"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	@use '$lib/app.scss' as *;
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/ItemCard.svelte:61:20
+Warn: Unused CSS selector ".hero-description"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	@use '$lib/app.scss' as *;
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/ItemCard.svelte:61:20
+Warn: Unused CSS selector ".hero-actions"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	@use '$lib/app.scss' as *;
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/ItemCard.svelte:61:20
+Warn: Unused CSS selector ".btn-primary"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	@use '$lib/app.scss' as *;
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/ItemCard.svelte:61:20
+Warn: Unused CSS selector ".btn-secondary"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	@use '$lib/app.scss' as *;
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/ItemCard.svelte:61:20
+Warn: Unused CSS selector ".btn-primary"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	@use '$lib/app.scss' as *;
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/ItemCard.svelte:61:20
+Warn: Unused CSS selector ".btn-primary:hover"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	@use '$lib/app.scss' as *;
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/ItemCard.svelte:61:20
+Warn: Unused CSS selector ".btn-secondary"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	@use '$lib/app.scss' as *;
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/ItemCard.svelte:61:20
+Warn: Unused CSS selector ".btn-secondary:hover"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	@use '$lib/app.scss' as *;
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/ItemCard.svelte:61:20
+Warn: Unused CSS selector ".hero-panels"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	@use '$lib/app.scss' as *;
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/ItemCard.svelte:61:20
+Warn: Unused CSS selector ".search-panel"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	@use '$lib/app.scss' as *;
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/ItemCard.svelte:61:20
+Warn: Unused CSS selector ".product-images"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	@use '$lib/app.scss' as *;
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/ItemCard.svelte:61:20
+Warn: Unused CSS selector ".product-placeholder"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	@use '$lib/app.scss' as *;
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/ItemCard.svelte:61:20
+Warn: Unused CSS selector ".content-grid"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	@use '$lib/app.scss' as *;
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/ItemCard.svelte:61:20
+Warn: Unused CSS selector ".hgrid"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	@use '$lib/app.scss' as *;
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/ItemCard.svelte:61:20
+Warn: Unused CSS selector ".events-section"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	@use '$lib/app.scss' as *;
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/ItemCard.svelte:61:20
+Warn: Unused CSS selector ".testimonials-section"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	@use '$lib/app.scss' as *;
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/ItemCard.svelte:61:20
+Warn: Unused CSS selector ".custom-orders"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	@use '$lib/app.scss' as *;
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/ItemCard.svelte:61:20
+Warn: Unused CSS selector ".newsletter-signup"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	@use '$lib/app.scss' as *;
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/ItemCard.svelte:61:20
+Warn: Unused CSS selector ".events-section h3"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	@use '$lib/app.scss' as *;
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/ItemCard.svelte:61:20
+Warn: Unused CSS selector ".testimonials-section h3"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	@use '$lib/app.scss' as *;
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/ItemCard.svelte:61:20
+Warn: Unused CSS selector ".custom-orders h3"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	@use '$lib/app.scss' as *;
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/ItemCard.svelte:61:20
+Warn: Unused CSS selector ".newsletter-signup h3"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	@use '$lib/app.scss' as *;
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/ItemCard.svelte:61:20
+Warn: Unused CSS selector ".events-list"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	@use '$lib/app.scss' as *;
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/ItemCard.svelte:61:20
+Warn: Unused CSS selector ".testimonials-list"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	@use '$lib/app.scss' as *;
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/ItemCard.svelte:61:20
+Warn: Unused CSS selector ".testimonials-list"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	@use '$lib/app.scss' as *;
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/ItemCard.svelte:61:20
+Warn: Unused CSS selector ".testimonials-list"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	@use '$lib/app.scss' as *;
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/ItemCard.svelte:61:20
+Warn: Unused CSS selector ".event-item"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	@use '$lib/app.scss' as *;
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/ItemCard.svelte:61:20
+Warn: Unused CSS selector ".event-item:last-child"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	@use '$lib/app.scss' as *;
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/ItemCard.svelte:61:20
+Warn: Unused CSS selector ".event-date"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	@use '$lib/app.scss' as *;
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/ItemCard.svelte:61:20
+Warn: Unused CSS selector ".event-details strong"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	@use '$lib/app.scss' as *;
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/ItemCard.svelte:61:20
+Warn: Unused CSS selector ".event-details small"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	@use '$lib/app.scss' as *;
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/ItemCard.svelte:61:20
+Warn: Unused CSS selector ".newsletter-signup"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	@use '$lib/app.scss' as *;
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/ItemCard.svelte:61:20
+Warn: Unused CSS selector ".newsletter-signup input"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	@use '$lib/app.scss' as *;
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/ItemCard.svelte:61:20
+Warn: Unused CSS selector ".newsletter-signup input:focus"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	@use '$lib/app.scss' as *;
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/ItemCard.svelte:61:20
+Warn: Unused CSS selector ".newsletter-signup small"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	@use '$lib/app.scss' as *;
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/ItemCard.svelte:61:20
+Warn: Unused CSS selector ".btn-signup"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	@use '$lib/app.scss' as *;
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/ItemCard.svelte:61:20
+Warn: Unused CSS selector ".btn-custom"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	@use '$lib/app.scss' as *;
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/ItemCard.svelte:61:20
+Warn: Unused CSS selector ".btn-past-work"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	@use '$lib/app.scss' as *;
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/ItemCard.svelte:61:20
+Warn: Unused CSS selector ".btn-signup:hover"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	@use '$lib/app.scss' as *;
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/ItemCard.svelte:61:20
+Warn: Unused CSS selector ".btn-custom:hover"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	@use '$lib/app.scss' as *;
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/ItemCard.svelte:61:20
+Warn: Unused CSS selector ".btn-past-work:hover"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	@use '$lib/app.scss' as *;
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/ItemCard.svelte:61:20
+Warn: Unused CSS selector ".custom-orders p"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	@use '$lib/app.scss' as *;
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/ItemCard.svelte:61:20
+Warn: Unused CSS selector ".custom-actions"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	@use '$lib/app.scss' as *;
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/ItemCard.svelte:61:20
+Warn: Unused CSS selector ".btn-past-work"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	@use '$lib/app.scss' as *;
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/ItemCard.svelte:61:20
+Warn: Unused CSS selector ".btn-past-work:hover"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	@use '$lib/app.scss' as *;
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/ItemCard.svelte:61:20
+Warn: Unused CSS selector ".categories-grid"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	@use '$lib/app.scss' as *;
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/ItemCard.svelte:61:20
+Warn: Unused CSS selector ".category-item"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	@use '$lib/app.scss' as *;
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/ItemCard.svelte:61:20
+Warn: Unused CSS selector ".category-item:hover"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	@use '$lib/app.scss' as *;
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/ItemCard.svelte:61:20
+Warn: Unused CSS selector ".category-item h4"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	@use '$lib/app.scss' as *;
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/ItemCard.svelte:61:20
+Warn: Unused CSS selector ".category-image"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	@use '$lib/app.scss' as *;
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/ItemCard.svelte:61:20
+Warn: Unused CSS selector ".category-item:hover .category-image"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	@use '$lib/app.scss' as *;
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/ItemCard.svelte:61:20
+Warn: Unused CSS selector ".header-content"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	@use '$lib/app.scss' as *;
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/ItemCard.svelte:61:20
+Warn: Unused CSS selector ".search-container"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	@use '$lib/app.scss' as *;
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/ItemCard.svelte:61:20
+Warn: Unused CSS selector ".nav-content"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	@use '$lib/app.scss' as *;
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/ItemCard.svelte:61:20
+Warn: Unused CSS selector ".hero-content"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	@use '$lib/app.scss' as *;
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/ItemCard.svelte:61:20
+Warn: Unused CSS selector ".hero-title"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	@use '$lib/app.scss' as *;
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/ItemCard.svelte:61:20
+Warn: Unused CSS selector ".content-grid"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	@use '$lib/app.scss' as *;
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/ItemCard.svelte:61:20
+Warn: Unused CSS selector ".categories-grid"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	@use '$lib/app.scss' as *;
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/ItemCard.svelte:61:20
+Warn: Unused CSS selector ".footer-links"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	@use '$lib/app.scss' as *;
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/ItemCard.svelte:61:20
+Warn: Unused CSS selector ".hero-actions"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	@use '$lib/app.scss' as *;
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/ItemCard.svelte:61:20
+Warn: Unused CSS selector ".btn-primary"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	@use '$lib/app.scss' as *;
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/ItemCard.svelte:61:20
+Warn: Unused CSS selector ".btn-secondary"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	@use '$lib/app.scss' as *;
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/lib/common/ItemCard.svelte:61:20
+Warn: Unused CSS selector ".hero .logo"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+	@use '$lib/app.scss' as *;
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/routes/item/[itemID]/+page.svelte:20:28
+Error: Property 'itemData' does not exist on type '{ imageUrls: any[]; type: "ITEM"; itemData?: CatalogItem; id: string; updatedAt?: string; version?: bigint; isDeleted?: boolean; customAttributeValues?: Record<string, CatalogCustomAttributeValue>; ... 4 more ...; imageId?: string; } | ... 17 more ... | { ...; }'.
+  Property 'itemData' does not exist on type '{ imageUrls: any[]; type: "IMAGE"; imageData?: CatalogImage; id: string; updatedAt?: string; version?: bigint; isDeleted?: boolean; customAttributeValues?: Record<string, CatalogCustomAttributeValue>; ... 4 more ...; imageId?: string; }'. (js)
+		try {
+			const variation = item?.itemData?.variations?.[0];
+			const price = variation?.itemVariationData?.priceMoney?.amount || 0;
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/routes/item/[itemID]/+page.svelte:52:44
+Error: Property 'itemData' does not exist on type '{ imageUrls: any[]; type: "ITEM"; itemData?: CatalogItem; id: string; updatedAt?: string; version?: bigint; isDeleted?: boolean; customAttributeValues?: Record<string, CatalogCustomAttributeValue>; ... 4 more ...; imageId?: string; } | ... 17 more ... | { ...; }'.
+  Property 'itemData' does not exist on type '{ imageUrls: any[]; type: "IMAGE"; imageData?: CatalogImage; id: string; updatedAt?: string; version?: bigint; isDeleted?: boolean; customAttributeValues?: Record<string, CatalogCustomAttributeValue>; ... 4 more ...; imageId?: string; }'. (js)
+						{#if selectedImage}
+							<img src={selectedImage} alt={item?.itemData?.name || 'Product'} />
+						{:else if item?.itemData?.imageIds?.[0]}
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/routes/item/[itemID]/+page.svelte:53:23
+Error: Property 'itemData' does not exist on type '{ imageUrls: any[]; type: "ITEM"; itemData?: CatalogItem; id: string; updatedAt?: string; version?: bigint; isDeleted?: boolean; customAttributeValues?: Record<string, CatalogCustomAttributeValue>; ... 4 more ...; imageId?: string; } | ... 17 more ... | { ...; }'.
+  Property 'itemData' does not exist on type '{ imageUrls: any[]; type: "IMAGE"; imageData?: CatalogImage; id: string; updatedAt?: string; version?: bigint; isDeleted?: boolean; customAttributeValues?: Record<string, CatalogCustomAttributeValue>; ... 4 more ...; imageId?: string; }'. (js)
+							<img src={selectedImage} alt={item?.itemData?.name || 'Product'} />
+						{:else if item?.itemData?.imageIds?.[0]}
+							<div class="placeholder-image">
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/routes/item/[itemID]/+page.svelte:56:32
+Error: Property 'itemData' does not exist on type '{ imageUrls: any[]; type: "ITEM"; itemData?: CatalogItem; id: string; updatedAt?: string; version?: bigint; isDeleted?: boolean; customAttributeValues?: Record<string, CatalogCustomAttributeValue>; ... 4 more ...; imageId?: string; } | ... 17 more ... | { ...; }'.
+  Property 'itemData' does not exist on type '{ imageUrls: any[]; type: "IMAGE"; imageData?: CatalogImage; id: string; updatedAt?: string; version?: bigint; isDeleted?: boolean; customAttributeValues?: Record<string, CatalogCustomAttributeValue>; ... 4 more ...; imageId?: string; }'. (js)
+								<span>🖼️</span>
+								<small>Image ID: {item.itemData.imageIds[0]}</small>
+							</div>
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/routes/item/[itemID]/+page.svelte:86:35
+Error: Property 'itemData' does not exist on type '{ imageUrls: any[]; type: "ITEM"; itemData?: CatalogItem; id: string; updatedAt?: string; version?: bigint; isDeleted?: boolean; customAttributeValues?: Record<string, CatalogCustomAttributeValue>; ... 4 more ...; imageId?: string; } | ... 17 more ... | { ...; }'.
+  Property 'itemData' does not exist on type '{ imageUrls: any[]; type: "IMAGE"; imageData?: CatalogImage; id: string; updatedAt?: string; version?: bigint; isDeleted?: boolean; customAttributeValues?: Record<string, CatalogCustomAttributeValue>; ... 4 more ...; imageId?: string; }'. (js)
+			<div class="product-info">
+				<h2 class="hero-title">{item?.itemData?.name || 'Product'}</h2>
+				{#if item?.itemData?.description}
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/routes/item/[itemID]/+page.svelte:87:16
+Error: Property 'itemData' does not exist on type '{ imageUrls: any[]; type: "ITEM"; itemData?: CatalogItem; id: string; updatedAt?: string; version?: bigint; isDeleted?: boolean; customAttributeValues?: Record<string, CatalogCustomAttributeValue>; ... 4 more ...; imageId?: string; } | ... 17 more ... | { ...; }'.
+  Property 'itemData' does not exist on type '{ imageUrls: any[]; type: "IMAGE"; imageData?: CatalogImage; id: string; updatedAt?: string; version?: bigint; isDeleted?: boolean; customAttributeValues?: Record<string, CatalogCustomAttributeValue>; ... 4 more ...; imageId?: string; }'. (js)
+				<h2 class="hero-title">{item?.itemData?.name || 'Product'}</h2>
+				{#if item?.itemData?.description}
+					<p class="hero-subtitle">{item.itemData.description}</p>
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/routes/item/[itemID]/+page.svelte:88:37
+Error: Property 'itemData' does not exist on type '{ imageUrls: any[]; type: "ITEM"; itemData?: CatalogItem; id: string; updatedAt?: string; version?: bigint; isDeleted?: boolean; customAttributeValues?: Record<string, CatalogCustomAttributeValue>; ... 4 more ...; imageId?: string; } | ... 17 more ... | { ...; }'.
+  Property 'itemData' does not exist on type '{ imageUrls: any[]; type: "IMAGE"; imageData?: CatalogImage; id: string; updatedAt?: string; version?: bigint; isDeleted?: boolean; customAttributeValues?: Record<string, CatalogCustomAttributeValue>; ... 4 more ...; imageId?: string; }'. (js)
+				{#if item?.itemData?.description}
+					<p class="hero-subtitle">{item.itemData.description}</p>
+				{/if}
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/routes/item/[itemID]/+page.svelte:110:13
+Error: Property 'itemData' does not exist on type '{ imageUrls: any[]; type: "ITEM"; itemData?: CatalogItem; id: string; updatedAt?: string; version?: bigint; isDeleted?: boolean; customAttributeValues?: Record<string, CatalogCustomAttributeValue>; ... 4 more ...; imageId?: string; } | ... 17 more ... | { ...; }'.
+  Property 'itemData' does not exist on type '{ imageUrls: any[]; type: "IMAGE"; imageData?: CatalogImage; id: string; updatedAt?: string; version?: bigint; isDeleted?: boolean; customAttributeValues?: Record<string, CatalogCustomAttributeValue>; ... 4 more ...; imageId?: string; }'. (js)
+	<!-- Details Section -->
+	{#if item?.itemData?.description || item?.customAttributeValues?.details?.stringValue}
+		<section class="content-grid">
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/routes/item/[itemID]/+page.svelte:118:21
+Error: Property 'itemData' does not exist on type '{ imageUrls: any[]; type: "ITEM"; itemData?: CatalogItem; id: string; updatedAt?: string; version?: bigint; isDeleted?: boolean; customAttributeValues?: Record<string, CatalogCustomAttributeValue>; ... 4 more ...; imageId?: string; } | ... 17 more ... | { ...; }'.
+  Property 'itemData' does not exist on type '{ imageUrls: any[]; type: "IMAGE"; imageData?: CatalogImage; id: string; updatedAt?: string; version?: bigint; isDeleted?: boolean; customAttributeValues?: Record<string, CatalogCustomAttributeValue>; ... 4 more ...; imageId?: string; }'. (js)
+					</p>
+				{:else if item?.itemData?.description}
+					<p style="color: var(--muted); line-height: 1.6;">
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/routes/item/[itemID]/+page.svelte:120:13
+Error: Property 'itemData' does not exist on type '{ imageUrls: any[]; type: "ITEM"; itemData?: CatalogItem; id: string; updatedAt?: string; version?: bigint; isDeleted?: boolean; customAttributeValues?: Record<string, CatalogCustomAttributeValue>; ... 4 more ...; imageId?: string; } | ... 17 more ... | { ...; }'.
+  Property 'itemData' does not exist on type '{ imageUrls: any[]; type: "IMAGE"; imageData?: CatalogImage; id: string; updatedAt?: string; version?: bigint; isDeleted?: boolean; customAttributeValues?: Record<string, CatalogCustomAttributeValue>; ... 4 more ...; imageId?: string; }'. (js)
+					<p style="color: var(--muted); line-height: 1.6;">
+						{item.itemData.description}
+					</p>
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/routes/productPage/+page.svelte:36:15
+Warn: Visible, non-interactive elements with a click event must be accompanied by a keyboard event handler. Consider whether an interactive element such as `<button type="button">` or `<a>` might be more appropriate
+https://svelte.dev/e/a11y_click_events_have_key_events (svelte)
+            {#each product.images as img}
+              <img
+                src={img}
+                alt="Thumbnail"
+                class:selected={selectedImage === img}
+                on:click={() => selectImage(img)}
+              />
+            {/each}
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/routes/productPage/+page.svelte:36:15
+Warn: Non-interactive element `<img>` should not be assigned mouse or keyboard event listeners
+https://svelte.dev/e/a11y_no_noninteractive_element_interactions (svelte)
+            {#each product.images as img}
+              <img
+                src={img}
+                alt="Thumbnail"
+                class:selected={selectedImage === img}
+                on:click={() => selectImage(img)}
+              />
+            {/each}
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/routes/search/+page.svelte:466:20
+Warn: Unused CSS selector ".theme-glass"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/routes/search/+page.svelte:466:20
+Warn: Unused CSS selector "body"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/routes/search/+page.svelte:466:20
+Warn: Unused CSS selector "body::before"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/routes/search/+page.svelte:466:20
+Warn: Unused CSS selector "body > *"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/routes/search/+page.svelte:466:20
+Warn: Unused CSS selector ".elemental-store"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/routes/search/+page.svelte:466:20
+Warn: Unused CSS selector ".header"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/routes/search/+page.svelte:466:20
+Warn: Unused CSS selector ".header-content"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/routes/search/+page.svelte:466:20
+Warn: Unused CSS selector ".logo h1"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/routes/search/+page.svelte:466:20
+Warn: Unused CSS selector ".search-box"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/routes/search/+page.svelte:466:20
+Warn: Unused CSS selector ".search-box:focus-within"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/routes/search/+page.svelte:466:20
+Warn: Unused CSS selector ".search-box input"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/routes/search/+page.svelte:466:20
+Warn: Unused CSS selector ".search-box input::placeholder"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/routes/search/+page.svelte:466:20
+Warn: Unused CSS selector ".search-btn"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/routes/search/+page.svelte:466:20
+Warn: Unused CSS selector ".search-btn:hover"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/routes/search/+page.svelte:466:20
+Warn: Unused CSS selector ".header-actions"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/routes/search/+page.svelte:466:20
+Warn: Unused CSS selector ".header-btn"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/routes/search/+page.svelte:466:20
+Warn: Unused CSS selector ".header-btn:hover"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/routes/search/+page.svelte:466:20
+Warn: Unused CSS selector ".main-nav"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/routes/search/+page.svelte:466:20
+Warn: Unused CSS selector ".nav-content"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/routes/search/+page.svelte:466:20
+Warn: Unused CSS selector ".nav-item"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/routes/search/+page.svelte:466:20
+Warn: Unused CSS selector ".nav-link"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/routes/search/+page.svelte:466:20
+Warn: Unused CSS selector ".nav-link:hover"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/routes/search/+page.svelte:466:20
+Warn: Unused CSS selector ".nav-link i"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/routes/search/+page.svelte:466:20
+Warn: Unused CSS selector ".nav-item:hover .nav-link i"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/routes/search/+page.svelte:466:20
+Warn: Unused CSS selector ".dropdown-menu"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/routes/search/+page.svelte:466:20
+Warn: Unused CSS selector ".dropdown-grid"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/routes/search/+page.svelte:466:20
+Warn: Unused CSS selector ".dropdown-column a"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/routes/search/+page.svelte:466:20
+Warn: Unused CSS selector ".dropdown-content a"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/routes/search/+page.svelte:466:20
+Warn: Unused CSS selector ".dropdown-column a:hover"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/routes/search/+page.svelte:466:20
+Warn: Unused CSS selector ".dropdown-content a:hover"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/routes/search/+page.svelte:466:20
+Warn: Unused CSS selector ".account-menu"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/routes/search/+page.svelte:466:20
+Warn: Unused CSS selector ".hero"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/routes/search/+page.svelte:466:20
+Warn: Unused CSS selector ".hero-content"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/routes/search/+page.svelte:466:20
+Warn: Unused CSS selector ".hero-title"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/routes/search/+page.svelte:466:20
+Warn: Unused CSS selector ".hero-subtitle"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/routes/search/+page.svelte:466:20
+Warn: Unused CSS selector ".hero-description"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/routes/search/+page.svelte:466:20
+Warn: Unused CSS selector ".hero-actions"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/routes/search/+page.svelte:466:20
+Warn: Unused CSS selector ".btn-primary"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/routes/search/+page.svelte:466:20
+Warn: Unused CSS selector ".btn-secondary"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/routes/search/+page.svelte:466:20
+Warn: Unused CSS selector ".btn-primary"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/routes/search/+page.svelte:466:20
+Warn: Unused CSS selector ".btn-primary:hover"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/routes/search/+page.svelte:466:20
+Warn: Unused CSS selector ".btn-secondary"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/routes/search/+page.svelte:466:20
+Warn: Unused CSS selector ".btn-secondary:hover"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/routes/search/+page.svelte:466:20
+Warn: Unused CSS selector ".hero-panels"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/routes/search/+page.svelte:466:20
+Warn: Unused CSS selector ".search-panel"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/routes/search/+page.svelte:466:20
+Warn: Unused CSS selector ".product-images"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/routes/search/+page.svelte:466:20
+Warn: Unused CSS selector ".product-placeholder"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/routes/search/+page.svelte:466:20
+Warn: Unused CSS selector ".content-grid"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/routes/search/+page.svelte:466:20
+Warn: Unused CSS selector ".hgrid"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/routes/search/+page.svelte:466:20
+Warn: Unused CSS selector ".events-section"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/routes/search/+page.svelte:466:20
+Warn: Unused CSS selector ".testimonials-section"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/routes/search/+page.svelte:466:20
+Warn: Unused CSS selector ".custom-orders"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/routes/search/+page.svelte:466:20
+Warn: Unused CSS selector ".newsletter-signup"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/routes/search/+page.svelte:466:20
+Warn: Unused CSS selector ".events-section h3"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/routes/search/+page.svelte:466:20
+Warn: Unused CSS selector ".testimonials-section h3"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/routes/search/+page.svelte:466:20
+Warn: Unused CSS selector ".custom-orders h3"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/routes/search/+page.svelte:466:20
+Warn: Unused CSS selector ".newsletter-signup h3"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/routes/search/+page.svelte:466:20
+Warn: Unused CSS selector ".events-list"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/routes/search/+page.svelte:466:20
+Warn: Unused CSS selector ".testimonials-list"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/routes/search/+page.svelte:466:20
+Warn: Unused CSS selector ".testimonials-list"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/routes/search/+page.svelte:466:20
+Warn: Unused CSS selector ".testimonials-list"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/routes/search/+page.svelte:466:20
+Warn: Unused CSS selector ".event-item"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/routes/search/+page.svelte:466:20
+Warn: Unused CSS selector ".event-item:last-child"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/routes/search/+page.svelte:466:20
+Warn: Unused CSS selector ".event-date"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/routes/search/+page.svelte:466:20
+Warn: Unused CSS selector ".event-details strong"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/routes/search/+page.svelte:466:20
+Warn: Unused CSS selector ".event-details small"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/routes/search/+page.svelte:466:20
+Warn: Unused CSS selector ".newsletter-signup"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/routes/search/+page.svelte:466:20
+Warn: Unused CSS selector ".newsletter-signup input"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/routes/search/+page.svelte:466:20
+Warn: Unused CSS selector ".newsletter-signup input:focus"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/routes/search/+page.svelte:466:20
+Warn: Unused CSS selector ".newsletter-signup small"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/routes/search/+page.svelte:466:20
+Warn: Unused CSS selector ".btn-signup"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/routes/search/+page.svelte:466:20
+Warn: Unused CSS selector ".btn-custom"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/routes/search/+page.svelte:466:20
+Warn: Unused CSS selector ".btn-past-work"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/routes/search/+page.svelte:466:20
+Warn: Unused CSS selector ".btn-signup:hover"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/routes/search/+page.svelte:466:20
+Warn: Unused CSS selector ".btn-custom:hover"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/routes/search/+page.svelte:466:20
+Warn: Unused CSS selector ".btn-past-work:hover"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/routes/search/+page.svelte:466:20
+Warn: Unused CSS selector ".custom-orders p"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/routes/search/+page.svelte:466:20
+Warn: Unused CSS selector ".custom-actions"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/routes/search/+page.svelte:466:20
+Warn: Unused CSS selector ".btn-past-work"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/routes/search/+page.svelte:466:20
+Warn: Unused CSS selector ".btn-past-work:hover"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/routes/search/+page.svelte:466:20
+Warn: Unused CSS selector ".categories-grid"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/routes/search/+page.svelte:466:20
+Warn: Unused CSS selector ".category-item"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/routes/search/+page.svelte:466:20
+Warn: Unused CSS selector ".category-item:hover"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/routes/search/+page.svelte:466:20
+Warn: Unused CSS selector ".category-item h4"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/routes/search/+page.svelte:466:20
+Warn: Unused CSS selector ".category-image"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/routes/search/+page.svelte:466:20
+Warn: Unused CSS selector ".category-item:hover .category-image"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/routes/search/+page.svelte:466:20
+Warn: Unused CSS selector ".header-content"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/routes/search/+page.svelte:466:20
+Warn: Unused CSS selector ".nav-content"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/routes/search/+page.svelte:466:20
+Warn: Unused CSS selector ".hero-content"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/routes/search/+page.svelte:466:20
+Warn: Unused CSS selector ".hero-title"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/routes/search/+page.svelte:466:20
+Warn: Unused CSS selector ".content-grid"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/routes/search/+page.svelte:466:20
+Warn: Unused CSS selector ".categories-grid"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/routes/search/+page.svelte:466:20
+Warn: Unused CSS selector ".footer-links"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/routes/search/+page.svelte:466:20
+Warn: Unused CSS selector ".hero-actions"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/routes/search/+page.svelte:466:20
+Warn: Unused CSS selector ".btn-primary"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/routes/search/+page.svelte:466:20
+Warn: Unused CSS selector ".btn-secondary"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/routes/search/+page.svelte:466:20
+Warn: Unused CSS selector ".hero .logo"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/routes/search/+page.svelte:466:20
+Warn: Unused CSS selector ".card-footer"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+
+/run/media/system/Crucial/Github/ElementalDesignsStore/src/routes/search/+page.svelte:466:20
+Warn: Unused CSS selector ".add-to-cart-btn"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+<style lang="scss">
+
+====================================
+svelte-check found 34 errors and 341 warnings in 15 files

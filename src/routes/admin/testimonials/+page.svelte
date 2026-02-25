@@ -90,13 +90,45 @@ async function handleDelete(id) {
 	}
 }
 
-$: upcomingtestamonials = testimonials
-	.filter((e) => new Date(e.date) >= new Date())
-	.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+async function saveOrder() {
+	isSaving = true;
+	const updates = testimonials.map((t, index) => ({ id: t.id || t._id, order: index }));
+	try {
+		await fetch('/admin/testimonials', {
+			method: 'PUT',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify({ updates })
+		});
+	} catch (error) {
+		console.error('Failed to save order:', error);
+		alert('Failed to save ordering changes.');
+	} finally {
+		isSaving = false;
+	}
+}
 
-$: pasttestamonials = testimonials
-	.filter((e) => new Date(e.date) < new Date())
-	.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+function handleMoveUp(id) {
+	const index = testimonials.findIndex((t) => t.id === id || t._id === id);
+	if (index > 0) {
+		const temp = testimonials[index];
+		testimonials[index] = testimonials[index - 1];
+		testimonials[index - 1] = temp;
+		testimonials = [...testimonials]; // trigger reactivity
+		saveOrder();
+	}
+}
+
+function handleMoveDown(id) {
+	const index = testimonials.findIndex((t) => t.id === id || t._id === id);
+	if (index < testimonials.length - 1) {
+		const temp = testimonials[index];
+		testimonials[index] = testimonials[index + 1];
+		testimonials[index + 1] = temp;
+		testimonials = [...testimonials]; // trigger reactivity
+		saveOrder();
+	}
+}
+
 </script>
 
 <svelte:head>
@@ -115,55 +147,38 @@ $: pasttestamonials = testimonials
 		</button>
 	</div>
 	
-	<!-- Upcoming testimonials -->
+	<!-- Testimonials List -->
 	<section class="testimonials-section">
 		<h3 class="section-title">
-			<i class="fas fa-calendar-check"></i>
-			Upcoming testimonials ({upcomingtestamonials.length})
+			<i class="fas fa-quote-left"></i>
+			All Testimonials ({testimonials.length})
 		</h3>
 		
-		{#if upcomingtestamonials.length > 0}
+		{#if testimonials.length > 0}
 			<div class="testimonials-grid">
-				{#each upcomingtestamonials as testimonial (testimonial.id)}
+				{#each testimonials as testimonial, index (testimonial.id || testimonial._id)}
 					<TestimonialCard
 						{testimonial}
 						editable={true}
 						onEdit={openEditModal}
 						onDelete={handleDelete}
+						onMoveUp={handleMoveUp}
+						onMoveDown={handleMoveDown}
+						isFirst={index === 0}
+						isLast={index === testimonials.length - 1}
 					/>
 				{/each}
 			</div>
 		{:else}
 			<div class="empty-state theme-glass">
-				<i class="fas fa-calendar-plus"></i>
-				<p>No upcoming testimonials</p>
+				<i class="fas fa-comment-dots"></i>
+				<p>No testimonials available</p>
 				<button class="add-first-btn" onclick={openAddModal}>
 					Add Your First Testimonial
 				</button>
 			</div>
 		{/if}
 	</section>
-	
-	<!-- Past testimonials -->
-	{#if pasttestamonials.length > 0}
-		<section class="testimonials-section">
-			<h3 class="section-title">
-				<i class="fas fa-history"></i>
-				Past testimonials ({pasttestamonials.length})
-			</h3>
-			
-			<div class="testimonials-grid">
-				{#each pasttestamonials as testimonial (testimonial.id)}
-					<TestimonialCard
-						{testimonial}
-						editable={true}
-						onEdit={openEditModal}
-						onDelete={handleDelete}
-					/>
-				{/each}
-			</div>
-		</section>
-	{/if}
 </div>
 
 <!-- Testimonial Modal -->

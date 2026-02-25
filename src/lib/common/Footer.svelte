@@ -13,14 +13,13 @@
 				<h4>Info</h4>
 				<a href="/#events-schedule"><i class="fas fa-calendar"></i> Event schedule</a>
 				<a href="/about"><i class="fas fa-info"></i> About</a>
-				<a href="#contact"><i class="fas fa-envelope"></i> Contact</a>
+				<a href="mailto:elementalchaindesigns@gmail.com"><i class="fas fa-envelope"></i> Contact</a>
 			</div>
 			
 			<div class="footer-column">
 				<h4>Social</h4>
-				<a href="#instagram"><i class="fab fa-instagram"></i> Instagram</a>
-				<a href="#tiktok"><i class="fab fa-tiktok"></i> TikTok</a>
-				<a href="#facebook"><i class="fab fa-facebook"></i> Facebook</a>
+				<a href="https://www.instagram.com/elementalchaindesigns?igsh=MTF3YW13amV4MDFhMw==" target="_blank"><i class="fab fa-instagram"></i> Instagram</a>
+				<a href="https://www.facebook.com/share/188h9hVurC/?mibextid=LQQJ4d" target="_blank"><i class="fab fa-facebook"></i> Facebook</a>
 			</div>
 			
 			<div class="footer-column">
@@ -32,9 +31,9 @@
 			
 			<div class="footer-column">
 				<h4>Policies</h4>
-				<a href="#shipping"><i class="fas fa-shipping-fast"></i> Shipping</a>
-				<a href="#returns"><i class="fas fa-undo"></i> Returns</a>
-				<a href="#privacy"><i class="fas fa-shield-alt"></i> Privacy</a>
+				<a href="/policies/#shipping"><i class="fas fa-shipping-fast"></i> Shipping</a>
+				<a href="/policies/#returns"><i class="fas fa-undo"></i> Returns</a>
+				<a href="/policies/#privacy"><i class="fas fa-shield-alt"></i> Privacy</a>
 			</div>
 		</div>
 	</div>
