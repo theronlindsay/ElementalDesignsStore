@@ -1,6 +1,7 @@
 <script>
 	import { Button, Input, Label, FormGroup } from '$lib';
 	import { UploadDropzone, createUploader } from '$lib/uploadthing';
+	import "@uploadthing/svelte/styles.css";
 
 	let {
 		isOpen = false,
@@ -478,72 +479,30 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
+		width: 100%;
 		
-		&.dragging {
-			.upload-label {
-				border-color: var(--accent);
-				background: rgba(167, 139, 250, 0.15);
-				transform: scale(1.02);
-				
-				i {
-					color: var(--accent);
-					animation: bounce 0.6s ease infinite;
-				}
-			}
-		}
-		
-		.file-input {
-			display: none;
-		}
-		
-		.upload-label {
-			width: 100%;
-			display: flex;
-			flex-direction: column;
-			align-items: center;
-			justify-content: center;
-			padding: 2rem;
-			border: 2px dashed var(--border-primary);
-			border-radius: 8px;
-			cursor: pointer;
+		:global(.ut-button) {
+			background-color: var(--accent);
+			color: #ffffff;
 			transition: all 0.2s ease;
-			background: var(--bg-secondary);
-			pointer-events: none;
-			
-			i {
-				font-size: 2rem;
-				color: var(--accent);
-				margin-bottom: 0.5rem;
-				transition: all 0.2s ease;
-			}
-			
-			&:hover {
-				border-color: var(--accent);
-				background: rgba(167, 139, 250, 0.05);
-			}
 		}
-	}
-	
-	@keyframes bounce {
-		0%, 100% {
-			transform: translateY(0);
+
+		:global(.ut-button:hover) {
+			background-color: var(--accent);
+			opacity: 0.9;
 		}
-		50% {
-			transform: translateY(-10px);
+
+		:global(.ut-label) {
+			color: var(--accent);
 		}
-	}
-	
-	.upload-text {
-		color: var(--text-primary);
-		font-weight: 600;
-		margin: 0;
-		font-size: 1rem;
-	}
-	
-	.upload-hint {
-		color: var(--muted);
-		font-size: 0.85rem;
-		margin: 0.25rem 0 0;
+
+		:global(.ut-allowed-content) {
+			color: var(--muted);
+		}
+
+		:global(.ut-upload-icon) {
+			color: var(--accent);
+		}
 	}
 	
 	.error-message {

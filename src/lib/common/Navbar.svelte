@@ -4,15 +4,16 @@
 	// import '../app.scss';
 	import { Button } from '$lib';
 	import OrderModal from './OrderModal.svelte';
+	import logo from '$lib/assets/LogoTextAbove.png';
 
 	// Navbar Routes
 	let { items = [
 		{ id: 'home', label: 'Home', href: '/', active: true },
-		{ id: 'jewelry', label: 'Jewelry', href: '/search#jewelry', active: false },
-		{ id: 'chainmail', label: 'Chainmail', href: '/search#chainmail', active: false },
-		{ id: 'laser', label: 'Laser Engraving', href: '/search#laser', active: false },
-		{ id: 'games', label: 'Games', href: '/search#games', active: false },
-		{ id: 'custom', label: 'Custom Orders', href: '/search#custom', active: false},
+		// { id: 'jewelry', label: 'Jewelry', href: '/search#jewelry', active: false },
+		// { id: 'chainmail', label: 'Chainmail', href: '/search#chainmail', active: false },
+		// { id: 'laser', label: 'Laser Engraving', href: '/search#laser', active: false },
+		// { id: 'games', label: 'Games', href: '/search#games', active: false },
+		// { id: 'custom', label: 'Custom Orders', href: '/search#custom', active: false},
 		{ id: 'about', label: 'About', href: '/about', active: false },
 		// { id: 'account', label: 'Account', href: '/account', active: false },
 		// { id: 'cart', label: 'Cart', href: '/cart', active: false }
@@ -249,7 +250,7 @@
 				<div class="mobile-logo">
 					<a href="/" class="logo-link" aria-label="Elemental Designs Home">
 						<div class="logo">
-				    		<img src="/src/lib/assets/LogoTransparent.png" alt="Logo" style="max-width: 200px; display: block"/>
+				    		<img src={logo} alt="Logo" style="max-width: 200px; display: block"/>
 						</div>
 					</a>
 			    </div>

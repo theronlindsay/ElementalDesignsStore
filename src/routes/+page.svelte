@@ -7,8 +7,8 @@
 	let { data } = $props();
 	
 	// Load events and testimonials from server
-	let events = $state(data.events || []);
-	let testimonials = $state(data.testimonials || []);
+	let events = $derived(data.events || []);
+	let testimonials = $derived(data.testimonials || []);
 	// Order modal state
 	let showOrderModal = $state(false);
 	
