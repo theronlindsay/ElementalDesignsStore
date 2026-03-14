@@ -5,7 +5,7 @@
 	import {Navbar, Footer} from '$lib'
 	import { page } from '$app/stores';
 
-	let { children } = $props();
+	let { children, data } = $props();
 	
 	// Hide navbar and footer in admin routes (except login)
 	// $derived rune creates computed values that automatically update
@@ -21,7 +21,7 @@
 
 <main class="elemental-store">
 	{#if showNavAndFooter}
-		<Navbar />
+		<Navbar branding={data.branding} />
 	{/if}
 
 	{@render children?.()}

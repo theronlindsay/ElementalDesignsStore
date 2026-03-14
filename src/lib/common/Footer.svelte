@@ -70,6 +70,8 @@ $spacing-2xl: 3rem;
 $spacing-3xl: 4rem;
 
 $desktop-breakpoint: 1200px;
+$tablet-breakpoint: 768px;
+$mobile-breakpoint: 450px;
 $bg-primary: #1a1625;
 
 // Border Radius
@@ -102,6 +104,7 @@ $transition-slow: 0.5s ease;
 
   input {
     flex: 1;
+    min-width: 0;
     padding: 0.75rem;
     background: $bg-secondary;
     border: 1px solid $border-secondary;
@@ -143,6 +146,7 @@ $transition-slow: 0.5s ease;
     display: flex;
     align-items: center;
     gap: $spacing-sm;
+    word-break: break-word;
     color: $text-muted-2;
     text-decoration: none;
     padding: $spacing-sm 0;
@@ -157,6 +161,33 @@ $transition-slow: 0.5s ease;
       width: 20px;
       font-size: 0.9rem;
     }
+  }
+}
+
+@media (max-width: $tablet-breakpoint) {
+  .footer {
+    padding: $spacing-xl $spacing-md;
+  }
+
+  .footer-newsletter {
+    max-width: none;
+    flex-wrap: wrap;
+  }
+
+  .btn-subscribe {
+    width: 100%;
+  }
+
+  .footer-links {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: $spacing-lg;
+  }
+}
+
+@media (max-width: $mobile-breakpoint) {
+  .footer-links {
+    grid-template-columns: 1fr;
+    gap: $spacing-md;
   }
 }
 </style>

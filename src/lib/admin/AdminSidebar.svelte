@@ -1,19 +1,20 @@
 <script>
-	import { page } from '$app/stores';
-	import { Button } from '$lib';
+	import { resolve } from '$app/paths';
+	import { page } from '$app/state';
 	
-	export let isOpen = false;
+	let { isOpen = $bindable(false) } = $props();
 	
 	// Navigation items
 	const navItems = [
-		{ href: '/admin', icon: 'fa-chart-line', label: 'Dashboard' },
-		{ href: '/admin/products', icon: 'fa-box', label: 'Products' },
-		{ href: '/admin/orders', icon: 'fa-shopping-bag', label: 'Orders' },
-		{ href: '/admin/customers', icon: 'fa-users', label: 'Customers' },
-		{ href: '/admin/events', icon: 'fa-calendar-alt', label: 'Events' },
-		{ href: '/admin/testimonials', icon: 'fa-start-alt', label: 'Testimonials'},
-		{ href: '/admin/coupons', icon: 'fa-ticket-alt', label: 'Coupons' },
-		{ href: '/admin/settings', icon: 'fa-cog', label: 'Settings' }
+		{ route: '/admin', href: resolve('/admin'), icon: 'fa-chart-line', label: 'Dashboard' },
+		{ route: '/admin/products', href: resolve('/admin/products'), icon: 'fa-box', label: 'Products' },
+		{ route: '/admin/orders', href: resolve('/admin/orders'), icon: 'fa-shopping-bag', label: 'Orders' },
+		{ route: '/admin/customers', href: resolve('/admin/customers'), icon: 'fa-users', label: 'Customers' },
+		{ route: '/admin/events', href: resolve('/admin/events'), icon: 'fa-calendar-alt', label: 'Events' },
+		{ route: '/admin/about', href: resolve('/admin/about'), icon: 'fa-address-card', label: 'About' },
+		{ route: '/admin/branding', href: resolve('/admin/branding'), icon: 'fa-palette', label: 'Branding' },
+		{ route: '/admin/policies', href: resolve('/admin/policies'), icon: 'fa-file-contract', label: 'Policy' },
+		{ route: '/admin/testimonials', href: resolve('/admin/testimonials'), icon: 'fa-start-alt', label: 'Testimonials' },
 	];
 	
 	function toggleSidebar() {
@@ -24,23 +25,26 @@
 		isOpen = false;
 	}
 	
+	// Track current route path reactively via $app/state
+	let currentPath = $derived(page.url.pathname);
+
 	// Check if route is active
-	$: isActive = (href) => {
+	function isActive(href) {
 		if (href === '/admin') {
-			return $page.url.pathname === '/admin';
+			return currentPath === '/admin';
 		}
-		return $page.url.pathname.startsWith(href);
-	};
+		return currentPath.startsWith(href);
+	}
 </script>
 
 <!-- Mobile Toggle Button -->
-<button class="sidebar-toggle" on:click={toggleSidebar} aria-label="Toggle sidebar">
+<button class="sidebar-toggle" onclick={toggleSidebar} aria-label="Toggle sidebar">
 	<i class="fas {isOpen ? 'fa-times' : 'fa-bars'}"></i>
 </button>
 
 <!-- Overlay for mobile -->
 {#if isOpen}
-	<div class="sidebar-overlay" on:click={closeSidebar} on:keydown={(e) => e.key === 'Escape' && closeSidebar()} role="button" tabindex="0"></div>
+	<div class="sidebar-overlay" onclick={closeSidebar} onkeydown={(e) => e.key === 'Escape' && closeSidebar()} role="button" tabindex="0"></div>
 {/if}
 
 <!-- Sidebar -->
@@ -55,12 +59,12 @@
 	
 	<!-- Navigation -->
 	<nav class="sidebar-nav">
-		{#each navItems as item}
+		{#each navItems as item (item.route)}
 			<a 
-				href={item.href}
+				href={resolve(/** @type {any} */ (item.route))}
 				class="nav-link"
-				class:active={isActive(item.href)}
-				on:click={closeSidebar}
+				class:active={isActive(item.route)}
+				onclick={closeSidebar}
 			>
 				<i class="fas {item.icon}"></i>
 				<span>{item.label}</span>

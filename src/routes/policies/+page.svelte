@@ -1,35 +1,48 @@
+<script>
+	import { splitPolicyParagraphs } from '$lib/policies';
+
+	let { data } = $props();
+
+	let policyContent = $derived(data.policyContent);
+	let shippingParagraphs = $derived(splitPolicyParagraphs(policyContent.shippingBody));
+	let returnsParagraphs = $derived(splitPolicyParagraphs(policyContent.returnsBody));
+	let privacyParagraphs = $derived(splitPolicyParagraphs(policyContent.privacyBody));
+</script>
+
 <svelte:head>
 	<meta name="robots" content="noindex" />
-	<title>Store Policies | Elemental Designs</title>
+	<title>{policyContent.heroTitle} | Elemental Designs</title>
 </svelte:head>
 
 <main class="policies-page">
 	<section class="policies-hero">
 		<div class="policies-container">
-			<h1 class="policies-title">Store Policies</h1>
-			<p class="policies-subtitle">Information regarding shipping, returns, and privacy</p>
+			<h1 class="policies-title">{policyContent.heroTitle}</h1>
+			<p class="policies-subtitle">{policyContent.heroSubtitle}</p>
 		</div>
 	</section>
 
 	<section class="policies-content">
 		<div class="policies-container">
 			<div class="policy-section" id="shipping">
-				<h2>Shipping Policy</h2>
-				<p>We process all orders within 1-3 business days. Custom orders may take longer depending on complexity and material availability.</p>
-				<p>Domestic shipping typically takes 3-5 business days after processing. We provide tracking information for all shipments once they are dispatched.</p>
+				<h2>{policyContent.shippingTitle}</h2>
+				{#each shippingParagraphs as paragraph}
+					<p>{paragraph}</p>
+				{/each}
 			</div>
 
 			<div class="policy-section" id="returns">
-				<h2>Returns & Exchanges</h2>
-				<p>We want you to be completely satisfied with your purchase. We accept returns and exchanges on non-custom items within 14 days of delivery.</p>
-				<p>Items must be returned in their original, unworn condition. Please contact us before returning an item so we can provide you with instructions.</p>
-				<p>Note: Custom or personalized items cannot be returned or exchanged unless they arrive damaged or defective.</p>
+				<h2>{policyContent.returnsTitle}</h2>
+				{#each returnsParagraphs as paragraph}
+					<p>{paragraph}</p>
+				{/each}
 			</div>
 
 			<div class="policy-section" id="privacy">
-				<h2>Privacy Policy</h2>
-				<p>We deeply respect your privacy. Any personal information you provide to us during checkout or when subscribing to our newsletter is used solely for processing your orders or communicating with you.</p>
-				<p>We will never sell, share, or rent your personal information to third parties without your explicit consent.</p>
+				<h2>{policyContent.privacyTitle}</h2>
+				{#each privacyParagraphs as paragraph}
+					<p>{paragraph}</p>
+				{/each}
 			</div>
 		</div>
 	</section>

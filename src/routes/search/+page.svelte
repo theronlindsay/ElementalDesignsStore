@@ -1,8 +1,10 @@
 <script>
 
 	import { onMount } from 'svelte';
+	import { resolve } from '$app/paths';
 	import { goto } from '$app/navigation';
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
+	import { SvelteSet } from 'svelte/reactivity';
 	import ItemCard from '$lib/common/ItemCard.svelte';
 	
 	let { data } = $props();
@@ -11,7 +13,8 @@
 	let activeCategory = $state('all');
 	
 	// Search query from URL parameter
-	let searchQuery = $derived($page.url.searchParams.get('q') || '');
+	let currentSearchParams = $derived(page.url.searchParams);
+	let searchQuery = $derived(currentSearchParams.get('q') || '');
 	
 	// Local search input for mobile
 	let mobileSearchInput = $state('');
@@ -42,7 +45,7 @@
 		if (!dataLoaded) return [];
 		
 		const subcats = [];
-		const seenNames = new Set();
+		const seenNames = new SvelteSet();
 		
 		// First add main category names
 		Object.entries(allCategoriesData).forEach(([slug, data]) => {
@@ -138,7 +141,7 @@
 		// If no subcategory match, check if item belongs to a primary category
 		if (categoryId) {
 			// Check which primary category this item belongs to based on where we found it
-			for (const [slug, data] of Object.entries(allCategoriesData)) {
+			for (const [, data] of Object.entries(allCategoriesData)) {
 				if (data?.itemIds?.has?.(item.id)) {
 					return data.name;
 				}
@@ -214,7 +217,7 @@
 	// Handle mobile search submission
 	function handleMobileSearch() {
 		if (mobileSearchInput.trim()) {
-			goto(`/search?q=${encodeURIComponent(mobileSearchInput.trim())}`);
+			goto(resolve(`/search?q=${encodeURIComponent(mobileSearchInput.trim())}`));
 		}
 	}
 	
@@ -224,6 +227,7 @@
 			handleMobileSearch();
 		}
 	}
+
 </script>
 
 <div class="search-page">
@@ -263,7 +267,7 @@
 							{/if}
 						</p>
 					</div>
-					<button class="clear-search" onclick={() => goto('/search#all')}>
+					<button class="clear-search" onclick={() => goto(resolve('/search#all'))}>
 						Clear Search
 					</button>
 				</div>
@@ -313,7 +317,7 @@
 						<div class="filter-section">
 							<h3>Type</h3>
 							<div class="type-filters">
-								{#each productTypes as type}
+								{#each productTypes as type (type)}
 									<button 
 										class="type-button"
 										class:active={selectedType === type}
@@ -363,7 +367,7 @@
 						<div class="filter-section">
 							<h3>Minimum Rating</h3>
 							<div class="rating-filter">
-								{#each [0, 1, 2, 3, 4, 5] as rating}
+								{#each [0, 1, 2, 3, 4, 5] as rating (rating)}
 									<button 
 										class="rating-button"
 										class:active={minRating === rating}
@@ -424,7 +428,25 @@
 							{#if searchQuery}
 								<p>No results found for "{searchQuery}"</p>
 								<p class="no-results-help">Try adjusting your search or browse our categories</p>
-								<button onclick={() => goto('/search#' + activeCategory)}>Clear Search</button>
+								<button onclick={() => {
+									if (activeCategory === 'jewelry') {
+										goto(resolve('/search#jewelry'));
+										return;
+									}
+									if (activeCategory === 'armor') {
+										goto(resolve('/search#armor'));
+										return;
+									}
+									if (activeCategory === 'laser') {
+										goto(resolve('/search#laser'));
+										return;
+									}
+									if (activeCategory === 'more') {
+										goto(resolve('/search#more'));
+										return;
+									}
+									goto(resolve('/search#all'));
+								}}>Clear Search</button>
 							{:else}
 								<p>No items match your filters</p>
 								<button onclick={resetFilters}>Clear Filters</button>
@@ -438,7 +460,7 @@
 								{@const itemRating = getItemRating(item)}
 								{@const itemType = getItemType(item, currentCategoryData.subcategories)}
 								
-								<a href="/item/{item.id}" class="product-card-link">
+								<a href={resolve(`/item/${item.id}`)} class="product-card-link">
 									<ItemCard 
 										{item}
 										{itemData}
@@ -464,8 +486,8 @@
 </div>
 
 <style lang="scss">
-	
-    @import '$lib/app.scss';
+	@use 'sass:color';
+	@use '../../lib/theme-vars.scss' as *;
 	
 	.search-page {
 		min-height: 100vh;
@@ -573,7 +595,7 @@
 			white-space: nowrap;
 			
 			&:hover {
-				background: lighten($accent-primary, 10%);
+				background: color.adjust($accent-primary, $lightness: 10%);
 				transform: translateY(-2px);
 				box-shadow: $shadow-md;
 			}
@@ -689,7 +711,7 @@
 		align-items: flex-end;
 		gap: $spacing-sm;
 		margin-bottom: $spacing-sm;
-		max-width: fit-content;
+		max-width: 20vw;
 		
 		.input-group {
 			flex: 1;
@@ -709,7 +731,7 @@
 				padding: $spacing-sm;
 				border-radius: $radius-sm;
 				outline: none;
-				max-width: fit-content;
+				max-width: 20vw;
 				width: 7em;
 				
 				&:focus {
@@ -965,7 +987,7 @@
 		
 		.filters-sidebar {
 			position: static;
-			width: 100%;
+			width: auto;
 			
 			&.collapsed {
 				display: none;
@@ -981,15 +1003,6 @@
 	@media (max-width: $mobile-breakpoint) {
 		.product-grid {
 			grid-template-columns: 1fr;
-		}
-		
-		.card-footer {
-			flex-direction: column;
-			align-items: stretch;
-		}
-		
-		.add-to-cart-btn {
-			width: 100%;
 		}
 	}
 </style>

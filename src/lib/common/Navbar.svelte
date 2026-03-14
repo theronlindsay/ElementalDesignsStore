@@ -1,60 +1,69 @@
 <script>
 	import { onMount } from 'svelte';
-	import { page } from '$app/stores';
-	// import '../app.scss';
-	import { Button } from '$lib';
+	import { resolve } from '$app/paths';
+	import { page } from '$app/state';
 	import OrderModal from './OrderModal.svelte';
-	import logo from '$lib/assets/LogoTextAbove.png';
+	import defaultLogo from '$lib/assets/LogoTextAbove.png';
 
 	// Navbar Routes
-	let { items = [
+	let {
+		branding = null,
+		items = [
 		{ id: 'home', label: 'Home', href: '/', active: true },
-		// { id: 'jewelry', label: 'Jewelry', href: '/search#jewelry', active: false },
-		// { id: 'chainmail', label: 'Chainmail', href: '/search#chainmail', active: false },
-		// { id: 'laser', label: 'Laser Engraving', href: '/search#laser', active: false },
-		// { id: 'games', label: 'Games', href: '/search#games', active: false },
-		// { id: 'custom', label: 'Custom Orders', href: '/search#custom', active: false},
+		{ id: 'jewelry', label: 'Jewelry', href: '/search#jewelry', active: false },
+		{ id: 'chainmail', label: 'Chainmail', href: '/search#chainmail', active: false },
+		{ id: 'laser', label: 'Laser Engraving', href: '/search#laser', active: false },
+		{ id: 'games', label: 'Games', href: '/search#games', active: false },
+		{ id: 'custom', label: 'Custom Orders', href: '/search#custom', active: false},
 		{ id: 'about', label: 'About', href: '/about', active: false },
-		// { id: 'account', label: 'Account', href: '/account', active: false },
-		// { id: 'cart', label: 'Cart', href: '/cart', active: false }
-	] } = $props();
+		{ id: 'account', label: 'Account', href: '/account', active: false },
+		{ id: 'cart', label: 'Cart', href: '/cart', active: false }
+		]
+	} = $props();
 
-	let activeItem = items.find(item => item.active)?.id || items[0]?.id;
-	let visuallyActiveItem = $state(activeItem); // Separate state for visual boldness
+	let logoSrc = $derived(branding?.logoPrimaryUrl || defaultLogo);
+	let logoAlt = $derived(branding?.logoAlt || 'Elemental Designs Logo');
+
+	let activeItem = $state(null);
+	let visuallyActiveItem = $state(null); // Separate state for visual boldness
 	let selectorElement = $state(null);
 	let navElement;
 	let itemElements = $state({});
+
+	$effect(() => {
+		if (activeItem !== null) {
+			return;
+		}
+
+		const initialActiveItem = items.find((item) => item.active)?.id || items[0]?.id || null;
+		activeItem = initialActiveItem;
+		visuallyActiveItem = initialActiveItem;
+	});
 	
 	// Add state for dropdown menus
-	let showAccountMenu = $state(false);
-	let accountMenuLocked = $state(false); // Track if menu is locked open from click
 	let mobileAccountMenuOpen = $state(false); // Track if mobile account menu is open
 	
 	// Order Modal state
 	let isOrderModalOpen = $state(false);
 	
 	// Search state - reactive to URL changes
-	let searchInput = $state('');
 	let isSearchActive = $state(false); // Track if we're on a search results page
-	
-	// Sync search input with URL query parameter
+	let currentPath = $derived(page.url.pathname);
+	let currentHash = $derived(page.url.hash);
+	let currentSearchParams = $derived(page.url.searchParams);
+
 	$effect(() => {
-		const urlQuery = $page.url.searchParams.get('q') || '';
-		searchInput = urlQuery;
-		// Update search active state
-		isSearchActive = $page.url.pathname === '/search' && urlQuery.length > 0;
+		const urlQuery = currentSearchParams.get('q') || '';
+		isSearchActive = currentPath === '/search' && urlQuery.length > 0;
 	});
 	
 	// Update active item based on current URL
 	$effect(() => {
-		const currentPath = $page.url.pathname;
-		const currentHash = $page.url.hash;
-		
 		// Find matching item based on path and hash
 		let matchedItemId = null;
 		
 		// Special case: if on /search with a query, don't highlight any nav item
-		const isSearchWithQuery = currentPath === '/search' && $page.url.searchParams.has('q');
+		const isSearchWithQuery = currentPath === '/search' && currentSearchParams.has('q');
 		
 		if (!isSearchWithQuery) {
 			for (const item of items) {
@@ -122,24 +131,6 @@
 		isMobileMenuOpen = !isMobileMenuOpen;
 	}
 	
-	// Handle search submit
-	function handleSearch(event) {
-		if (event) event.preventDefault();
-		
-		const trimmedQuery = searchInput.trim();
-		if (trimmedQuery) {
-			// Navigate to search page with query parameter
-			window.location.href = `/search?q=${encodeURIComponent(trimmedQuery)}`;
-		}
-	}
-	
-	// Handle search input keypress
-	function handleSearchKeypress(event) {
-		if (event.key === 'Enter') {
-			handleSearch();
-		}
-	}
-
 	// Function to move the selector to the active item
 	function moveSelector(targetId) {
 		if (!selectorElement || !itemElements[targetId]) return;
@@ -185,7 +176,7 @@
 	}
 
 	// Handle OrderModal save
-	function handleOrderModalSave(orderData) {
+	function handleOrderModalSave() {
 		isOrderModalOpen = false;
 	}
 
@@ -248,9 +239,9 @@
 			<div class="mobile-header" style="display: flex; flex-direction: column">
 
 				<div class="mobile-logo">
-					<a href="/" class="logo-link" aria-label="Elemental Designs Home">
+					<a href={resolve('/')} class="logo-link" aria-label="Elemental Designs Home">
 						<div class="logo">
-				    		<img src={logo} alt="Logo" style="max-width: 200px; display: block"/>
+				    		<img src={logoSrc} alt={logoAlt} style="max-width: 200px; display: block"/>
 						</div>
 					</a>
 			    </div>
@@ -263,10 +254,10 @@
 					
 					<!-- Mobile Actions (always visible) -->
 					<div class="mobile-actions">
-						<a href="/search" class="mobile-action-btn" aria-label="Search Products">
+						<a href={resolve('/search')} class="mobile-action-btn" aria-label="Search Products">
 							<i class="fas fa-search"></i>
 						</a>
-						<a href="/cart" class="mobile-action-btn" aria-label="Shopping Cart">
+						<a href={resolve('/cart')} class="mobile-action-btn" aria-label="Shopping Cart">
 							<i class="fas fa-shopping-cart"></i>
 						</a>
 					</div>
@@ -276,7 +267,7 @@
 			<!-- Mobile Menu (collapsible) -->
 			{#if isMobileMenuOpen}
 				<div class="mobile-menu">
-					{#each items as item}
+					{#each items as item (item.id)}
 						{#if item.id === 'account'}
 							<!-- Mobile Account Menu with dropdown -->
 							<button
@@ -290,10 +281,10 @@
 								<i class="fas {mobileAccountMenuOpen ? 'fa-chevron-up' : 'fa-chevron-down'}" style="margin-left: 8px; font-size: 12px;"></i>
 								{#if mobileAccountMenuOpen}
 									<div class="mobile-account-menu">
-										<a href="/account/login" onclick={() => { mobileAccountMenuOpen = false; isMobileMenuOpen = false; }}>Login</a>
-										<a href="/account/register" onclick={() => { mobileAccountMenuOpen = false; isMobileMenuOpen = false; }}>Register</a>
-										<a href="/account/profile" onclick={() => { mobileAccountMenuOpen = false; isMobileMenuOpen = false; }}>My Profile</a>
-										<a href="/account/orders" onclick={() => { mobileAccountMenuOpen = false; isMobileMenuOpen = false; }}>My Orders</a>
+										<a href={resolve('/account/login')} onclick={() => { mobileAccountMenuOpen = false; isMobileMenuOpen = false; }}>Login</a>
+										<a href={resolve('/account/register')} onclick={() => { mobileAccountMenuOpen = false; isMobileMenuOpen = false; }}>Register</a>
+										<a href={resolve('/account/profile')} onclick={() => { mobileAccountMenuOpen = false; isMobileMenuOpen = false; }}>My Profile</a>
+										<a href={resolve('/account/orders')} onclick={() => { mobileAccountMenuOpen = false; isMobileMenuOpen = false; }}>My Orders</a>
 									</div>
 								{/if}
 							</button>
@@ -311,7 +302,7 @@
 						{:else}
 							<a
 								bind:this={itemElements[item.id]}
-								href={item.href}
+								href={resolve(/** @type {any} */ (item.href))}
 								class="nav-item mobile-nav-item {visuallyActiveItem === item.id ? 'active' : ''}"
 								onclick={() => {
 									handleItemClick(item.id);
@@ -334,7 +325,7 @@
 					bind:this={selectorElement}
 				></div>
 				
-				{#each items.filter(item => item.id !== 'account' && item.id !== 'cart') as item}
+				{#each items.filter(item => item.id !== 'account' && item.id !== 'cart') as item (item.id)}
 					{#if item.id === 'custom'}
 						<!-- Custom Orders: Open Modal Instead of Navigate -->
 						<button
@@ -347,7 +338,7 @@
 					{:else}
 						<a
 							bind:this={itemElements[item.id]}
-							href={item.href}
+							href={resolve(/** @type {any} */ (item.href))}
 							class="nav-item {visuallyActiveItem === item.id ? 'active' : ''}"
 							onclick={() => handleItemClick(item.id)}
 						>
@@ -448,49 +439,6 @@
 	$wrap-breakpoint: 936px;
 
 	/* Debug indicator */
-	.debug-indicator {
-		position: fixed;
-		top: 10px;
-		right: 10px;
-		background: rgba(0, 0, 0, 0.8);
-		color: #fff;
-		padding: 8px 12px;
-		border-radius: 8px;
-		font-family: monospace;
-		font-size: 12px;
-		z-index: 9999;
-		display: flex;
-		flex-direction: column;
-		gap: 4px;
-		border: 1px solid var(--accent);
-		box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-	}
-
-	.mode-label {
-		font-weight: bold;
-		padding: 2px 6px;
-		border-radius: 4px;
-	}
-
-	.mode-label.mobile {
-		background: #ef4444;
-		color: #fff;
-	}
-
-	.mode-label.tablet {
-		background: #f59e0b;
-		color: #fff;
-	}
-
-	.mode-label.desktop {
-		background: #10b981;
-		color: #fff;
-	}
-
-	.screen-width {
-		color: var(--muted);
-		font-size: 11px;
-	}
 
 	/* Navbar layout */
 	.navbar {
@@ -528,10 +476,8 @@
 	}
 
 	/* common panel helper to DRY-up repeated backgrounds/borders */
-	.nav-search-box,
 	.mobile-nav-item,
-	.mobile-menu,
-	.dropdown-menu {
+	.mobile-menu {
 		background: var(--panel-bg);
 		border: 1px solid var(--panel-border);
 		border-radius: 12px;
@@ -592,41 +538,6 @@
 	.logo-link { display:flex; align-items:center; gap:8px; text-decoration:none; color:#f3f4f6; font-weight:700; transition:all .2s ease; white-space:nowrap }
 	.logo-link:hover { color: var(--accent); transform: translateY(-1px) }
 
-	.nav-divider { display:flex; align-items:center; color:#64748b; padding:0 16px; font-size:16px; opacity:.6; transition:padding 0.3s ease }
-
-	.nav-actions { display:flex; align-items:center; gap:8px; margin-left:8px; transition:gap 0.3s ease, margin-left 0.3s ease }
-
-	/* account button with extended hitbox for dropdown */
-	.nav-actions .nav-item:has(.dropdown-menu) {
-		position: relative;
-		padding-right: 1rem;
-	}
-
-	.nav-actions .nav-item:has(.dropdown-menu)::after {
-		content: '';
-		position: absolute;
-		top: 100%;
-		left: 0;
-		right: 0;
-		height: 10px;
-		pointer-events: auto;
-	}
-
-	/* search */
-	.nav-search-container { position:relative; display:flex; align-items:center; gap:8px; transition:gap 0.3s ease }
-	.nav-search-box { display:flex; overflow:hidden; transition:all .3s ease; min-width:200px; padding:0 }
-	.nav-search-box:focus-within { box-shadow:0 0 0 2px rgba(167,139,250,0.2); border-color:var(--accent) }
-	.nav-search-box.active { box-shadow:0 0 0 2px rgba(167,139,250,0.3); border-color:var(--accent); background: rgba(167, 139, 250, 0.1) }
-	.nav-search-box input { flex:1; padding:8px 12px; background:transparent; border:none; color:#e8e4f3; outline:none; font-size:13px; transition:padding 0.3s ease, font-size 0.3s ease }
-	.nav-search-box input::placeholder { color:var(--muted-2) }
-	.nav-search-btn { background:transparent; border:none; color:var(--muted-2); padding:8px 12px; cursor:pointer; transition:all .2s }
-	.nav-search-btn:hover { color:var(--accent) }
-
-	/* dropdown */
-	.dropdown-menu { position:absolute; left:50%; margin-left:-90px; top:calc(100% + 10px); min-width:180px; padding:8px; box-shadow:0 20px 25px -5px rgba(0,0,0,.5); z-index:100; margin-top:0px; background: rgba(30, 27, 50, 0.8); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1) }
-	.dropdown-menu a { display:block; color:var(--muted); text-decoration:none; padding:8px 12px; border-radius:6px; transition:all .2s; font-size:13px }
-	.dropdown-menu a:hover { color:var(--accent); background:rgba(167,139,250,0.1) }
-
 	@keyframes slideDown { from{opacity:0; transform:translateY(-10px)} to{opacity:1; transform:translateY(0)} }
 	@keyframes bounce-in { 0%{ transform: translateX(var(--target-x,0)) scale(.8)} 50%{ transform: translateX(var(--target-x,0)) scale(1.05)} 100%{ transform: translateX(var(--target-x,0)) scale(1)} }
 
@@ -667,21 +578,6 @@
 		}
 		.nav-items-wrapper { gap: 3px }
 		.nav-item { padding: 0.4rem; font-size: 13px }
-		.nav-divider { display: none }
-		.nav-search-container { 
-			order: 10; 
-			width: fit-content; 
-			display: flex; 
-			justify-content: center; 
-			margin-top: 4px;
-			gap: 6px;
-		}
-		.nav-search-box { 
-			min-width: auto;
-			width: fit-content;
-		}
-		.nav-search-box input { padding: 7px 10px; font-size: 12px; width: 200px }
-		.nav-actions { gap: 6px; margin-left: 6px }
 		.logo { margin-right:12px }
 	}
 	

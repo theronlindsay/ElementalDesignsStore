@@ -1,67 +1,94 @@
+<script>
+	import { splitAboutParagraphs } from '$lib/about';
+
+	let { data } = $props();
+
+	let aboutContent = $derived(data.aboutContent);
+	let storyParagraphs = $derived(splitAboutParagraphs(aboutContent.storyBody));
+	let productOneParagraphs = $derived(splitAboutParagraphs(aboutContent.productOneBody));
+	let productTwoParagraphs = $derived(splitAboutParagraphs(aboutContent.productTwoBody));
+	let productThreeParagraphs = $derived(splitAboutParagraphs(aboutContent.productThreeBody));
+	let inclusiveParagraphs = $derived(splitAboutParagraphs(aboutContent.inclusiveBody));
+	let customParagraphs = $derived(splitAboutParagraphs(aboutContent.customBody));
+</script>
 
 <main class="about-page">
-
 	<!-- About Hero Section -->
 	<section class="about-hero">
 		<div class="about-container">
-			<h1 class="about-title">About Elemental Designs</h1>
-			<p class="about-subtitle">Handcrafted with Passion, Designed with Purpose</p>
+			<h1 class="about-title">{aboutContent.heroTitle}</h1>
+			<p class="about-subtitle">{aboutContent.heroSubtitle}</p>
 		</div>
 	</section>
 
 	<!-- About Content -->
 	<section class="about-content">
 		<div class="about-container">
-			
 			<!-- Story Section -->
 			<div class="designs-section">
 				<div class="design-card full-width-card story-card">
 					<div class="story-content">
-						<h2>Our Story</h2>
-						<p>
-							Elemental Chain Designs is a husband-wife team making hand-crafted chainmaille jewelry and laser cut/engraved gift items. One day, out of the blue, Aaron suggested it might be fun trying to make chainmaille jewelry. Karin didn't even know what that was. We ordered supplies, fell in love, and were all in.
-						</p>
+						<h2>{aboutContent.storyTitle}</h2>
+						{#each storyParagraphs as paragraph, index (index)}
+							<p>{paragraph}</p>
+						{/each}
 					</div>
 					<div class="story-image">
-						<div class="image-placeholder">
-							<i class="fas fa-hammer fa-4x"></i>
-						</div>
+						{#if aboutContent.storyImage}
+							<img class="section-image" src={aboutContent.storyImage} alt="Our story" />
+						{:else}
+							<div class="image-placeholder">
+								<i class="fas fa-hammer fa-4x"></i>
+							</div>
+						{/if}
 					</div>
 				</div>
 			</div>
 
 			<!-- Product Section -->
 			<div class="products-header">
-				<h2>Our Products</h2>
+				<h2>{aboutContent.productsHeaderTitle}</h2>
 			</div>
-			
+
 			<div class="designs-section products-grid">
 				<div class="design-card">
 					<div class="design-image-frame">
-						<i class="fas fa-ring fa-4x"></i>
+						{#if aboutContent.productOneImage}
+							<img class="design-image" src={aboutContent.productOneImage} alt={aboutContent.productOneTitle} />
+						{:else}
+							<i class="fas fa-ring fa-4x"></i>
+						{/if}
 					</div>
-					<h3>Chainmaille Jewelry</h3>
-					<p>
-						Our chainmaille product line includes necklaces, bracelets, anklets, earrings, rings, and body chains, ranging from everyday casual jewelry to more elaborate statement pieces.
-					</p>
+					<h3>{aboutContent.productOneTitle}</h3>
+					{#each productOneParagraphs as paragraph, index (index)}
+						<p>{paragraph}</p>
+					{/each}
 				</div>
 				<div class="design-card">
 					<div class="design-image-frame">
-						<i class="fas fa-shield-alt fa-4x"></i>
+						{#if aboutContent.productTwoImage}
+							<img class="design-image" src={aboutContent.productTwoImage} alt={aboutContent.productTwoTitle} />
+						{:else}
+							<i class="fas fa-shield-alt fa-4x"></i>
+						{/if}
 					</div>
-					<h3>Chainmail Products</h3>
-					<p>
-						We also make non-jewelry items, such as animal figures and keychains, and are starting to branch out into more traditional chainmaille armor pieces such as bracers, gauntlets, and pauldrons.
-					</p>
+					<h3>{aboutContent.productTwoTitle}</h3>
+					{#each productTwoParagraphs as paragraph, index (index)}
+						<p>{paragraph}</p>
+					{/each}
 				</div>
 				<div class="design-card full-width-card">
 					<div class="design-image-frame">
-						<i class="fas fa-gift fa-4x"></i>
+						{#if aboutContent.productThreeImage}
+							<img class="design-image" src={aboutContent.productThreeImage} alt={aboutContent.productThreeTitle} />
+						{:else}
+							<i class="fas fa-gift fa-4x"></i>
+						{/if}
 					</div>
-					<h3>Laser Cut Gifts</h3>
-					<p>
-						This past year, we diversified our offerings with laser cut/engraved gift items, hoping the added variety would be able to offer something for those not interested in jewelry. So far, we have primarily focused on mystical and fantasy themes, as we are big fantasy fans, with our humorous (and sometimes irreverent) tarot magnets being most popular, but we continue to broaden our collection to meet a wider range of interests.
-					</p>
+					<h3>{aboutContent.productThreeTitle}</h3>
+					{#each productThreeParagraphs as paragraph, index (index)}
+						<p>{paragraph}</p>
+					{/each}
 				</div>
 			</div>
 
@@ -69,24 +96,31 @@
 			<div class="designs-section">
 				<div class="design-card">
 					<div class="design-image-frame">
-						<i class="fas fa-rainbow fa-4x"></i>
+						{#if aboutContent.inclusiveImage}
+							<img class="design-image" src={aboutContent.inclusiveImage} alt={aboutContent.inclusiveTitle} />
+						{:else}
+							<i class="fas fa-rainbow fa-4x"></i>
+						{/if}
 					</div>
-					<h3>Inclusive Designs</h3>
-					<p>
-						Our two LGBTQ+ kids are our biggest fans and promoters, and inspired us to create an extensive Pride collection. We have been honored to participate in both the Canyon County and Boise Pride Festivals.
-					</p>
+					<h3>{aboutContent.inclusiveTitle}</h3>
+					{#each inclusiveParagraphs as paragraph, index (index)}
+						<p>{paragraph}</p>
+					{/each}
 				</div>
 				<div class="design-card">
 					<div class="design-image-frame">
-						<i class="fas fa-magic fa-4x"></i>
+						{#if aboutContent.customImage}
+							<img class="design-image" src={aboutContent.customImage} alt={aboutContent.customTitle} />
+						{:else}
+							<i class="fas fa-magic fa-4x"></i>
+						{/if}
 					</div>
-					<h3>Custom Designs</h3>
-					<p>
-						One of our favorite parts of making is seeing each new piece come to life through the creation process, but most satisfying is working directly with our customers to create individualized pieces, helping bring your vision to life.
-					</p>
+					<h3>{aboutContent.customTitle}</h3>
+					{#each customParagraphs as paragraph, index (index)}
+						<p>{paragraph}</p>
+					{/each}
 				</div>
 			</div>
-
 
 			<!-- Values Section -->
 			<div class="values-grid">
@@ -94,30 +128,28 @@
 					<div class="value-icon">
 						<i class="fas fa-heart"></i>
 					</div>
-					<h3>Handmade Quality</h3>
-					<p>Every item is carefully crafted by hand, ensuring unique character and exceptional quality.</p>
+					<h3>{aboutContent.valueOneTitle}</h3>
+					<p>{aboutContent.valueOneBody}</p>
 				</div>
 
 				<div class="value-card">
 					<div class="value-icon">
 						<i class="fas fa-store"></i>
 					</div>
-					<h3>Local & Online</h3>
-					<p>Find us at local markets and fairs, or shop online for nationwide delivery.</p>
+					<h3>{aboutContent.valueTwoTitle}</h3>
+					<p>{aboutContent.valueTwoBody}</p>
 				</div>
 			</div>
-
 
 			<!-- CTA Section -->
 			<div class="about-cta">
-				<h2>Let's Create Something Together</h2>
-				<p>Ready to get a custom piece or have questions about our products?</p>
+				<h2>{aboutContent.ctaTitle}</h2>
+				<p>{aboutContent.ctaBody}</p>
 				<div class="cta-buttons">
-					<button class="btn-primary">Start Custom Order</button>
-					<button class="btn-secondary">Contact Us</button>
+					<button class="btn-primary">{aboutContent.ctaPrimaryLabel}</button>
+					<button class="btn-secondary">{aboutContent.ctaSecondaryLabel}</button>
 				</div>
 			</div>
-
 		</div>
 	</section>
 </main>
@@ -169,7 +201,7 @@
 		text-align: left !important;
 		max-width: 100%;
 		box-sizing: border-box;
-		
+
 		h2 {
 			color: var(--text-primary);
 			font-size: 2rem;
@@ -180,7 +212,7 @@
 		p {
 			color: var(--muted);
 			line-height: 1.8;
-			margin-bottom: 0;
+			margin-bottom: 1rem;
 		}
 	}
 
@@ -188,6 +220,15 @@
 		display: flex;
 		justify-content: center;
 		align-items: center;
+	}
+
+	.section-image {
+		width: 300px;
+		height: 300px;
+		object-fit: cover;
+		border-radius: 12px;
+		border: 2px solid var(--border-accent);
+		box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
 	}
 
 	.image-placeholder {
@@ -212,7 +253,7 @@
 	.products-header {
 		text-align: center;
 		margin-bottom: 2.5rem;
-		
+
 		h2 {
 			color: var(--text-primary);
 			font-size: 2.5rem;
@@ -280,11 +321,18 @@
 		box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.2), 0 8px 20px rgba(0, 0, 0, 0.1);
 		margin-bottom: 1rem;
 		transition: all 0.3s ease;
+		overflow: hidden;
 
 		&:hover {
 			border-color: var(--accent);
 			box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.3), 0 8px 25px rgba(167, 139, 250, 0.15);
 		}
+	}
+
+	.design-image {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
 	}
 
 	/* Values Grid */
@@ -414,7 +462,8 @@
 			grid-template-columns: 1fr;
 		}
 
-		.image-placeholder {
+		.image-placeholder,
+		.section-image {
 			width: 200px;
 			height: 200px;
 		}
