@@ -1,5 +1,5 @@
 <script>
-	import { Button, Input, Label, FormGroup } from '$lib';
+	import { Button, Input, Label, FormGroup, RichTextEditor } from '$lib';
 	import { UploadDropzone, createUploader } from '$lib/uploadthing';
 	import '@uploadthing/svelte/styles.css';
 
@@ -196,14 +196,11 @@
 
 				<FormGroup>
 					<Label htmlFor="description" required>Description</Label>
-					<textarea
-						name="description"
-						bind:value={formData.description}
+					<RichTextEditor
+						value={formData.description}
+						onchange={(html) => { formData.description = html; }}
 						placeholder="Describe your event..."
-						required
-						class="textarea"
-						rows="5"
-					></textarea>
+					/>
 				</FormGroup>
 
 				<div class="form-row">

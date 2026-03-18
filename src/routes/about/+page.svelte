@@ -1,15 +1,13 @@
 <script>
-	import { splitAboutParagraphs } from '$lib/about';
-
 	let { data } = $props();
 
 	let aboutContent = $derived(data.aboutContent);
-	let storyParagraphs = $derived(splitAboutParagraphs(aboutContent.storyBody));
-	let productOneParagraphs = $derived(splitAboutParagraphs(aboutContent.productOneBody));
-	let productTwoParagraphs = $derived(splitAboutParagraphs(aboutContent.productTwoBody));
-	let productThreeParagraphs = $derived(splitAboutParagraphs(aboutContent.productThreeBody));
-	let inclusiveParagraphs = $derived(splitAboutParagraphs(aboutContent.inclusiveBody));
-	let customParagraphs = $derived(splitAboutParagraphs(aboutContent.customBody));
+
+	function renderHtml(text) {
+		if (!text) return '';
+		if (text.includes('<')) return text;
+		return text.split(/\n\s*\n/).map(p => `<p>${p.trim()}</p>`).join('');
+	}
 </script>
 
 <main class="about-page">
@@ -29,9 +27,7 @@
 				<div class="design-card full-width-card story-card">
 					<div class="story-content">
 						<h2>{aboutContent.storyTitle}</h2>
-						{#each storyParagraphs as paragraph, index (index)}
-							<p>{paragraph}</p>
-						{/each}
+						<div class="rich-content">{@html renderHtml(aboutContent.storyBody)}</div>
 					</div>
 					<div class="story-image">
 						{#if aboutContent.storyImage}
@@ -60,9 +56,7 @@
 						{/if}
 					</div>
 					<h3>{aboutContent.productOneTitle}</h3>
-					{#each productOneParagraphs as paragraph, index (index)}
-						<p>{paragraph}</p>
-					{/each}
+					<div class="rich-content">{@html renderHtml(aboutContent.productOneBody)}</div>
 				</div>
 				<div class="design-card">
 					<div class="design-image-frame">
@@ -73,9 +67,7 @@
 						{/if}
 					</div>
 					<h3>{aboutContent.productTwoTitle}</h3>
-					{#each productTwoParagraphs as paragraph, index (index)}
-						<p>{paragraph}</p>
-					{/each}
+					<div class="rich-content">{@html renderHtml(aboutContent.productTwoBody)}</div>
 				</div>
 				<div class="design-card full-width-card">
 					<div class="design-image-frame">
@@ -86,9 +78,7 @@
 						{/if}
 					</div>
 					<h3>{aboutContent.productThreeTitle}</h3>
-					{#each productThreeParagraphs as paragraph, index (index)}
-						<p>{paragraph}</p>
-					{/each}
+					<div class="rich-content">{@html renderHtml(aboutContent.productThreeBody)}</div>
 				</div>
 			</div>
 
@@ -103,9 +93,7 @@
 						{/if}
 					</div>
 					<h3>{aboutContent.inclusiveTitle}</h3>
-					{#each inclusiveParagraphs as paragraph, index (index)}
-						<p>{paragraph}</p>
-					{/each}
+					<div class="rich-content">{@html renderHtml(aboutContent.inclusiveBody)}</div>
 				</div>
 				<div class="design-card">
 					<div class="design-image-frame">
@@ -116,9 +104,7 @@
 						{/if}
 					</div>
 					<h3>{aboutContent.customTitle}</h3>
-					{#each customParagraphs as paragraph, index (index)}
-						<p>{paragraph}</p>
-					{/each}
+					<div class="rich-content">{@html renderHtml(aboutContent.customBody)}</div>
 				</div>
 			</div>
 
@@ -129,7 +115,7 @@
 						<i class="fas fa-heart"></i>
 					</div>
 					<h3>{aboutContent.valueOneTitle}</h3>
-					<p>{aboutContent.valueOneBody}</p>
+					<div class="rich-content">{@html renderHtml(aboutContent.valueOneBody)}</div>
 				</div>
 
 				<div class="value-card">
@@ -137,14 +123,14 @@
 						<i class="fas fa-store"></i>
 					</div>
 					<h3>{aboutContent.valueTwoTitle}</h3>
-					<p>{aboutContent.valueTwoBody}</p>
+					<div class="rich-content">{@html renderHtml(aboutContent.valueTwoBody)}</div>
 				</div>
 			</div>
 
 			<!-- CTA Section -->
 			<div class="about-cta">
 				<h2>{aboutContent.ctaTitle}</h2>
-				<p>{aboutContent.ctaBody}</p>
+				<div class="rich-content">{@html renderHtml(aboutContent.ctaBody)}</div>
 				<div class="cta-buttons">
 					<button class="btn-primary">{aboutContent.ctaPrimaryLabel}</button>
 					<button class="btn-secondary">{aboutContent.ctaSecondaryLabel}</button>
@@ -440,6 +426,22 @@
 			background: rgba(167, 139, 250, 0.1);
 			transform: translateY(-2px);
 		}
+	}
+
+	.rich-content {
+		:global(p) {
+			color: var(--muted);
+			line-height: 1.8;
+			margin: 0 0 1rem;
+			&:last-child { margin-bottom: 0; }
+		}
+		:global(a) { color: var(--accent); }
+		:global(ul), :global(ol) {
+			color: var(--muted);
+			line-height: 1.8;
+			padding-left: 1.5rem;
+		}
+		:global(strong) { color: var(--text-primary); }
 	}
 
 	/* Responsive Design */

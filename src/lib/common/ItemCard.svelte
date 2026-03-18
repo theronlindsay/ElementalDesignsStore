@@ -74,21 +74,21 @@
 				<span>📦</span>
 			</div>
 		{/if}
-		
+
 		<div class="card-badge">
 			{itemType}
 		</div>
 	</div>
-	
+
 	<div class="card-content">
 		<h3 class="item-name">{itemData.name || 'Untitled Item'}</h3>
-		
+
 		{#if itemData.description}
 			<p class="item-description">
 				{itemData.description.slice(0, 100)}{itemData.description.length > 100 ? '...' : ''}
 			</p>
 		{/if}
-		
+
 		<div class="card-footer">
 			<div class="price-rating">
 				<span class="item-price">{formatPrice(itemPrice)}</span>
@@ -98,7 +98,7 @@
 					</span>
 				{/if}
 			</div>
-			
+
 			<button
 				class="add-to-cart-btn"
 				class:is-loading={addToCartState === 'loading'}
@@ -138,7 +138,8 @@
 		backdrop-filter: blur(10px);
 		transition: all $transition-normal;
 		width: inherit;
-		margin: 0.75rem;
+		padding: 1px;
+		margin: 0.1rem;
 
 		&:hover {
 			transform: translateY(-4px);
@@ -273,7 +274,10 @@
 		height: 18px;
 		opacity: 0;
 		transform: scale(0.75);
-		transition: width $transition-fast, opacity $transition-fast, transform $transition-fast;
+		transition:
+			width $transition-fast,
+			opacity $transition-fast,
+			transform $transition-fast;
 	}
 
 	.add-to-cart-btn.is-loading .status-icon,

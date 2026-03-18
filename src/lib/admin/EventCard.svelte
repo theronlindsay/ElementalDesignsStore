@@ -49,6 +49,12 @@
 	
 	let hasDetails = $derived(event.days && (event.days.length > 1 || event.days.some(d => d.startTime || d.endTime)));
 
+	function renderHtml(text) {
+		if (!text) return '';
+		if (text.includes('<')) return text;
+		return `<p>${text}</p>`;
+	}
+
 </script>
 
 <div class="event-card theme-glass">
@@ -104,7 +110,7 @@
 
 		<h3 class="event-title">{event.title}</h3>
 
-		<p class="event-description">{event.description}</p>
+		<div class="event-description rich-content">{@html renderHtml(event.description)}</div>
 
 		{#if event.location}
 			<div class="event-location-section">
@@ -244,6 +250,12 @@
 		color: var(--muted);
 		margin: 0;
 		line-height: 1.6;
+
+		:global(p) {
+			margin: 0 0 0.5rem;
+			&:last-child { margin-bottom: 0; }
+		}
+		:global(a) { color: var(--accent); }
 	}
 
 	.event-location-section {

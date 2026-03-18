@@ -1,6 +1,6 @@
 <script>
 	import { resolve } from '$app/paths';
-	import { EventCard, TestimonialCard } from '$lib';
+	import { EventCard, TestimonialCard, TaggedGrid } from '$lib';
 	import OrderModal from '$lib/common/OrderModal.svelte';
 	import { normalizeBrandingContent, splitBrandingParagraphs } from '$lib/branding';
 
@@ -11,9 +11,12 @@
 	let branding = $derived(normalizeBrandingContent(data.branding));
 	let heroDescriptionParagraphs = $derived(splitBrandingParagraphs(branding.homeHeroDescription));
 
-	// Load events and testimonials from server
+	// Load data from server
 	let events = $derived(data.events || []);
 	let testimonials = $derived(data.testimonials || []);
+	let items = $derived(data.items || []);
+	let storeConfig = $derived(data.storeConfig || { taggedGrids: [] });
+
 	// Order modal state
 	let showOrderModal = $state(false);
 
@@ -123,6 +126,16 @@
 
 <!-- Content Grid -->
 <div class="content-grid">
+	<!-- Tagged Grids -->
+	{#each storeConfig.taggedGrids as grid (grid.id)}
+		<TaggedGrid
+			title={grid.title}
+			allowedTags={grid.allowedTags}
+			deniedTags={grid.deniedTags}
+			maxRows={grid.maxRows}
+		/>
+	{/each}
+
 	<!-- Events Section -->
 	<section class="events-section" id="events-schedule">
 		<h3>{branding.eventsSectionTitle}</h3>

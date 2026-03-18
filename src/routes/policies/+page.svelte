@@ -1,12 +1,13 @@
 <script>
-	import { splitPolicyParagraphs } from '$lib/policies';
-
 	let { data } = $props();
 
 	let policyContent = $derived(data.policyContent);
-	let shippingParagraphs = $derived(splitPolicyParagraphs(policyContent.shippingBody));
-	let returnsParagraphs = $derived(splitPolicyParagraphs(policyContent.returnsBody));
-	let privacyParagraphs = $derived(splitPolicyParagraphs(policyContent.privacyBody));
+
+	function renderHtml(text) {
+		if (!text) return '';
+		if (text.includes('<')) return text;
+		return text.split(/\n\s*\n/).map(p => `<p>${p.trim()}</p>`).join('');
+	}
 </script>
 
 <svelte:head>
@@ -26,23 +27,17 @@
 		<div class="policies-container">
 			<div class="policy-section" id="shipping">
 				<h2>{policyContent.shippingTitle}</h2>
-				{#each shippingParagraphs as paragraph}
-					<p>{paragraph}</p>
-				{/each}
+				<div class="rich-content">{@html renderHtml(policyContent.shippingBody)}</div>
 			</div>
 
 			<div class="policy-section" id="returns">
 				<h2>{policyContent.returnsTitle}</h2>
-				{#each returnsParagraphs as paragraph}
-					<p>{paragraph}</p>
-				{/each}
+				<div class="rich-content">{@html renderHtml(policyContent.returnsBody)}</div>
 			</div>
 
 			<div class="policy-section" id="privacy">
 				<h2>{policyContent.privacyTitle}</h2>
-				{#each privacyParagraphs as paragraph}
-					<p>{paragraph}</p>
-				{/each}
+				<div class="rich-content">{@html renderHtml(policyContent.privacyBody)}</div>
 			</div>
 		</div>
 	</section>
@@ -119,6 +114,22 @@
 				margin-bottom: 0;
 			}
 		}
+	}
+
+	.rich-content {
+		:global(p) {
+			color: var(--muted);
+			line-height: 1.8;
+			margin-bottom: 1rem;
+			&:last-child { margin-bottom: 0; }
+		}
+		:global(a) { color: var(--accent); }
+		:global(ul), :global(ol) {
+			color: var(--muted);
+			line-height: 1.8;
+			padding-left: 1.5rem;
+		}
+		:global(strong) { color: var(--text-primary); }
 	}
 
 	@media (max-width: 768px) {

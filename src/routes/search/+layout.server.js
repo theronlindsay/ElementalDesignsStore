@@ -1,104 +1,99 @@
-import { getSubcategories, getItemsByCategoryIncludingSubcategories, getAllItems } from '$lib/square';
+import { getAllItems, getAllCategories } from '$lib/square';
+import { getCollection } from '$lib/mongo';
+import { SquareClient, SquareEnvironment } from 'square';
+import { env } from '$env/dynamic/private';
 
-// Define category IDs for each product type
-const CATEGORY_IDS = {
-    jewelry: 'GBU37Q2KSWR7QHCCA2SRTZB3',
-    chainmail: '',
-    laser: 'LLAQJ5FM7NTM6FYP4NGDM23A',
-    games: ''
-};
+const client = new SquareClient({
+	token: env.SQUARE_ACCESS_TOKEN,
+	environment: SquareEnvironment.Sandbox
+});
 
-// Define display names for each category
-const CATEGORY_NAMES = {
-    jewelry: 'Jewelry',
-    chainmail: 'Chainmail',
-    laser: 'Laser Engraving',
-    games: 'Games',
-    more: 'Other Products'
-};
+async function enrichItemsWithImages(items) {
+	try {
+		const imageIds = new Set();
+		items.forEach((item) => {
+			const itemData = item.itemData;
+			if (itemData?.imageIds) {
+				itemData.imageIds.forEach((id) => imageIds.add(id));
+			}
+		});
+
+		if (imageIds.size === 0) {
+			return items;
+		}
+
+		const response = await client.catalog.batchGet({
+			objectIds: Array.from(imageIds)
+		});
+
+		const imageMap = new Map();
+		if (response.objects) {
+			response.objects.forEach((obj) => {
+				if (obj.type === 'IMAGE' && obj.imageData?.url) {
+					imageMap.set(obj.id, obj.imageData.url);
+				}
+			});
+		}
+
+		return items.map((item) => {
+			const ids = item.itemData?.imageIds || [];
+			const imageUrls = ids.map((id) => imageMap.get(id)).filter((url) => url !== undefined);
+
+			return {
+				...item,
+				imageUrls
+			};
+		});
+	} catch (err) {
+		console.error('Error enriching items with images in search layout:', err);
+		return items;
+	}
+}
 
 /** @type {import('./$types').LayoutServerLoad} */
 export const load = async () => {
-    // Fetch all categories and their items in parallel
-    const allCategoriesPromise = (async () => {
-        try {
-            const categoryEntries = Object.entries(CATEGORY_IDS);
-            
-            // Fetch all categories and all items in parallel
-            const [categoryResults, allItems] = await Promise.all([
-                Promise.all(
-                    categoryEntries.map(async ([slug, categoryId]) => {
-                        try {
-                            console.log(`Fetching ${slug} data...`);
-                            const [subcategories, items] = await Promise.all([
-                                getSubcategories(categoryId),
-                                getItemsByCategoryIncludingSubcategories(categoryId)
-                            ]);
-                            
-                            return {
-                                slug,
-                                categoryId,
-                                name: CATEGORY_NAMES[slug],
-                                subcategories,
-                                items,
-                                itemIds: new Set(items.map((item) => item.id)), // Track IDs for filtering
-                                success: true
-                            };
-                        } catch (err) {
-                            console.error(`Error loading ${slug}:`, err);
-                            return {
-                                slug,
-                                categoryId,
-                                name: CATEGORY_NAMES[slug],
-                                subcategories: [],
-                                items: [],
-                                itemIds: new Set(),
-                                success: false,
-                                error: err instanceof Error ? err.message : `Failed to load ${slug}`
-                            };
-                        }
-                    })
-                ),
-                getAllItems()
-            ]);
-            
-            // Convert array to object keyed by slug
-            const categoriesData = {};
-            categoryResults.forEach(result => {
-                categoriesData[result.slug] = result;
-            });
-            
-            // Create "more" category with items not in jewelry, armor, or laser
-            const allCategorizedItemIds = new Set([
-                ...Array.from(categoriesData.jewelry?.itemIds || []),
-                ...Array.from(categoriesData.armor?.itemIds || []),
-                ...Array.from(categoriesData.laser?.itemIds || [])
-            ]);
-            
-            const uncategorizedItems = allItems.filter((item) => 
-                !allCategorizedItemIds.has(item.id)
-            );
-            
-            console.log(`Found ${uncategorizedItems.length} uncategorized items for "more" category`);
-            
-            categoriesData.more = {
-                slug: 'more',
-                categoryId: null,
-                name: CATEGORY_NAMES.more,
-                subcategories: [],
-                items: uncategorizedItems,
-                itemIds: new Set(uncategorizedItems.map((item) => item.id)),
-                success: true
-            };
-            
-            return categoriesData;
-        } catch (err) {
-            console.error('Error loading categories:', err);
-            return {};
-        }
-    })();
-    
-    return {
-        allCategoriesPromise
-    };
+	// Fetch store configuration
+	let storeConfig = { searchFilterTags: [] };
+	try {
+		const storeConfigCol = await getCollection('StoreConfig');
+		const config = await storeConfigCol.findOne({ id: 'main' });
+		if (config) {
+			config._id = config._id?.toString?.() ?? config._id;
+			storeConfig = config;
+		}
+	} catch (err) {
+		console.error('Error loading store config:', err);
+	}
+
+	// Fetch all categories and their items in parallel and enrich with image URLs
+	const allCategoriesPromise = (async () => {
+		try {
+			let [allItems, allCategories] = await Promise.all([getAllItems(), getAllCategories()]);
+			allItems = await enrichItemsWithImages(allItems);
+
+			// In the new system, we just pass all items into a generic 'all' category.
+			// The frontend will handle filtering via the tags.
+			const categoriesData = {
+				all: {
+					slug: 'all',
+					categoryId: null,
+					name: 'All Products',
+					subcategories: allCategories, // pass down all categories for the filter system
+					items: allItems,
+					itemIds: new Set(allItems.map((item) => item.id)),
+					success: true
+				}
+			};
+
+			return categoriesData;
+		} catch (err) {
+			console.error('Error loading categories:', err);
+			return {};
+		}
+	})();
+
+	return {
+		allCategoriesPromise,
+		storeConfig
+	};
 };

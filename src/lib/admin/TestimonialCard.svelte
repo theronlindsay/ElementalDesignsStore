@@ -9,6 +9,12 @@
 		isFirst = false,
 		isLast = false
 	} = $props();
+
+	function renderHtml(text) {
+		if (!text) return '';
+		if (text.includes('<')) return text;
+		return `<p>${text}</p>`;
+	}
 </script>
 
 <div class="testimonial-card theme-glass">
@@ -50,7 +56,7 @@
 			{/if}
 		</div>
 
-		<p class="testimonial-text">{testimonial.text}</p>
+		<div class="testimonial-text rich-content">{@html renderHtml(testimonial.text)}</div>
 
 		{#if testimonial.stars}
 			<div class="testimonial-stars">
@@ -170,6 +176,12 @@
 		font-size: 1.1rem;
 		margin: 0;
 		line-height: 1.6;
+
+		:global(p) {
+			margin: 0 0 0.5rem;
+			&:last-child { margin-bottom: 0; }
+		}
+		:global(a) { color: var(--accent); }
 	}
 
 	.testimonial-stars {

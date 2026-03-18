@@ -3,16 +3,34 @@ import { BRANDING_DOC_ID, DEFAULT_BRANDING_CONTENT, serializeBrandingContent } f
 
 export const load = async () => {
 	try {
-		const collection = await getCollection('Branding');
-		const brandingDoc = await collection.findOne({ id: BRANDING_DOC_ID });
+		const brandingCollection = await getCollection('Branding');
+		const brandingDoc = await brandingCollection.findOne({ id: BRANDING_DOC_ID });
+
+		const storeConfigCol = await getCollection('StoreConfig');
+		const config = await storeConfigCol.findOne({ id: 'main' });
+		const navbarLinks = config?.navbarLinks || [
+			{ id: 'home', label: 'Home', href: '/' },
+			{ id: 'jewelry', label: 'Jewelry', href: '/search?tags=jewelry' },
+			{ id: 'chainmail', label: 'Chainmail', href: '/search?tags=chainmail' },
+			{ id: 'laser', label: 'Laser Engraving', href: '/search?tags=laser' },
+			{ id: 'games', label: 'Games', href: '/search?tags=games' },
+			{ id: 'custom', label: 'Custom Orders', href: '/#custom' },
+			{ id: 'about', label: 'About', href: '/about' }
+		];
 
 		return {
-			branding: serializeBrandingContent(brandingDoc)
+			branding: serializeBrandingContent(brandingDoc),
+			navbarLinks
 		};
 	} catch (err) {
-		console.error('Error loading branding content from MongoDB:', err);
+		console.error('Error loading content from MongoDB:', err);
 		return {
-			branding: DEFAULT_BRANDING_CONTENT
+			branding: DEFAULT_BRANDING_CONTENT,
+			navbarLinks: [
+				{ id: 'home', label: 'Home', href: '/' },
+				{ id: 'custom', label: 'Custom Orders', href: '/#custom' },
+				{ id: 'about', label: 'About', href: '/about' }
+			]
 		};
 	}
 };

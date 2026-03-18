@@ -1,4 +1,5 @@
 <script>
+	import { RichTextEditor } from '$lib';
 	import { UploadDropzone, createUploader } from '$lib/uploadthing';
 	import '@uploadthing/svelte/styles.css';
 
@@ -168,7 +169,7 @@
 			</div>
 			<div class="form-group">
 				<label for="story-body">Section Body</label>
-				<textarea id="story-body" rows="7" bind:value={formData.storyBody}></textarea>
+				<RichTextEditor value={formData.storyBody} onchange={(html) => { formData.storyBody = html; }} placeholder="Tell your story..." />
 			</div>
 			<div class="form-group">
 				<p class="field-label">Story Image</p>
@@ -204,7 +205,7 @@
 			</div>
 			<div class="form-group">
 				<label for="product-one-body">Card Body</label>
-				<textarea id="product-one-body" rows="6" bind:value={formData.productOneBody}></textarea>
+				<RichTextEditor value={formData.productOneBody} onchange={(html) => { formData.productOneBody = html; }} placeholder="Describe this product..." />
 			</div>
 			<div class="form-group">
 				<p class="field-label">Card Image</p>
@@ -232,7 +233,7 @@
 			</div>
 			<div class="form-group">
 				<label for="product-two-body">Card Body</label>
-				<textarea id="product-two-body" rows="6" bind:value={formData.productTwoBody}></textarea>
+				<RichTextEditor value={formData.productTwoBody} onchange={(html) => { formData.productTwoBody = html; }} placeholder="Describe this product..." />
 			</div>
 			<div class="form-group">
 				<p class="field-label">Card Image</p>
@@ -260,7 +261,7 @@
 			</div>
 			<div class="form-group">
 				<label for="product-three-body">Card Body</label>
-				<textarea id="product-three-body" rows="8" bind:value={formData.productThreeBody}></textarea>
+				<RichTextEditor value={formData.productThreeBody} onchange={(html) => { formData.productThreeBody = html; }} placeholder="Describe this product..." />
 			</div>
 			<div class="form-group">
 				<p class="field-label">Card Image</p>
@@ -288,7 +289,7 @@
 			</div>
 			<div class="form-group">
 				<label for="inclusive-body">Card Body</label>
-				<textarea id="inclusive-body" rows="6" bind:value={formData.inclusiveBody}></textarea>
+				<RichTextEditor value={formData.inclusiveBody} onchange={(html) => { formData.inclusiveBody = html; }} placeholder="Describe inclusive designs..." />
 			</div>
 			<div class="form-group">
 				<p class="field-label">Card Image</p>
@@ -316,7 +317,7 @@
 			</div>
 			<div class="form-group">
 				<label for="custom-body">Card Body</label>
-				<textarea id="custom-body" rows="6" bind:value={formData.customBody}></textarea>
+				<RichTextEditor value={formData.customBody} onchange={(html) => { formData.customBody = html; }} placeholder="Describe custom designs..." />
 			</div>
 			<div class="form-group">
 				<p class="field-label">Card Image</p>
@@ -345,7 +346,7 @@
 				</div>
 				<div class="form-group">
 					<label for="value-one-body">Value Card 1 Body</label>
-					<textarea id="value-one-body" rows="4" bind:value={formData.valueOneBody}></textarea>
+					<RichTextEditor value={formData.valueOneBody} onchange={(html) => { formData.valueOneBody = html; }} placeholder="Value description..." />
 				</div>
 				<div class="form-group">
 					<label for="value-two-title">Value Card 2 Title</label>
@@ -353,7 +354,7 @@
 				</div>
 				<div class="form-group">
 					<label for="value-two-body">Value Card 2 Body</label>
-					<textarea id="value-two-body" rows="4" bind:value={formData.valueTwoBody}></textarea>
+					<RichTextEditor value={formData.valueTwoBody} onchange={(html) => { formData.valueTwoBody = html; }} placeholder="Value description..." />
 				</div>
 			</div>
 		</section>
@@ -366,7 +367,7 @@
 			</div>
 			<div class="form-group">
 				<label for="cta-body">CTA Body</label>
-				<textarea id="cta-body" rows="4" bind:value={formData.ctaBody}></textarea>
+				<RichTextEditor value={formData.ctaBody} onchange={(html) => { formData.ctaBody = html; }} placeholder="Call to action text..." />
 			</div>
 			<div class="split-grid two-col">
 				<div class="form-group">

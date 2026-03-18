@@ -1,4 +1,6 @@
 <script>
+	import { RichTextEditor } from '$lib';
+
 	let { data } = $props();
 
 	let isSaving = $state(false);
@@ -108,8 +110,7 @@
 			</div>
 			<div class="form-group">
 				<label for="shipping-body">Section Content</label>
-				<textarea id="shipping-body" rows="8" bind:value={formData.shippingBody}></textarea>
-				<small>Use blank lines to separate paragraphs.</small>
+				<RichTextEditor value={formData.shippingBody} onchange={(html) => { formData.shippingBody = html; }} placeholder="Shipping policy content..." />
 			</div>
 		</section>
 
@@ -121,8 +122,7 @@
 			</div>
 			<div class="form-group">
 				<label for="returns-body">Section Content</label>
-				<textarea id="returns-body" rows="8" bind:value={formData.returnsBody}></textarea>
-				<small>Use blank lines to separate paragraphs.</small>
+				<RichTextEditor value={formData.returnsBody} onchange={(html) => { formData.returnsBody = html; }} placeholder="Returns & exchanges policy..." />
 			</div>
 		</section>
 
@@ -134,8 +134,7 @@
 			</div>
 			<div class="form-group">
 				<label for="privacy-body">Section Content</label>
-				<textarea id="privacy-body" rows="8" bind:value={formData.privacyBody}></textarea>
-				<small>Use blank lines to separate paragraphs.</small>
+				<RichTextEditor value={formData.privacyBody} onchange={(html) => { formData.privacyBody = html; }} placeholder="Privacy policy content..." />
 			</div>
 		</section>
 	</div>
