@@ -14,7 +14,6 @@
 	// Load data from server
 	let events = $derived(data.events || []);
 	let testimonials = $derived(data.testimonials || []);
-	let items = $derived(data.items || []);
 	let storeConfig = $derived(data.storeConfig || { taggedGrids: [] });
 
 	// Order modal state

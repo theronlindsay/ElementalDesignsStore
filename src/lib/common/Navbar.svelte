@@ -441,10 +441,10 @@
 						<span>Account</span>
 						{#if showAccountMenu}
 							<div class="dropdown-menu account-menu">
-								<a href="/account/login">Login</a>
-								<a href="/account/register">Register</a>
-								<a href="/account/profile">My Profile</a>
-								<a href="/account/orders">My Orders</a>
+								<a href={resolve('/account/login')}>Login</a>
+								<a href={resolve('/account/register')}>Register</a>
+								<a href={resolve('/account/profile')}>My Profile</a>
+								<a href={resolve('/account/orders')}>My Orders</a>
 							</div>
 						{/if}
 					</button>
@@ -452,7 +452,7 @@
 					<!-- Shopping Cart -->
 					<a
 						bind:this={itemElements['cart']}
-						href="/cart"
+						href={resolve('/cart')}
 						class="nav-item {visuallyActiveItem === 'cart' ? 'active' : ''}"
 						onclick={() => handleItemClick('cart')}
 					>

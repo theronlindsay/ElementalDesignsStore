@@ -1,6 +1,7 @@
 <script>
 	import { Button } from '$lib';
 	import { goto } from '$app/navigation';
+	import { resolve } from '$app/paths';
 </script>
 
 <div class="empty-cart">
@@ -12,7 +13,7 @@
 		Looks like you haven't added anything to your cart yet.
 		Browse our collection and discover unique handcrafted pieces.
 	</p>
-	<Button variant="primary" onclick={() => goto('/')}>
+	<Button variant="primary" onclick={() => goto(resolve('/'))}>
 		<i class="fas fa-shopping-bag"></i>
 		<span>Start Shopping</span>
 	</Button>

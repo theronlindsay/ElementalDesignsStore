@@ -1,6 +1,6 @@
 <script>
 	export let type = 'text';
-	export let name;
+	export let name = undefined;
 	export let placeholder = '';
 	export let value = '';
 	export let required = false;

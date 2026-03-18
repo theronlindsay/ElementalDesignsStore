@@ -1,14 +1,13 @@
 <script>
 	import { Button, Input, Label, FormGroup } from '$lib';
-	import { onMount } from 'svelte';
+	import { onMount, untrack } from 'svelte';
 
-	let { data } = $props();
+	const { data } = $props();
 
-	let config = $state(data.config || { taggedGrids: [], searchFilterTags: [] });
+	let config = $state(untrack(() => data.config || { taggedGrids: [], searchFilterTags: [] }));
 	let isSaving = $state(false);
 
 	// Temporary state for new tags
-	let newFilterTag = $state('');
 
 	// Available tags from Square
 	let availableTags = $state([]);
@@ -88,14 +87,6 @@
 		}
 	}
 
-	function addSearchFilterTag(e) {
-		if (e.key === 'Enter') {
-			e.preventDefault();
-			addSearchFilterTagValue(newFilterTag);
-			newFilterTag = '';
-		}
-	}
-
 	function removeSearchFilterTag(tagToRemove) {
 		config.searchFilterTags = config.searchFilterTags.filter((tag) => tag !== tagToRemove);
 	}
@@ -153,7 +144,7 @@
 			{#if availableTags.length === 0 && !isFetchingTags}
 				<span class="muted">No categories found. Create categories in your Square Dashboard.</span>
 			{/if}
-			{#each availableTags as tag}
+			{#each availableTags as tag (tag)}
 				<button
 					class="tag available-tag-btn"
 					onclick={() =>
@@ -192,10 +183,12 @@
 							<Label>Allowed Tags</Label>
 							<div class="tag-input-container">
 								<div class="tags">
-									{#each grid.allowedTags as tag}
+									{#each grid.allowedTags as tag (tag)}
 										<span class="tag allowed">
 											{tag}
-											<button onclick={() => removeTagFromGrid(grid.id, 'allowedTags', tag)}
+											<button
+												aria-label="Remove tag {tag}"
+												onclick={() => removeTagFromGrid(grid.id, 'allowedTags', tag)}
 												>&times;</button
 											>
 										</span>
@@ -213,10 +206,12 @@
 							<Label>Denied Tags</Label>
 							<div class="tag-input-container">
 								<div class="tags">
-									{#each grid.deniedTags as tag}
+									{#each grid.deniedTags as tag (tag)}
 										<span class="tag denied">
 											{tag}
-											<button onclick={() => removeTagFromGrid(grid.id, 'deniedTags', tag)}
+											<button
+												aria-label="Remove tag {tag}"
+												onclick={() => removeTagFromGrid(grid.id, 'deniedTags', tag)}
 												>&times;</button
 											>
 										</span>
@@ -261,13 +256,13 @@
 					No categories found in Square. Create categories in your Square Dashboard.
 				</p>
 			{:else}
-				{#each availableTags as tag}
+				{#each availableTags as tag (tag)}
 					<label class="checkbox-row">
 						<input
 							type="checkbox"
 							checked={config.searchFilterTags.includes(tag)}
 							onchange={(e) => {
-								if (e.target.checked) {
+								if (/** @type {HTMLInputElement} */ (e.target).checked) {
 									addSearchFilterTagValue(tag);
 								} else {
 									removeSearchFilterTag(tag);
@@ -466,12 +461,6 @@
 			color: #ef4444;
 			border: 1px solid rgba(239, 68, 68, 0.2);
 		}
-
-		&.filter {
-			background: rgba(167, 139, 250, 0.1);
-			color: var(--accent);
-			border: 1px solid rgba(167, 139, 250, 0.2);
-		}
 	}
 
 	.filter-checklist {
@@ -530,7 +519,9 @@
 	}
 
 	@media (max-width: 768px) {
-		.storefront-admin { gap: 1.25rem; }
+		.storefront-admin {
+			gap: 1.25rem;
+		}
 
 		.page-header {
 			flex-direction: column;
@@ -564,6 +555,8 @@
 			gap: 0.5rem;
 		}
 
-		.show-in-filters-text { display: none; }
+		.show-in-filters-text {
+			display: none;
+		}
 	}
 </style>

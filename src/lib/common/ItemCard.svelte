@@ -128,7 +128,7 @@
 </article>
 
 <style lang="scss">
-	@use '$lib/app.scss' as *;
+	@use '$lib/theme-vars.scss' as *;
 
 	.product-card {
 		background: $bg-panel;

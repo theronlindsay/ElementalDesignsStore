@@ -1,4 +1,4 @@
-<script>
+<script lang="js">
 	let { event, editable = false, onEdit = undefined, onDelete = undefined } = $props();
 
 	// Format date for display
@@ -26,35 +26,39 @@
 
 	function getShortDateRange(e) {
 		if (e.days && e.days.length > 0) {
-			const sortedDays = [...e.days].sort((a,b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+			const sortedDays = [...e.days].sort(
+				(a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
+			);
 			const first = sortedDays[0];
 			const last = sortedDays[sortedDays.length - 1];
-			
+
 			if (first.date === last.date) {
 				return formatDate(first.date);
 			} else {
 				const firstD = new Date(first.date.includes('T') ? first.date : `${first.date}T12:00:00`);
 				const lastD = new Date(last.date.includes('T') ? last.date : `${last.date}T12:00:00`);
-				
+
+				/** @type {Intl.DateTimeFormatOptions} */
 				const formatOpts = { month: 'short', day: 'numeric' };
 				const firstStr = firstD.toLocaleDateString('en-US', formatOpts);
 				const lastStr = lastD.toLocaleDateString('en-US', formatOpts);
 				const year = lastD.getFullYear();
-				
+
 				return `${firstStr} - ${lastStr}, ${year}`;
 			}
 		}
 		return formatDate(e.date);
 	}
-	
-	let hasDetails = $derived(event.days && (event.days.length > 1 || event.days.some(d => d.startTime || d.endTime)));
+
+	let hasDetails = $derived(
+		event.days && (event.days.length > 1 || event.days.some((d) => d.startTime || d.endTime))
+	);
 
 	function renderHtml(text) {
 		if (!text) return '';
 		if (text.includes('<')) return text;
 		return `<p>${text}</p>`;
 	}
-
 </script>
 
 <div class="event-card theme-glass">
@@ -66,19 +70,28 @@
 
 	<div class="event-content">
 		<div class="event-header">
-			<div class="event-date-badge" class:has-dropdown={hasDetails} tabindex={hasDetails ? 0 : -1}>
+			<div
+				class="event-date-badge"
+				role="button"
+				aria-haspopup={hasDetails}
+				aria-expanded={hasDetails}
+				class:has-dropdown={hasDetails}
+				tabindex={hasDetails ? 0 : -1}
+			>
 				<i class="fas fa-calendar-alt"></i>
 				<span>{getShortDateRange(event)}</span>
-				
+
 				{#if hasDetails}
-					<div class="dates-dropdown">
-						{#each [...event.days].sort((a,b) => new Date(a.date).getTime() - new Date(b.date).getTime()) as day}
+					<div class="dates-dropdown" aria-live="polite">
+						{#each [...event.days].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()) as day, i (day.date + '-' + i)}
 							<div class="day-row">
 								<span class="day-date">{formatDate(day.date)}</span>
 								{#if day.startTime || day.endTime}
 									<span class="day-time">
 										{#if day.startTime}{formatTime(day.startTime)}{/if}
-										{#if day.startTime && day.endTime} - {/if}
+										{#if day.startTime && day.endTime}
+											-
+										{/if}
 										{#if day.endTime}{formatTime(day.endTime)}{/if}
 									</span>
 								{/if}
@@ -110,6 +123,8 @@
 
 		<h3 class="event-title">{event.title}</h3>
 
+		<!-- this html is coming from our database -->
+		<!-- eslint-disable -->
 		<div class="event-description rich-content">{@html renderHtml(event.description)}</div>
 
 		{#if event.location}
@@ -122,6 +137,7 @@
 					{/if}
 				</div>
 				{#if event.mapsLink}
+					<!-- eslint-disable svelte/no-navigation-without-resolve -- external URL -->
 					<a
 						href={event.mapsLink}
 						class="directions-btn"
@@ -132,15 +148,18 @@
 						<i class="fas fa-directions"></i>
 						Directions
 					</a>
+					<!-- eslint-enable svelte/no-navigation-without-resolve -->
 				{/if}
 			</div>
 		{/if}
 
 		{#if event.link}
+			<!-- eslint-disable svelte/no-navigation-without-resolve -- external URL -->
 			<a href={event.link} class="event-link" target="_blank" rel="noopener noreferrer">
 				Learn More
 				<i class="fas fa-arrow-right"></i>
 			</a>
+			<!-- eslint-enable svelte/no-navigation-without-resolve -->
 		{/if}
 	</div>
 </div>
@@ -253,9 +272,13 @@
 
 		:global(p) {
 			margin: 0 0 0.5rem;
-			&:last-child { margin-bottom: 0; }
+			&:last-child {
+				margin-bottom: 0;
+			}
 		}
-		:global(a) { color: var(--accent); }
+		:global(a) {
+			color: var(--accent);
+		}
 	}
 
 	.event-location-section {
@@ -366,12 +389,12 @@
 	.event-date-badge {
 		position: relative;
 		cursor: default;
-		
+
 		&.has-dropdown {
 			cursor: help;
 		}
 	}
-	
+
 	.dates-dropdown {
 		position: absolute;
 		top: 100%;
@@ -385,7 +408,9 @@
 		z-index: 100;
 		opacity: 0;
 		pointer-events: none;
-		transition: opacity 0.2s ease, transform 0.2s ease;
+		transition:
+			opacity 0.2s ease,
+			transform 0.2s ease;
 		transform: translateY(-5px);
 		min-width: max-content;
 		text-align: left;
@@ -397,7 +422,7 @@
 		pointer-events: auto;
 		transform: translateY(0);
 	}
-	
+
 	.day-row {
 		display: flex;
 		flex-direction: column;
@@ -405,27 +430,27 @@
 		padding-bottom: 0.5rem;
 		margin-bottom: 0.5rem;
 		border-bottom: 1px solid var(--border-secondary);
-		
+
 		&:last-child {
 			padding-bottom: 0;
 			margin-bottom: 0;
 			border-bottom: none;
 		}
 	}
-	
+
 	.day-date {
 		color: var(--text-primary);
 		font-weight: 600;
 		font-size: 0.9rem;
 	}
-	
+
 	.day-time {
 		color: var(--text-secondary);
 		font-size: 0.85rem;
 		display: flex;
 		align-items: center;
 		gap: 0.35rem;
-		
+
 		&::before {
 			content: '\f017';
 			font-family: 'Font Awesome 5 Free';
@@ -434,5 +459,4 @@
 			font-size: 0.8rem;
 		}
 	}
-
 </style>

@@ -3,18 +3,21 @@
 	import { resolve } from '$app/paths';
 	import { goto } from '$app/navigation';
 	import { page } from '$app/state';
-	import { SvelteSet } from 'svelte/reactivity';
 	import ItemCard from '$lib/common/ItemCard.svelte';
 
 	let { data } = $props();
 	let storeConfig = $derived(data.storeConfig || { searchFilterTags: [] });
-	let filterConfig = $derived(storeConfig.itemFilterConfig || {
-		primaryCategories: [],
-		tagGroups: [],
-		categoryMappings: [],
-		universalFilters: { tagGroupIds: [], subcategoryTags: [], extraTags: [] }
-	});
-	let universalFilters = $derived(filterConfig.universalFilters || { tagGroupIds: [], subcategoryTags: [], extraTags: [] });
+	let filterConfig = $derived(
+		storeConfig.itemFilterConfig || {
+			primaryCategories: [],
+			tagGroups: [],
+			categoryMappings: [],
+			universalFilters: { tagGroupIds: [], subcategoryTags: [], extraTags: [] }
+		}
+	);
+	let universalFilters = $derived(
+		filterConfig.universalFilters || { tagGroupIds: [], subcategoryTags: [], extraTags: [] }
+	);
 	let hasPrimaryCategories = $derived(filterConfig.primaryCategories?.length > 0);
 
 	// Active category state - defaults to 'all' to show all items
@@ -30,6 +33,7 @@
 
 	// Track if data has been loaded
 	let dataLoaded = $state(false);
+	/** @type {Record<string, any>} */
 	let allCategoriesData = $state({});
 
 	// Filter state
@@ -45,9 +49,11 @@
 	// so we just match against primary category tagKeys.
 	let matchedPrimaryCat = $derived.by(() => {
 		if (!hasPrimaryCategories || activeTags.length === 0) return null;
-		return filterConfig.primaryCategories.find((c) =>
-			activeTags.some((t) => t.toLowerCase() === c.tagKey?.toLowerCase())
-		) ?? null;
+		return (
+			filterConfig.primaryCategories.find((c) =>
+				activeTags.some((t) => t.toLowerCase() === c.tagKey?.toLowerCase())
+			) ?? null
+		);
 	});
 
 	let selectedPrimaryMapping = $derived(
@@ -111,26 +117,6 @@
 		}
 	}
 
-	// Get all subcategories across all loaded categories
-	let allSubcategories = $derived.by(() => {
-		if (!dataLoaded || !allCategoriesData.all) return [];
-
-		const subcats = [];
-		const seenNames = new SvelteSet();
-
-		if (allCategoriesData.all.subcategories) {
-			allCategoriesData.all.subcategories.forEach((subcat) => {
-				const name = subcat.categoryData?.name;
-				if (name && !seenNames.has(name)) {
-					seenNames.add(name);
-					subcats.push({ name, id: subcat.id });
-				}
-			});
-		}
-
-		return subcats.sort((a, b) => a.name.localeCompare(b.name));
-	});
-
 	// Sync tags FROM URL params TO local state (one-way: URL → state).
 	// All reads of local state are untracked so that clicking filter buttons
 	// (which mutate activeTags) does NOT re-trigger this effect.
@@ -145,8 +131,7 @@
 
 			const currentTags = untrack(() => activeTags);
 			const tagsChanged =
-				paramTags.length !== currentTags.length ||
-				!paramTags.every((t) => currentTags.includes(t));
+				paramTags.length !== currentTags.length || !paramTags.every((t) => currentTags.includes(t));
 
 			if (tagsChanged) {
 				minPrice = 0;
@@ -246,7 +231,7 @@
 	}
 
 	// Filter items based on current filter state
-	function filterItems(items, categories = []) {
+	function filterItems(items) {
 		if (!items || items.length === 0) return [];
 
 		// Pre-compute: partition activeTags into per-group buckets and loose tags.
@@ -279,7 +264,6 @@
 
 			const price = getItemPrice(item);
 			const rating = getItemRating(item);
-			const type = getItemType(item, categories);
 
 			if (searchQuery) {
 				const query = searchQuery.toLowerCase();
@@ -427,81 +411,85 @@
 			<aside class="filters-sidebar" class:collapsed={!showFilters}>
 				<div class="filters-header">
 					<h2>Filters</h2>
-					<button class="toggle-filters" onclick={() => (showFilters = !showFilters)}>
+					<button
+						class="toggle-filters"
+						aria-label={showFilters ? 'Collapse filters' : 'Expand filters'}
+						onclick={() => (showFilters = !showFilters)}
+					>
 						{showFilters ? '←' : '→'}
 					</button>
 				</div>
 
-			{#if showFilters}
-				{#if allSubcategoryTags.length > 0}
-					<div class="filter-section">
-						<h3>Subcategory</h3>
-						<div class="type-filters tags-container">
-							{#each allSubcategoryTags as tag (tag)}
-								<button
-									class="type-button tag-button"
-									class:active={activeTags.includes(tag)}
-									onclick={() => toggleTag(tag)}
-								>
-									{tag}
-								</button>
-							{/each}
-						</div>
-					</div>
-				{/if}
-
-				{#if activeTagGroups.length > 0}
-					{#each activeTagGroups as group (group.id)}
+				{#if showFilters}
+					{#if allSubcategoryTags.length > 0}
 						<div class="filter-section">
-							<h3>{group.label}</h3>
+							<h3>Subcategory</h3>
 							<div class="type-filters tags-container">
-								{#each group.tags as tag (tag)}
+								{#each allSubcategoryTags as tag (tag)}
 									<button
 										class="type-button tag-button"
 										class:active={activeTags.includes(tag)}
-										onclick={() => toggleTag(tag, group.id)}
+										onclick={() => toggleTag(tag)}
 									>
 										{tag}
 									</button>
 								{/each}
 							</div>
 						</div>
-					{/each}
-				{/if}
+					{/if}
 
-				{#if allExtraTags.length > 0}
-					<div class="filter-section">
-						<h3>More Filters</h3>
-						<div class="type-filters tags-container">
-							{#each allExtraTags as tag (tag)}
-								<button
-									class="type-button tag-button"
-									class:active={activeTags.includes(tag)}
-									onclick={() => toggleTag(tag)}
-								>
-									{tag}
-								</button>
-							{/each}
-						</div>
-					</div>
-				{/if}
+					{#if activeTagGroups.length > 0}
+						{#each activeTagGroups as group (group.id)}
+							<div class="filter-section">
+								<h3>{group.label}</h3>
+								<div class="type-filters tags-container">
+									{#each group.tags as tag (tag)}
+										<button
+											class="type-button tag-button"
+											class:active={activeTags.includes(tag)}
+											onclick={() => toggleTag(tag, group.id)}
+										>
+											{tag}
+										</button>
+									{/each}
+								</div>
+							</div>
+						{/each}
+					{/if}
 
-				{#if !matchedPrimaryCat && storeConfig.searchFilterTags && storeConfig.searchFilterTags.length > 0}
-					<div class="filter-section">
-						<h3>Tags</h3>
-						<div class="type-filters tags-container">
-							{#each storeConfig.searchFilterTags as tag (tag)}
-								<button
-									class="type-button tag-button"
-									class:active={activeTags.includes(tag)}
-									onclick={() => toggleTag(tag)}
-								>
-									{tag}
-								</button>
-							{/each}
+					{#if allExtraTags.length > 0}
+						<div class="filter-section">
+							<h3>More Filters</h3>
+							<div class="type-filters tags-container">
+								{#each allExtraTags as tag (tag)}
+									<button
+										class="type-button tag-button"
+										class:active={activeTags.includes(tag)}
+										onclick={() => toggleTag(tag)}
+									>
+										{tag}
+									</button>
+								{/each}
+							</div>
 						</div>
-					</div>
-				{/if}
+					{/if}
+
+					{#if !matchedPrimaryCat && storeConfig.searchFilterTags && storeConfig.searchFilterTags.length > 0}
+						<div class="filter-section">
+							<h3>Tags</h3>
+							<div class="type-filters tags-container">
+								{#each storeConfig.searchFilterTags as tag (tag)}
+									<button
+										class="type-button tag-button"
+										class:active={activeTags.includes(tag)}
+										onclick={() => toggleTag(tag)}
+									>
+										{tag}
+									</button>
+								{/each}
+							</div>
+						</div>
+					{/if}
 
 					<div class="filter-section">
 						<h3>Price Range</h3>
@@ -561,10 +549,7 @@
 					{@const itemsToFilter = searchQuery
 						? Object.values(allCategoriesData).flatMap((cat) => cat.items || [])
 						: currentCategoryData.items}
-					{@const subcatsToUse = searchQuery
-						? Object.values(allCategoriesData).flatMap((cat) => cat.subcategories || [])
-						: currentCategoryData.subcategories}
-					{@const filtered = filterItems(itemsToFilter, subcatsToUse)}
+					{@const filtered = filterItems(itemsToFilter)}
 
 					<div class="results-header">
 						<p class="results-count">

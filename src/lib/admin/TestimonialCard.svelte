@@ -67,7 +67,8 @@
 		{/if}
 
 		{#if testimonial.link}
-			<a href={testimonial.link} class="testimonial-link" target="_blank" rel="noopener noreferrer">
+			<!-- eslint-disable-next-line svelte/no-navigation-without-resolve -- external URL -->
+		<a href={testimonial.link} class="testimonial-link" target="_blank" rel="noopener noreferrer">
 				View Source
 				<i class="fas fa-arrow-right"></i>
 			</a>

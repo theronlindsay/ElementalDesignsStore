@@ -1,13 +1,8 @@
 <script>
-	// 1. Imports
 	import { onMount } from 'svelte';
 
-	// 2. Props (Data passed from a parent or router)
-	export let data = {};
-
-	// 3. Component Logic
 	let title = 'New Page';
-	let count = 0;
+	let count = $state(0);
 
 	function increment() {
 		count += 1;
@@ -24,7 +19,7 @@
 		<p>Welcome to your new Svelte page.</p>
 
 		<div class="card">
-			<button on:click={increment}>
+			<button onclick={increment}>
 				Clicks: {count}
 			</button>
 		</div>

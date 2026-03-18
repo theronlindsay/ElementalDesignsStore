@@ -1,5 +1,6 @@
 <script>
 	import { goto } from '$app/navigation';
+	import { resolve } from '$app/paths';
 
 	let email = $state('');
 	let password = $state('');
@@ -13,7 +14,7 @@
 		}
 		// TODO: Implement actual login logic
 		console.log('Login attempted:', { email, password });
-		goto('/account/profile');
+		goto(resolve('/account/profile'));
 	}
 </script>
 
@@ -53,7 +54,7 @@
 		</form>
 
 		<p class="signup-link">
-			Don't have an account? <a href="/account/register">Create one here</a>
+			Don't have an account? <a href={resolve('/account/register')}>Create one here</a>
 		</p>
 	</div>
 </div>

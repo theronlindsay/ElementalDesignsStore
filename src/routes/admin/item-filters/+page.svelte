@@ -2,7 +2,7 @@
 	import { Input, Label, FormGroup } from '$lib';
 	import { onMount, untrack } from 'svelte';
 
-	let { data } = $props();
+	const { data } = $props();
 
 	const defaultFilterConfig = {
 		primaryCategories: [],
@@ -26,8 +26,6 @@
 		}
 	};
 
-	let serverFilterConfig = $derived(data.config?.itemFilterConfig);
-
 	function migrateConfig(raw) {
 		const cfg = structuredClone(raw);
 		if (cfg.tagGroups && !Array.isArray(cfg.tagGroups)) {
@@ -46,8 +44,12 @@
 		return cfg;
 	}
 
-	let config = $state(
-		serverFilterConfig ? migrateConfig(serverFilterConfig) : structuredClone(defaultFilterConfig)
+	const config = $state(
+		untrack(() =>
+			data.config?.itemFilterConfig
+				? migrateConfig(data.config.itemFilterConfig)
+				: structuredClone(defaultFilterConfig)
+		)
 	);
 
 	let isSaving = $state(false);
@@ -404,7 +406,7 @@
 						{:else if availableTags.length === 0}
 							<span class="muted">No categories found in Square.</span>
 						{:else}
-							{#each availableTags as tag}
+							{#each availableTags as tag (tag)}
 								<button
 									class="tag available-tag-btn"
 									onclick={() =>
@@ -468,6 +470,7 @@
 									<button
 										class="mode-btn"
 										class:active={group.selectionMode !== 'single'}
+										aria-label="Multi-select mode"
 										onclick={() => {
 											group.selectionMode = 'multi';
 											config.tagGroups = [...config.tagGroups];
@@ -476,6 +479,7 @@
 									<button
 										class="mode-btn"
 										class:active={group.selectionMode === 'single'}
+										aria-label="Single-select mode"
 										onclick={() => {
 											group.selectionMode = 'single';
 											config.tagGroups = [...config.tagGroups];
@@ -509,10 +513,13 @@
 						</div>
 						<div class="tag-input-container">
 							<div class="tags">
-								{#each group.tags || [] as tag}
+								{#each group.tags || [] as tag (tag)}
 									<span class="tag group-tag">
 										{tag}
-										<button onclick={() => removeTagFromGroup(group.id, tag)}>&times;</button>
+										<button
+											aria-label="Remove tag {tag}"
+											onclick={() => removeTagFromGroup(group.id, tag)}>&times;</button
+										>
 									</span>
 								{/each}
 							</div>
@@ -586,7 +593,7 @@
 									{:else if availableTags.length === 0}
 										<span class="muted small">No categories found in Square.</span>
 									{:else}
-										{#each availableTags as tag}
+										{#each availableTags as tag (tag)}
 											<button
 												class="tag selectable-tag"
 												class:active={(config.universalFilters.subcategoryTags || []).includes(tag)}
@@ -630,10 +637,13 @@
 								</p>
 								<div class="tag-input-container">
 									<div class="tags">
-										{#each config.universalFilters.extraTags || [] as tag}
+										{#each config.universalFilters.extraTags || [] as tag (tag)}
 											<span class="tag extra-tag">
 												{tag}
-												<button onclick={() => removeUniversalExtraTag(tag)}>&times;</button>
+												<button
+													aria-label="Remove tag {tag}"
+													onclick={() => removeUniversalExtraTag(tag)}>&times;</button
+												>
 											</span>
 										{/each}
 									</div>
@@ -664,7 +674,7 @@
 									{:else if availableTags.length === 0}
 										<span class="muted small">No categories found in Square.</span>
 									{:else}
-										{#each availableTags as tag}
+										{#each availableTags as tag (tag)}
 											<button
 												class="tag selectable-tag"
 												class:active={isSubcategorySelected(tag)}
@@ -710,10 +720,12 @@
 								</p>
 								<div class="tag-input-container">
 									<div class="tags">
-										{#each mappingForSelected?.extraTags || [] as tag}
+										{#each mappingForSelected?.extraTags || [] as tag (tag)}
 											<span class="tag extra-tag">
 												{tag}
-												<button onclick={() => removeExtraTag(tag)}>&times;</button>
+												<button aria-label="Remove tag {tag}" onclick={() => removeExtraTag(tag)}
+													>&times;</button
+												>
 											</span>
 										{/each}
 									</div>
@@ -1127,7 +1139,9 @@
 
 	/* ---- Responsive ---- */
 	@media (max-width: 768px) {
-		.item-filters-admin { gap: 1.25rem; }
+		.item-filters-admin {
+			gap: 1.25rem;
+		}
 
 		.page-header {
 			flex-direction: column;
@@ -1144,7 +1158,9 @@
 		.tab {
 			font-size: 0.8rem;
 			padding: 0.35rem 0.7rem;
-			span { display: none; }
+			span {
+				display: none;
+			}
 		}
 
 		.admin-section {

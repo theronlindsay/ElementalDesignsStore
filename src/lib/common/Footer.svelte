@@ -1,3 +1,7 @@
+<script>
+	import { resolve } from '$app/paths';
+</script>
+
 <!-- Footer -->
 <footer class="footer">
 	<div class="footer-content">
@@ -10,8 +14,8 @@
 		<div class="footer-links">
 			<div class="footer-column">
 				<h4>Info</h4>
-				<a href="/#events-schedule"><i class="fas fa-calendar"></i> Event schedule</a>
-				<a href="/about"><i class="fas fa-info"></i> About</a>
+				<a href="{resolve('/')}#events-schedule"><i class="fas fa-calendar"></i> Event schedule</a>
+				<a href={resolve('/about')}><i class="fas fa-info"></i> About</a>
 				<a href="mailto:elementalchaindesigns@gmail.com"><i class="fas fa-envelope"></i> Contact</a>
 			</div>
 
@@ -43,9 +47,9 @@
 
 			<div class="footer-column">
 				<h4>Policies</h4>
-				<a href="/policies/#shipping"><i class="fas fa-shipping-fast"></i> Shipping</a>
-				<a href="/policies/#returns"><i class="fas fa-undo"></i> Returns</a>
-				<a href="/policies/#privacy"><i class="fas fa-shield-alt"></i> Privacy</a>
+				<a href="{resolve('/policies')}#shipping"><i class="fas fa-shipping-fast"></i> Shipping</a>
+				<a href="{resolve('/policies')}#returns"><i class="fas fa-undo"></i> Returns</a>
+				<a href="{resolve('/policies')}#privacy"><i class="fas fa-shield-alt"></i> Privacy</a>
 			</div>
 		</div>
 	</div>

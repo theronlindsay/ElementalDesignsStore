@@ -17,6 +17,7 @@
 	// Extract price from Square item
 	function getItemPrice() {
 		try {
+			/** @type {any} */
 			const variation = item?.itemData?.variations?.[0];
 			const price = variation?.itemVariationData?.priceMoney?.amount || 0;
 			return Number(price) / 100;
