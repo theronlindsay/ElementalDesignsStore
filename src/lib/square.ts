@@ -186,11 +186,26 @@ export async function getItemsByCategoryIncludingSubcategories(
 export async function enrichItemsWithImages(items: CatalogObject[]): Promise<ItemWithImages[]> {
     try {
         const imageIdSet = new Set<string>();
+        
+        // Collect imageIds from both root items AND variations
         for (const item of items) {
             const obj = item as CatalogObject.Item;
+            
+            // Add root item imageIds
             if (obj.itemData?.imageIds) {
                 for (const id of obj.itemData.imageIds) {
                     imageIdSet.add(id);
+                }
+            }
+            
+            // Add variation imageIds
+            if (obj.itemData?.variations) {
+                for (const variation of obj.itemData.variations) {
+                    if (variation.itemVariationData?.imageIds) {
+                        for (const id of variation.itemVariationData.imageIds) {
+                            imageIdSet.add(id);
+                        }
+                    }
                 }
             }
         }
@@ -220,8 +235,25 @@ export async function enrichItemsWithImages(items: CatalogObject[]): Promise<Ite
             const obj = item as CatalogObject.Item;
             const ids = obj.itemData?.imageIds || [];
             const imageUrls = ids.map((id) => imageMap.get(id)).filter((url): url is string => !!url);
+            
+            // Also enrich variations with their imageUrls
+            let enrichedItem = { ...obj, imageUrls };
+            if (obj.itemData?.variations) {
+                enrichedItem.itemData.variations = obj.itemData.variations.map((variation) => {
+                    const varIds = variation.itemVariationData?.imageIds || [];
+                    const varImageUrls = varIds.map((id) => imageMap.get(id)).filter((url): url is string => !!url);
+                    
+                    return {
+                        ...variation,
+                        itemVariationData: {
+                            ...variation.itemVariationData,
+                            imageUrls: varImageUrls
+                        }
+                    };
+                });
+            }
 
-            return { ...obj, imageUrls };
+            return enrichedItem;
         });
 
         console.log(`Enriched ${enrichedItems.length} items with image URLs`);

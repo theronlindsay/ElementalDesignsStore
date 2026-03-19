@@ -2,7 +2,7 @@
 	import { onDestroy } from 'svelte';
 	import { cart } from '$lib/cart/cartStore';
 
-	let { item, itemData, itemPrice, itemRating, itemType, formatPrice } = $props();
+	let { item, itemData, itemPrice, itemRating, itemType, formatPrice, isVariant = false } = $props();
 	let addToCartState = $state('idle');
 	let loadingTimer;
 	let successTimer;
@@ -78,6 +78,12 @@
 		<div class="card-badge">
 			{itemType}
 		</div>
+
+		{#if isVariant}
+			<div class="variant-badge">
+				Variant
+			</div>
+		{/if}
 	</div>
 
 	<div class="card-content">
@@ -182,6 +188,19 @@
 			top: $spacing-sm;
 			right: $spacing-sm;
 			background: rgba(167, 139, 250, 0.9);
+			color: white;
+			padding: $spacing-xs $spacing-sm;
+			border-radius: $radius-sm;
+			font-size: 0.75rem;
+			font-weight: 600;
+			backdrop-filter: blur(10px);
+		}
+
+		.variant-badge {
+			position: absolute;
+			bottom: $spacing-sm;
+			left: $spacing-sm;
+			background: rgba(100, 200, 255, 0.9);
 			color: white;
 			padding: $spacing-xs $spacing-sm;
 			border-radius: $radius-sm;

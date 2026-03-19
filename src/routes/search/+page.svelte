@@ -35,6 +35,8 @@
 	let dataLoaded = $state(false);
 	/** @type {Record<string, any>} */
 	let allCategoriesData = $state({});
+	/** @type {Array<{primary: any, variants: any[]}>} */
+	let primariesWithVariants = $state([]);
 
 	// Filter state
 	let minPrice = $state(0);
@@ -154,7 +156,11 @@
 		// Load all categories data once
 		data.allCategoriesPromise
 			.then((loadedData) => {
+				console.log('Categories data loaded:', loadedData);
 				allCategoriesData = loadedData;
+				// Build the primaries with variants structure from all items
+				primariesWithVariants = buildPrimariesWithVariants(loadedData);
+				console.log('primariesWithVariants populated:', primariesWithVariants);
 				dataLoaded = true;
 			})
 			.catch((err) => {
@@ -205,6 +211,84 @@
 		if (customType) return customType;
 
 		return 'Uncategorized';
+	}
+
+	// Check if an item is a primary item (HAS primary attribute set to true)
+	function hasPrimaryVariation(item) {
+		const customAttributes = item.customAttributeValues || {};
+		const primaryAttr = Object.values(customAttributes).find(attr => attr?.name === 'primary');
+		const result = primaryAttr?.booleanValue === true;
+		if (!result && item.id) {
+			console.log(`hasPrimaryVariation(${item.id}):`, result, 'primaryAttr:', primaryAttr);
+		}
+		return result;
+	}
+
+	// Check if an item is a variant (does NOT have primary attribute set to true)
+	function hasVariation(item) {
+		const customAttributes = item.customAttributeValues || {};
+		const primaryAttr = Object.values(customAttributes).find(attr => attr?.name === 'primary');
+		const result = primaryAttr?.booleanValue !== true;
+		if (result && item.id) {
+			console.log(`hasVariation(${item.id}):`, result, 'primaryAttr:', primaryAttr);
+		}
+		return result;
+	}
+
+	// Get the primaryid from an item's custom attributes
+	function getPrimaryId(item) {
+		const customAttributes = item.customAttributeValues || {};
+		const primaryIdAttr = Object.values(customAttributes).find(attr => attr?.name === 'primaryid');
+		const id = primaryIdAttr?.stringValue || null;
+		if (item.id) {
+			console.log(`getPrimaryId(${item.id}):`, id, 'primaryIdAttr:', primaryIdAttr);
+		}
+		return id;
+	}
+
+	// Build a 2D list of primaries with their variants
+	function buildPrimariesWithVariants(categoriesData) {
+		// Get ALL items (from the 'all' category which contains everything)
+		const allItems = categoriesData?.all?.items || [];
+		console.log('Total items loaded:', allItems.length);
+		console.log('All items:', allItems);
+
+		// Create a map of primary items by ID
+		const primaryMap = {};
+		allItems.forEach(item => {
+			if (hasPrimaryVariation(item)) {
+				primaryMap[item.id] = item;
+			}
+		});
+		console.log('Primary items found:', Object.keys(primaryMap).length);
+		console.log('Primary Map:', primaryMap);
+
+		// For each variant item, group it with its primary using the variant's primaryid
+		const groupedByPrimary = {};
+		allItems.forEach(item => {
+			if (hasVariation(item)) {
+				const primaryId = getPrimaryId(item);
+				console.log(`Variant item: ${item.id}, primaryid: ${primaryId}`);
+				if (primaryId && primaryMap[primaryId]) {
+					if (!groupedByPrimary[primaryId]) {
+						groupedByPrimary[primaryId] = {
+							primary: primaryMap[primaryId],
+							variants: []
+						};
+					}
+					groupedByPrimary[primaryId].variants.push(item);
+					console.log(`Added variant ${item.id} to primary ${primaryId}`);
+				} else {
+					console.log(`No matching primary found for variant ${item.id} with primaryid ${primaryId}`);
+				}
+			}
+		});
+
+		// Convert to array and return
+		const result = Object.values(groupedByPrimary);
+		console.log('Final grouped result:', result);
+		console.log('Total primary-variant groups:', result.length);
+		return result;
 	}
 
 	// Resolve an item's category names from Square category IDs
@@ -293,6 +377,11 @@
 						if (!bucket.tags.some((t) => itemNames.includes(t))) return false;
 					}
 				}
+			}
+
+			// Only show primary items
+			if (!hasPrimaryVariation(item)) {
+				return false;
 			}
 
 			return true;
@@ -607,7 +696,14 @@
 								{@const itemType = getItemType(item, currentCategoryData.subcategories)}
 
 								<a href={resolve(`/item/${item.id}`)} class="product-card-link">
-									<ItemCard {item} {itemData} {itemPrice} {itemRating} {itemType} {formatPrice} />
+									<ItemCard 
+										{item} 
+										{itemData} 
+										{itemPrice} 
+										{itemRating} 
+										{itemType} 
+										{formatPrice}
+									/>
 								</a>
 							{/each}
 						</div>
