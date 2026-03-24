@@ -1,6 +1,7 @@
 <script>
 	import { Button, Input, Label, FormGroup } from '$lib';
 	import { UploadDropzone, createUploader } from '$lib/uploadthing';
+	import { RichTextEditor } from '$lib';
 
 	let {
 		isOpen = false,
@@ -156,17 +157,14 @@
 					/>
 				</FormGroup>
 				
-				<FormGroup>
+				<FormGroup >
 					<Label htmlFor="description" required>Description</Label>
-					<textarea
-						name="description"
-						bind:value={formData.description}
+					<RichTextEditor 
+						class ="textarea"
+						bind:content={formData.description}
 						placeholder="Describe your event..."
-						required
-					class="textarea"
-					rows="5"
-				></textarea>
-			</FormGroup>
+					/>
+				</FormGroup>
 			
 			<div class="form-row">
 				<FormGroup>
@@ -397,35 +395,7 @@
 		}
 	}
 	
-	.textarea {
-		width: -webkit-fill-available;
-		padding: 0.75rem 1rem;
-		background: var(--bg-secondary);
-		border: 1px solid var(--border-secondary);
-		border-radius: 12px;
-		color: var(--text-secondary);
-		font-size: 1rem;
-		outline: none;
-		transition: all 0.3s ease;
-		font-family: inherit;
-		resize: vertical;
-		min-height: 120px;
-		line-height: 1.5;
-		
-		&:focus {
-			border-color: var(--accent);
-			box-shadow: 0 0 0 3px rgba(167, 139, 250, 0.1);
-			background: var(--bg-primary);
-		}
-		
-		&::placeholder {
-			color: var(--muted-2);
-		}
-		
-		&:hover:not(:focus) {
-			border-color: var(--border-primary);
-		}
-	}
+
 	
 	.image-upload-section {
 		display: flex;
@@ -473,78 +443,7 @@
 		}
 	}
 	
-	.upload-area {
-		position: relative;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		
-		&.dragging {
-			.upload-label {
-				border-color: var(--accent);
-				background: rgba(167, 139, 250, 0.15);
-				transform: scale(1.02);
-				
-				i {
-					color: var(--accent);
-					animation: bounce 0.6s ease infinite;
-				}
-			}
-		}
-		
-		.file-input {
-			display: none;
-		}
-		
-		.upload-label {
-			width: 100%;
-			display: flex;
-			flex-direction: column;
-			align-items: center;
-			justify-content: center;
-			padding: 2rem;
-			border: 2px dashed var(--border-primary);
-			border-radius: 8px;
-			cursor: pointer;
-			transition: all 0.2s ease;
-			background: var(--bg-secondary);
-			pointer-events: none;
-			
-			i {
-				font-size: 2rem;
-				color: var(--accent);
-				margin-bottom: 0.5rem;
-				transition: all 0.2s ease;
-			}
-			
-			&:hover {
-				border-color: var(--accent);
-				background: rgba(167, 139, 250, 0.05);
-			}
-		}
-	}
-	
-	@keyframes bounce {
-		0%, 100% {
-			transform: translateY(0);
-		}
-		50% {
-			transform: translateY(-10px);
-		}
-	}
-	
-	.upload-text {
-		color: var(--text-primary);
-		font-weight: 600;
-		margin: 0;
-		font-size: 1rem;
-	}
-	
-	.upload-hint {
-		color: var(--muted);
-		font-size: 0.85rem;
-		margin: 0.25rem 0 0;
-	}
+
 	
 	.error-message {
 		color: #ff6b6b;
