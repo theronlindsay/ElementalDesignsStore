@@ -1,5 +1,6 @@
 <script>
 	import { goto } from '$app/navigation';
+	import { resolve } from '$app/paths';
 
 	let email = $state('');
 	let password = $state('');
@@ -18,7 +19,7 @@
 		}
 		// TODO: Implement actual registration logic
 		console.log('Registration attempted:', { email, password });
-		goto('/account/profile');
+		goto(resolve('/account/profile'));
 	}
 </script>
 
@@ -69,7 +70,7 @@
 		</form>
 
 		<p class="login-link">
-			Already have an account? <a href="/account/login">Sign in here</a>
+			Already have an account? <a href={resolve('/account/login')}>Sign in here</a>
 		</p>
 	</div>
 </div>

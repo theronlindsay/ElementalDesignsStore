@@ -1,46 +1,109 @@
 <script>
-	import { page } from '$app/stores';
-	import { Button } from '$lib';
-	
-	export let isOpen = false;
-	
+	import { resolve } from '$app/paths';
+	import { page } from '$app/state';
+
+	let { isOpen = $bindable(false) } = $props();
+
 	// Navigation items
 	const navItems = [
-		{ href: '/admin', icon: 'fa-chart-line', label: 'Dashboard' },
-		{ href: '/admin/products', icon: 'fa-box', label: 'Products' },
-		{ href: '/admin/orders', icon: 'fa-shopping-bag', label: 'Orders' },
-		{ href: '/admin/customers', icon: 'fa-users', label: 'Customers' },
-		{ href: '/admin/events', icon: 'fa-calendar-alt', label: 'Events' },
-		{ href: '/admin/testimonials', icon: 'fa-start-alt', label: 'Testimonials'},
-		{ href: '/admin/coupons', icon: 'fa-ticket-alt', label: 'Coupons' },
-		{ href: '/admin/settings', icon: 'fa-cog', label: 'Settings' }
+		{ route: '/admin', href: resolve('/admin'), icon: 'fa-chart-line', label: 'Dashboard' },
+		{
+			route: '/admin/products',
+			href: resolve('/admin/products'),
+			icon: 'fa-box',
+			label: 'Products'
+		},
+		{
+			route: '/admin/orders',
+			href: resolve('/admin/orders'),
+			icon: 'fa-shopping-bag',
+			label: 'Orders'
+		},
+		{
+			route: '/admin/customers',
+			href: resolve('/admin/customers'),
+			icon: 'fa-users',
+			label: 'Customers'
+		},
+		{
+			route: '/admin/events',
+			href: resolve('/admin/events'),
+			icon: 'fa-calendar-alt',
+			label: 'Events'
+		},
+		{
+			route: '/admin/about',
+			href: resolve('/admin/about'),
+			icon: 'fa-address-card',
+			label: 'About'
+		},
+		{
+			route: '/admin/branding',
+			href: resolve('/admin/branding'),
+			icon: 'fa-palette',
+			label: 'Branding'
+		},
+		{
+			route: '/admin/item-filters',
+			href: resolve('/admin/item-filters'),
+			icon: 'fa-filter',
+			label: 'Item Search & Filtering'
+		},
+		{ route: '/admin/navbar', href: resolve('/admin/navbar'), icon: 'fa-compass', label: 'Navbar' },
+		{
+			route: '/admin/storefront',
+			href: resolve('/admin/storefront'),
+			icon: 'fa-store',
+			label: 'Storefront'
+		},
+		{
+			route: '/admin/policies',
+			href: resolve('/admin/policies'),
+			icon: 'fa-file-contract',
+			label: 'Policy'
+		},
+		{
+			route: '/admin/testimonials',
+			href: resolve('/admin/testimonials'),
+			icon: 'fa-start-alt',
+			label: 'Testimonials'
+		}
 	];
-	
+
 	function toggleSidebar() {
 		isOpen = !isOpen;
 	}
-	
+
 	function closeSidebar() {
 		isOpen = false;
 	}
-	
+
+	// Track current route path reactively via $app/state
+	let currentPath = $derived(page.url.pathname);
+
 	// Check if route is active
-	$: isActive = (href) => {
+	function isActive(href) {
 		if (href === '/admin') {
-			return $page.url.pathname === '/admin';
+			return currentPath === '/admin';
 		}
-		return $page.url.pathname.startsWith(href);
-	};
+		return currentPath.startsWith(href);
+	}
 </script>
 
 <!-- Mobile Toggle Button -->
-<button class="sidebar-toggle" on:click={toggleSidebar} aria-label="Toggle sidebar">
+<button class="sidebar-toggle" onclick={toggleSidebar} aria-label="Toggle sidebar">
 	<i class="fas {isOpen ? 'fa-times' : 'fa-bars'}"></i>
 </button>
 
 <!-- Overlay for mobile -->
 {#if isOpen}
-	<div class="sidebar-overlay" on:click={closeSidebar} on:keydown={(e) => e.key === 'Escape' && closeSidebar()} role="button" tabindex="0"></div>
+	<div
+		class="sidebar-overlay"
+		onclick={closeSidebar}
+		onkeydown={(e) => e.key === 'Escape' && closeSidebar()}
+		role="button"
+		tabindex="0"
+	></div>
 {/if}
 
 <!-- Sidebar -->
@@ -52,22 +115,22 @@
 		</div>
 		<h2 class="sidebar-title">Admin Panel</h2>
 	</div>
-	
+
 	<!-- Navigation -->
 	<nav class="sidebar-nav">
-		{#each navItems as item}
-			<a 
-				href={item.href}
+		{#each navItems as item (item.route)}
+			<a
+				href={resolve(/** @type {any} */ (item.route))}
 				class="nav-link"
-				class:active={isActive(item.href)}
-				on:click={closeSidebar}
+				class:active={isActive(item.route)}
+				onclick={closeSidebar}
 			>
 				<i class="fas {item.icon}"></i>
 				<span>{item.label}</span>
 			</a>
 		{/each}
 	</nav>
-	
+
 	<!-- Sidebar Footer -->
 	<div class="sidebar-footer">
 		<div class="user-info">
@@ -85,7 +148,7 @@
 <style lang="scss">
 	$sidebar-width: 280px;
 	$mobile-breakpoint: 768px;
-	
+
 	/* Mobile Toggle Button */
 	.sidebar-toggle {
 		display: none;
@@ -103,23 +166,23 @@
 		cursor: pointer;
 		transition: all 0.3s ease;
 		backdrop-filter: blur(20px);
-		
+
 		&:hover {
 			border-color: var(--accent);
 			color: var(--accent);
 		}
-		
+
 		@media (max-width: $mobile-breakpoint) {
 			display: flex;
 			align-items: center;
 			justify-content: center;
 		}
 	}
-	
+
 	/* Mobile Overlay */
 	.sidebar-overlay {
 		display: none;
-		
+
 		@media (max-width: $mobile-breakpoint) {
 			display: block;
 			position: fixed;
@@ -132,7 +195,7 @@
 			backdrop-filter: blur(4px);
 		}
 	}
-	
+
 	/* Sidebar */
 	.admin-sidebar {
 		position: fixed;
@@ -147,17 +210,17 @@
 		z-index: 1000;
 		transition: transform 0.3s ease;
 		backdrop-filter: blur(20px);
-		
+
 		@media (max-width: $mobile-breakpoint) {
 			transform: translateX(-100%);
 			box-shadow: 4px 0 12px rgba(0, 0, 0, 0.3);
-			
+
 			&.open {
 				transform: translateX(0);
 			}
 		}
 	}
-	
+
 	/* Sidebar Header */
 	.sidebar-header {
 		padding: 2rem 1.5rem;
@@ -166,7 +229,7 @@
 		align-items: center;
 		gap: 1rem;
 	}
-	
+
 	.logo-container {
 		width: 48px;
 		height: 48px;
@@ -179,14 +242,14 @@
 		color: white;
 		flex-shrink: 0;
 	}
-	
+
 	.sidebar-title {
 		color: var(--text-primary);
 		font-size: 1.25rem;
 		font-weight: 700;
 		margin: 0;
 	}
-	
+
 	/* Navigation */
 	.sidebar-nav {
 		flex: 1;
@@ -195,26 +258,26 @@
 		display: flex;
 		flex-direction: column;
 		gap: 0.5rem;
-		
+
 		/* Custom scrollbar */
 		&::-webkit-scrollbar {
 			width: 6px;
 		}
-		
+
 		&::-webkit-scrollbar-track {
 			background: transparent;
 		}
-		
+
 		&::-webkit-scrollbar-thumb {
 			background: var(--border-primary);
 			border-radius: 3px;
 		}
-		
+
 		&::-webkit-scrollbar-thumb:hover {
 			background: var(--accent);
 		}
 	}
-	
+
 	.nav-link {
 		display: flex;
 		align-items: center;
@@ -225,18 +288,18 @@
 		border-radius: 10px;
 		transition: all 0.2s ease;
 		font-weight: 500;
-		
+
 		i {
 			font-size: 1.1rem;
 			width: 20px;
 			text-align: center;
 		}
-		
+
 		&:hover {
 			background: rgba(167, 139, 250, 0.1);
 			color: var(--text-primary);
 		}
-		
+
 		&.active {
 			background: linear-gradient(135deg, var(--accent) 0%, var(--accent-2) 100%);
 			color: white;
@@ -244,19 +307,19 @@
 			box-shadow: 0 4px 12px rgba(167, 139, 250, 0.3);
 		}
 	}
-	
+
 	/* Sidebar Footer */
 	.sidebar-footer {
 		padding: 1.5rem;
 		border-top: 1px solid var(--panel-border);
 	}
-	
+
 	.user-info {
 		display: flex;
 		align-items: center;
 		gap: 0.75rem;
 	}
-	
+
 	.user-avatar {
 		width: 40px;
 		height: 40px;
@@ -268,12 +331,12 @@
 		color: var(--muted);
 		flex-shrink: 0;
 	}
-	
+
 	.user-details {
 		flex: 1;
 		min-width: 0;
 	}
-	
+
 	.user-name {
 		color: var(--text-primary);
 		font-weight: 600;
@@ -283,7 +346,7 @@
 		overflow: hidden;
 		text-overflow: ellipsis;
 	}
-	
+
 	.user-role {
 		color: var(--muted-2);
 		font-size: 0.8rem;

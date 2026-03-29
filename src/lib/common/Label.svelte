@@ -1,5 +1,5 @@
 <script>
-	export let htmlFor;
+	export let htmlFor = undefined;
 	export let required = false;
 </script>
 

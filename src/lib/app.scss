@@ -382,6 +382,14 @@ body > * {
   line-height: 1.6;
   margin: 0 0 $spacing-xl 0;
   max-width: 500px;
+
+  p {
+    margin: 0 0 $spacing-sm 0;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
 }
 
 .hero-actions {
@@ -426,26 +434,31 @@ body > * {
   justify-content: center;
 }
 
-.search-panel {
-  background: rgba(42, 36, 56, 0.5);
-  border: 1px solid $border-primary;
+.hero-image-stack {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-lg;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 450px;
+  margin: 0 auto;
+}
+
+.hero-image {
+  width: 100%;
+  height: auto;
   border-radius: $radius-lg;
-  padding: $spacing-xl;
-  backdrop-filter: blur(10px);
-}
+  box-shadow: $shadow-lg;
+  border: 1px solid $border-secondary;
+  transition: all $transition-normal;
+  object-fit: cover;
 
-.product-images {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: $spacing-md;
-}
-
-.product-placeholder {
-  width: 150px;
-  height: 150px;
-  background: linear-gradient(135deg, $border-primary 0%, $border-secondary 100%);
-  border-radius: $radius-md;
-  border: 2px dashed $border-accent;
+  &:hover {
+    transform: translateY(-5px) scale(1.02);
+    box-shadow: $shadow-accent;
+    border-color: $accent-primary;
+  }
 }
 
 /* ============================================
@@ -461,12 +474,14 @@ body > * {
   padding: $spacing-xl;
 }
 
-.hgrid{
-  display: flex;
-  flex-direction: row;
+.hgrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: $spacing-xl;
+  width: 100%;
   max-width: $desktop-breakpoint;
   margin: 0 auto;
+  align-items: start;
 }
 
 .events-section, .testimonials-section, .custom-orders, .newsletter-signup {

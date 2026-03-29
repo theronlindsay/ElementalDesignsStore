@@ -1,4 +1,5 @@
 <script>
+	import { resolve } from '$app/paths';
 	// TODO: Load orders from server
 	const orders = [
 		{
@@ -77,7 +78,7 @@
 		{:else}
 			<div class="empty-state">
 				<p>You haven't placed any orders yet.</p>
-				<a href="/search" class="btn-primary">Start Shopping</a>
+				<a href={resolve('/search')} class="btn-primary">Start Shopping</a>
 			</div>
 		{/if}
 	</div>

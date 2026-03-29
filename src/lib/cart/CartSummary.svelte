@@ -1,5 +1,6 @@
 <script>
 	import { Button } from '$lib';
+	import { resolve } from '$app/paths';
 	
 	export let subtotal;
 	export let shipping = 0;
@@ -45,7 +46,7 @@
 			<span>Proceed to Checkout</span>
 		</Button>
 		
-		<a href="/" class="continue-shopping">
+		<a href={resolve('/')} class="continue-shopping">
 			<i class="fas fa-arrow-left"></i>
 			Continue Shopping
 		</a>

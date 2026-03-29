@@ -1,5 +1,5 @@
 <script>
-	import { Button, Input, Label, FormGroup } from '$lib';
+	import { Button, Input, Label, FormGroup, RichTextEditor } from '$lib';
 	import { UploadDropzone, createUploader } from '$lib/uploadthing';
 
 	let {
@@ -111,15 +111,12 @@ async function handleSubmit(e) {
 					/>
 				</FormGroup>
 				<FormGroup>
-					<Label htmlFor="text" required>Testamonial</Label>
-					<textarea
-						name="text"
-						bind:value={formData.text}
+					<Label htmlFor="text" required>Testimonial</Label>
+					<RichTextEditor
+						value={formData.text}
+						onchange={(html) => { formData.text = html; }}
 						placeholder="What did they say?"
-						required
-						class="textarea"
-						rows="5"
-					></textarea>
+					/>
 				</FormGroup>
 				<FormGroup>
 					<Label htmlFor="stars">Stars (1-5)</Label>

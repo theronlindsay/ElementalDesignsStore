@@ -2,11 +2,11 @@
 	import favicon from '$lib/assets/favicon.png';
 	import '@fortawesome/fontawesome-free/css/all.min.css';
 	import '$lib/app.scss';
-	import {Navbar, Footer} from '$lib'
+	import { Navbar, Footer } from '$lib';
 	import { page } from '$app/stores';
 
-	let { children } = $props();
-	
+	let { children, data } = $props();
+
 	// Hide navbar and footer in admin routes (except login)
 	// $derived rune creates computed values that automatically update
 	let isAdminRoute = $derived($page.url.pathname.startsWith('/admin'));
@@ -21,7 +21,7 @@
 
 <main class="elemental-store">
 	{#if showNavAndFooter}
-		<Navbar />
+		<Navbar branding={data.branding} links={data.navbarLinks} />
 	{/if}
 
 	{@render children?.()}

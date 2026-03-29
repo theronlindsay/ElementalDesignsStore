@@ -1,11 +1,19 @@
 <script>
-
+	import ItemCard from '$lib/common/ItemCard.svelte';
 
 	let { data } = $props();
 
 	// Extract item details from Square data (cast to any to handle custom properties)
 	let item = $state(data.item);
+	let variants = $state(data.variants || []);
 	let selectedImage = $state('');
+
+	// Watch for data changes and update item/variants and reset page state
+	$effect(() => {
+		item = data.item;
+		variants = data.variants || [];
+		selectedImage = '';
+	});
 
 	// Initialize selected image from the item's images
 	$effect(() => {
@@ -17,6 +25,7 @@
 	// Extract price from Square item
 	function getItemPrice() {
 		try {
+			/** @type {any} */
 			const variation = item?.itemData?.variations?.[0];
 			const price = variation?.itemVariationData?.priceMoney?.amount || 0;
 			return Number(price) / 100;
@@ -37,6 +46,30 @@
 
 	function selectImage(img) {
 		selectedImage = img;
+	}
+
+	// Get price for a variant
+	function getVariantPrice(variant) {
+		try {
+			const variation = variant?.itemData?.variations?.[0];
+			const price = variation?.itemVariationData?.priceMoney?.amount || 0;
+			return Number(price) / 100;
+		} catch {
+			return 0;
+		}
+	}
+
+	// Get rating for a variant
+	function getVariantRating(variant) {
+		const rating = variant?.customAttributeValues?.rating?.numberValue;
+		return typeof rating === 'number' ? rating : 0;
+	}
+
+	// Get type for a variant
+	function getVariantType(variant) {
+		const customType = variant?.customAttributeValues?.product_type?.stringValue;
+		if (customType) return customType;
+		return variant?.itemData?.name || 'Variant';
 	}
 </script>
 
@@ -78,6 +111,7 @@
 							{/each}
 						{/if}
 					</div>
+
 				</div>
 			</div>
 
@@ -105,6 +139,27 @@
 			</div>
 		</div>
 	</section>
+
+	<!-- Variants Section -->
+	{#if variants.length > 0}
+		<section class="variants-section-wrapper">
+			<h2 class="variants-title">Available Variants</h2>
+			<div class="variants-grid">
+				{#each variants as variant (variant.id)}
+					<a href={`/item/${variant.id}`} class="product-card-link">
+						<ItemCard 
+							item={variant}
+							itemData={variant.itemData || {}}
+							itemPrice={getVariantPrice(variant)}
+							itemRating={getVariantRating(variant)}
+							itemType={item?.itemData?.name || 'Primary'}
+							{formatPrice}
+						/>
+					</a>
+				{/each}
+			</div>
+		</section>
+	{/if}
 
 	<!-- Details Section -->
 	{#if item?.itemData?.description || item?.customAttributeValues?.details?.stringValue}
@@ -252,6 +307,39 @@
 				opacity: 1;
 			}
 		}
+	}
+
+	/* ======== Variants Section ======== */
+	.variants-section-wrapper {
+		max-width: var(--desktop-breakpoint);
+		margin: var(--nav-gap) auto;
+		padding: var(--nav-gap) 2rem;
+		border-top: 1px solid var(--border-secondary);
+	}
+
+	.variants-title {
+		color: var(--accent-primary);
+		font-size: 1.5rem;
+		margin-bottom: var(--nav-gap);
+		text-transform: uppercase;
+		letter-spacing: 0.5px;
+	}
+
+	.variants-grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+		gap: 1.5rem;
+	}
+
+	.product-card-link {
+		text-decoration: none;
+		color: inherit;
+		display: flex;
+		height: 100%;
+		position: relative;
+		z-index: 1;
+		width: -moz-available;
+		width: -webkit-fill-available;
 	}
 
 	/* ======== Responsive Adjustments ======== */

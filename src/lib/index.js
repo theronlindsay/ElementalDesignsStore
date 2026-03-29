@@ -9,6 +9,7 @@ export { default as Input } from './common/Input.svelte';
 export { default as Label } from './common/Label.svelte';
 export { default as FormGroup } from './common/FormGroup.svelte';
 export { default as CategoryGrid } from './common/CategoryGrid.svelte';
+export { default as ItemCard } from './common/ItemCard.svelte';
 
 //Cart
 export { default as CartItem } from './cart/CartItem.svelte';
@@ -21,6 +22,8 @@ export { default as EventCard } from './admin/EventCard.svelte';
 export { default as EventModal } from './admin/EventModal.svelte';
 export { default as TestimonialCard } from './admin/TestimonialCard.svelte';
 export { default as TestimonialModal } from './admin/TestimonialModal.svelte';
+export { default as RichTextEditor } from './admin/RichTextEditor.svelte';
 
 // You can also re-export specific things if needed:
 // export { someFunction } from './utils.js';
+export { default as TaggedGrid } from './common/TaggedGrid.svelte';
