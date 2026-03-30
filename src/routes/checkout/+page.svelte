@@ -148,11 +148,13 @@
 
 	h2 {
 		margin-bottom: 1rem;
+    color: #4e226f;
 	}
 
 	h3 {
 		margin-top: 1rem;
 		margin-bottom: 0.5rem;
+    color: #4e226f;
 	}
 
 	.cart-item {
@@ -196,17 +198,17 @@
 	}
 
 	.primary {
-		background: #7c3aed; /* purple */
+		background: #b136e2; /* purple */
 		color: white;
 	}
 
 	.primary:disabled {
-		background: #c4b5fd;
+		background: #7f4fa3;
 		cursor: not-allowed;
 	}
 
 	.secondary {
-		background: #e5e7eb;
+		background: #d1aae9;
 	}
 
 	#card-container {
