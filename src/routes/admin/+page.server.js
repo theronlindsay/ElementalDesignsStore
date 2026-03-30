@@ -5,7 +5,8 @@ export const actions = {
   logout: async ({ cookies }) => {
     // Clear the admin session cookie
     cookies.delete('admin_session', {
-      path: '/'
+      path: '/',
+      domain: '.elementalchaindesigns.com'
     });
     
     // Redirect to login page

@@ -12,7 +12,6 @@
 	// Map incoming links and append fixed required links
 	let baseItems = $derived([
 		...links.map((link) => ({ ...link, active: false })),
-		{ id: 'account', label: 'Account', href: '/account', active: false },
 		{ id: 'cart', label: 'Cart', href: '/cart', active: false }
 	]);
 
@@ -42,11 +41,6 @@
 		activeItem = initialActiveItem;
 		visuallyActiveItem = initialActiveItem;
 	});
-
-	// Add state for dropdown menus
-	let mobileAccountMenuOpen = $state(false); // Track if mobile account menu is open
-	let showAccountMenu = $state(false);
-	let accountMenuLocked = $state(false);
 
 	// Search State
 	let searchInput = $state('');
@@ -277,9 +271,9 @@
 
 					<!-- Mobile Actions (always visible) -->
 					<div class="mobile-actions">
-						<a href={resolve('/search')} class="mobile-action-btn" aria-label="Search Products">
+						<!-- <a href={resolve('/search')} class="mobile-action-btn" aria-label="Search Products">
 							<i class="fas fa-search"></i>
-						</a>
+						</a> -->
 						<a href={resolve('/cart')} class="mobile-action-btn" aria-label="Shopping Cart">
 							<i class="fas fa-shopping-cart"></i>
 						</a>
@@ -291,56 +285,7 @@
 			{#if isMobileMenuOpen}
 				<div class="mobile-menu">
 					{#each items as item (item.id)}
-						{#if item.id === 'account'}
-							<!-- Mobile Account Menu with dropdown -->
-							<button
-								class="mobile-account-btn nav-item mobile-nav-item {mobileAccountMenuOpen
-									? 'active'
-									: ''}"
-								onclick={() => {
-									mobileAccountMenuOpen = !mobileAccountMenuOpen;
-								}}
-								style="cursor: pointer; width: calc(100% - 24px); text-align: left; display: block; background: transparent; border: 1px solid transparent; color: inherit; font: inherit; padding: 12px 12px; border-radius: 8px; transition: all 0.2s;"
-							>
-								{item.label}
-								<i
-									class="fas {mobileAccountMenuOpen ? 'fa-chevron-up' : 'fa-chevron-down'}"
-									style="margin-left: 8px; font-size: 12px;"
-								></i>
-								{#if mobileAccountMenuOpen}
-									<div class="mobile-account-menu">
-										<a
-											href={resolve('/account/login')}
-											onclick={() => {
-												mobileAccountMenuOpen = false;
-												isMobileMenuOpen = false;
-											}}>Login</a
-										>
-										<a
-											href={resolve('/account/register')}
-											onclick={() => {
-												mobileAccountMenuOpen = false;
-												isMobileMenuOpen = false;
-											}}>Register</a
-										>
-										<a
-											href={resolve('/account/profile')}
-											onclick={() => {
-												mobileAccountMenuOpen = false;
-												isMobileMenuOpen = false;
-											}}>My Profile</a
-										>
-										<a
-											href={resolve('/account/orders')}
-											onclick={() => {
-												mobileAccountMenuOpen = false;
-												isMobileMenuOpen = false;
-											}}>My Orders</a
-										>
-									</div>
-								{/if}
-							</button>
-						{:else if item.id === 'custom'}
+						{#if item.id === 'custom'}
 							<!-- Mobile Custom Orders: Open Modal Instead of Navigate -->
 							<button
 								class="nav-item mobile-nav-item {visuallyActiveItem === item.id ? 'active' : ''}"
@@ -374,7 +319,7 @@
 			<div class="nav-items-wrapper">
 				<div class="selector {isSearchActive ? 'hidden' : ''}" bind:this={selectorElement}></div>
 
-				{#each items.filter((item) => item.id !== 'account' && item.id !== 'cart') as item (item.id)}
+				{#each items.filter((item) => item.id !== 'cart') as item (item.id)}
 					{#if item.id === 'custom'}
 						<!-- Custom Orders: Open Modal Instead of Navigate -->
 						<button
@@ -404,7 +349,7 @@
 
 			<!-- Search and Actions (together) -->
 			<div class="nav-search-container">
-				<form class="nav-search-box {isSearchActive ? 'active' : ''}" onsubmit={handleSearch}>
+				<!-- <form class="nav-search-box {isSearchActive ? 'active' : ''}" onsubmit={handleSearch}>
 					<input
 						type="text"
 						placeholder="Search products..."
@@ -414,40 +359,10 @@
 					<button type="submit" class="nav-search-btn" aria-label="Search Products">
 						<i class="fas fa-search"></i>
 					</button>
-				</form>
+				</form> -->
 
 				<!-- Navigation Actions -->
-				<div class="nav-actions">
-					<!-- Account Menu -->
-					<button
-						bind:this={itemElements['account']}
-						class="nav-item {visuallyActiveItem === 'account' ? 'active' : ''}"
-						onclick={() => {
-							accountMenuLocked = !accountMenuLocked;
-							if (accountMenuLocked) {
-								showAccountMenu = true; // Keep it open when locked
-							} else {
-								showAccountMenu = false; // Close it when unlocking
-							}
-						}}
-						onmouseenter={() => {
-							showAccountMenu = true;
-						}}
-						onmouseleave={() => {
-							if (!accountMenuLocked) showAccountMenu = false;
-						}}
-					>
-						<i class="fas fa-user"></i>
-						<span>Account</span>
-						{#if showAccountMenu}
-							<div class="dropdown-menu account-menu">
-								<a href={resolve('/account/login')}>Login</a>
-								<a href={resolve('/account/register')}>Register</a>
-								<a href={resolve('/account/profile')}>My Profile</a>
-								<a href={resolve('/account/orders')}>My Orders</a>
-							</div>
-						{/if}
-					</button>
+				<div class="nav-actions">	
 
 					<!-- Shopping Cart -->
 					<a

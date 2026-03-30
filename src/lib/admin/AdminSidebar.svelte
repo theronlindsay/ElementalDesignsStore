@@ -8,24 +8,6 @@
 	const navItems = [
 		{ route: '/admin', href: resolve('/admin'), icon: 'fa-chart-line', label: 'Dashboard' },
 		{
-			route: '/admin/products',
-			href: resolve('/admin/products'),
-			icon: 'fa-box',
-			label: 'Products'
-		},
-		{
-			route: '/admin/orders',
-			href: resolve('/admin/orders'),
-			icon: 'fa-shopping-bag',
-			label: 'Orders'
-		},
-		{
-			route: '/admin/customers',
-			href: resolve('/admin/customers'),
-			icon: 'fa-users',
-			label: 'Customers'
-		},
-		{
 			route: '/admin/events',
 			href: resolve('/admin/events'),
 			icon: 'fa-calendar-alt',

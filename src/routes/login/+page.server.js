@@ -23,6 +23,7 @@ export const actions = {
 				httpOnly: true,
 				secure: env.NODE_ENV === 'production',
 				sameSite: 'strict',
+				domain: '.elementalchaindesigns.com',
 				maxAge
 			});
 			

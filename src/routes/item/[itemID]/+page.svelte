@@ -1,18 +1,34 @@
 <script>
+	import { onDestroy } from 'svelte';
 	import ItemCard from '$lib/common/ItemCard.svelte';
+	import { cart } from '$lib/cart/cartStore';
 
-	let { data } = $props();
+	let props = $props();
+	let data = $derived(props.data);
 
 	// Extract item details from Square data (cast to any to handle custom properties)
-	let item = $state(data.item);
-	let variants = $state(data.variants || []);
+	let item = $derived(data.item);
+	let variants = $derived(data.variants || []);
 	let selectedImage = $state('');
+	let addToCartState = $state('idle');
+	let lastItemId = $state('');
+	let loadingTimer;
+	let successTimer;
 
-	// Watch for data changes and update item/variants and reset page state
+	// Keep feedback visible so the loading and success states are easy to read.
+	const MIN_LOADING_MS = 700;
+	const SUCCESS_MS = 1150;
+
+	// Reset local UI state whenever navigation changes to a different item.
 	$effect(() => {
-		item = data.item;
-		variants = data.variants || [];
-		selectedImage = '';
+		const currentItemId = item?.id ?? '';
+
+		if (currentItemId !== lastItemId) {
+			lastItemId = currentItemId;
+			selectedImage = '';
+			clearAnimationTimers();
+			addToCartState = 'idle';
+		}
 	});
 
 	// Initialize selected image from the item's images
@@ -48,6 +64,47 @@
 		selectedImage = img;
 	}
 
+	function clearAnimationTimers() {
+		if (loadingTimer) {
+			clearTimeout(loadingTimer);
+			loadingTimer = undefined;
+		}
+
+		if (successTimer) {
+			clearTimeout(successTimer);
+			successTimer = undefined;
+		}
+	}
+
+	function handleAddToCart(event) {
+		event.preventDefault();
+
+		if (addToCartState !== 'idle' || !item?.id) {
+			return;
+		}
+
+		clearAnimationTimers();
+		addToCartState = 'loading';
+
+		try {
+			cart.addItem(item.id);
+
+			loadingTimer = setTimeout(() => {
+				addToCartState = 'success';
+
+				successTimer = setTimeout(() => {
+					addToCartState = 'idle';
+					successTimer = undefined;
+				}, SUCCESS_MS);
+
+				loadingTimer = undefined;
+			}, MIN_LOADING_MS);
+		} catch (error) {
+			console.error('Failed to add item to cart:', error);
+			addToCartState = 'idle';
+		}
+	}
+
 	// Get price for a variant
 	function getVariantPrice(variant) {
 		try {
@@ -71,6 +128,10 @@
 		if (customType) return customType;
 		return variant?.itemData?.name || 'Variant';
 	}
+
+	onDestroy(() => {
+		clearAnimationTimers();
+	});
 </script>
 
 <div class="elemental-store">
@@ -133,7 +194,30 @@
 				{/if}
 
 				<div class="hero-actions">
-					<button class="btn-primary">Add to Cart</button>
+					<button
+						class="btn-primary item-add-to-cart-btn"
+						class:is-loading={addToCartState === 'loading'}
+						class:is-success={addToCartState === 'success'}
+						onclick={handleAddToCart}
+						disabled={addToCartState !== 'idle'}
+						aria-live="polite"
+					>
+						<span class="btn-content">
+							<span class="status-icon" aria-hidden="true">
+								<span class="spinner"></span>
+								<svg class="check-icon" viewBox="0 0 24 24" focusable="false">
+									<path d="M5 13l4 4L19 7"></path>
+								</svg>
+							</span>
+							<span class="btn-label">
+								{addToCartState === 'idle'
+									? 'Add to Cart'
+									: addToCartState === 'loading'
+										? 'Adding...'
+										: 'Added'}
+							</span>
+						</span>
+					</button>
           <!-- <button class="btn-secondary">Add to Wishlist</button> -->
 				</div>
 			</div>
@@ -340,6 +424,130 @@
 		z-index: 1;
 		width: -moz-available;
 		width: -webkit-fill-available;
+	}
+
+	.item-add-to-cart-btn {
+		min-width: 150px;
+		position: relative;
+		overflow: hidden;
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+
+		&:disabled {
+			cursor: default;
+		}
+	}
+
+	.btn-content {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		gap: 0.5rem;
+	}
+
+	.status-icon {
+		position: relative;
+		width: 0;
+		height: 18px;
+		opacity: 0;
+		transform: scale(0.75);
+		transition:
+			width 0.25s ease,
+			opacity 0.25s ease,
+			transform 0.25s ease;
+	}
+
+	.item-add-to-cart-btn.is-loading .status-icon,
+	.item-add-to-cart-btn.is-success .status-icon {
+		width: 18px;
+		opacity: 1;
+		transform: scale(1);
+	}
+
+	.spinner,
+	.check-icon {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 18px;
+		height: 18px;
+	}
+
+	.spinner {
+		border: 2px solid rgba(255, 255, 255, 0.35);
+		border-top-color: white;
+		border-radius: 50%;
+		opacity: 0;
+	}
+
+	.check-icon {
+		opacity: 0;
+		transform: scale(0.7);
+	}
+
+	.check-icon path {
+		fill: none;
+		stroke: white;
+		stroke-width: 3;
+		stroke-linecap: round;
+		stroke-linejoin: round;
+		stroke-dasharray: 22;
+		stroke-dashoffset: 22;
+	}
+
+	.item-add-to-cart-btn.is-loading {
+		background: linear-gradient(120deg, var(--accent-primary), var(--accent-secondary), var(--accent-primary));
+		background-size: 200% 100%;
+		animation: btnShimmer 1s ease infinite;
+	}
+
+	.item-add-to-cart-btn.is-loading .spinner {
+		opacity: 1;
+		animation: spin 0.75s linear infinite;
+	}
+
+	.item-add-to-cart-btn.is-success {
+		background: linear-gradient(135deg, #34a275, #2d8b66);
+		transform: translateY(-1px);
+		box-shadow: 0 6px 14px rgba(52, 162, 117, 0.35);
+	}
+
+	.item-add-to-cart-btn.is-success .spinner {
+		opacity: 0;
+		animation: none;
+	}
+
+	.item-add-to-cart-btn.is-success .check-icon {
+		opacity: 1;
+		transform: scale(1);
+		transition: transform 0.25s ease;
+	}
+
+	.item-add-to-cart-btn.is-success .check-icon path {
+		animation: drawCheck 0.35s ease forwards;
+	}
+
+	@keyframes spin {
+		to {
+			transform: rotate(360deg);
+		}
+	}
+
+	@keyframes drawCheck {
+		to {
+			stroke-dashoffset: 0;
+		}
+	}
+
+	@keyframes btnShimmer {
+		0% {
+			background-position: 0% 50%;
+		}
+
+		100% {
+			background-position: 100% 50%;
+		}
 	}
 
 	/* ======== Responsive Adjustments ======== */
