@@ -6,7 +6,8 @@
 	let title = "Checkout";
 
 	// Toggle for showing form section
-	let showForm = false;
+	let showForm1 = false;
+  let showForm2 = false;
 
 	// Placeholder cart items
 	let cart = [
@@ -34,19 +35,25 @@
 	}, 0);
 
 	// Form validation
-	$: formValid =
+	$: customerFormValid =
 		customer.firstName &&
 		customer.lastName &&
 		customer.phone &&
 		customer.email &&
-		customer.cardNumber &&
 		customer.address &&
 		customer.city &&
 		customer.state &&
 		customer.zip;
 
-	function startCheckout() {
-		showForm = true;
+  $: paymentFormValid =
+	  customerFormValid &&
+	  customer.cardNumber;
+
+	function reviewedOrder() {
+		showForm1 = true;
+	}
+  function startCheckout() {
+		showForm2 = true;
 	}
 
 	function placeOrder() {
@@ -79,43 +86,58 @@
 
 		<div class="buttons">
 			<button class="secondary">Continue Shopping</button>
-			<button class="primary" on:click={startCheckout}>
-				Checkout
+			<button class="primary" on:click={reviewedOrder}>
+				Proceed
 			</button>
 		</div>
 	</section>
 
-	<!-- CUSTOMER FORM (appears after "Checkout" button is clicked) -->
-	{#if showForm}
-	<section class="box">
-		<h2>Customer Information</h2>
-
+  <!-- Customer Form (appears after "Proceed" button is clicked) -->
+   {#if showForm1}
+  <section class="box">
+    <h2>Customer Information</h2>
+    <h3>Contact </h3>
 		<input placeholder="First Name" bind:value={customer.firstName} />
 		<input placeholder="Last Name" bind:value={customer.lastName} />
 		<input placeholder="Phone Number" bind:value={customer.phone} />
 		<input placeholder="Email" bind:value={customer.email} />
 
-		<h3>Payment Method</h3>
+    <h3>Delivery Address</h3>
+		<input placeholder="Street Address" bind:value={customer.address} />
+		<input placeholder="City" bind:value={customer.city} />
+		<input placeholder="State" bind:value={customer.state} />
+		<input placeholder="ZIP Code" bind:value={customer.zip} />
+    <div class="place-order">
+			<button class="primary" disabled={!customerFormValid} on:click={startCheckout}>
+				Proceed
+			</button>
+		</div>
+  </section>
+
+	<!-- Payment information -->
+	{#if showForm2}
+	<section class="box">
+		<h2>Payment Method</h2>
 		<select bind:value={customer.paymentMethod}>
 			<option value="card">Credit Card</option>
 		</select>
 
 		<input placeholder="Card Number" bind:value={customer.cardNumber} />
 
-		<h3>Delivery Address</h3>
+		<!-- <h3>Delivery Address</h3>
 
 		<input placeholder="Street Address" bind:value={customer.address} />
 		<input placeholder="City" bind:value={customer.city} />
 		<input placeholder="State" bind:value={customer.state} />
-		<input placeholder="ZIP Code" bind:value={customer.zip} />
+		<input placeholder="ZIP Code" bind:value={customer.zip} /> -->
 
 		<!-- Square will replace this later -->
-		<div id="card-container"></div>
+		<!-- <div id="card-container"></div> -->
 
 		<div class="place-order">
 			<button
 				class="primary"
-				disabled={!formValid}
+				disabled={!paymentFormValid}
 				on:click={placeOrder}
 			>
 				Place Order
@@ -123,6 +145,7 @@
 		</div>
 	</section>
 	{/if}
+  {/if}
 </main>
 
 <style>
@@ -139,22 +162,22 @@
 	}
 
 	.box {
-		background: rgb(210, 168, 254); /* light purple */
+		background: rgba(215, 184, 244, 0.5); /* light purple */
 		padding: 1.5rem;
 		border-radius: 10px;
 		margin-bottom: 1.5rem;
-		border: 1px solid #ddd;
+		border: 1px solid rgba(239, 224, 255, 0.7);
 	}
 
 	h2 {
 		margin-bottom: 1rem;
-    color: #4e226f;
+    color: #3d1d61;
 	}
 
 	h3 {
 		margin-top: 1rem;
 		margin-bottom: 0.5rem;
-    color: #4e226f;
+    color: rgba(239, 224, 255)
 	}
 
 	.cart-item {
@@ -176,12 +199,18 @@
 		margin-bottom: 0.5rem;
 		border-radius: 6px;
 		border: 1px solid #ccc;
+    box-sizing: border-box;
 	}
 
 	.buttons {
 		display: flex;
 		justify-content: space-between;
 		margin-top: 1rem;
+	}
+  .buttons:disabled {
+		background: #9851b3;
+		cursor: not-allowed;
+    color: rgb(190, 195, 210);
 	}
 
 	.place-order {
@@ -198,25 +227,29 @@
 	}
 
 	.primary {
-		background: #b136e2; /* purple */
+		background: #9a86ff; /* purple */
 		color: white;
+    border-color: #3d1d61;
+    border-radius: 10px;
 	}
 
 	.primary:disabled {
-		background: #7f4fa3;
+		background: #6b52a8;
 		cursor: not-allowed;
+    color: rgb(175, 172, 209);
 	}
 
 	.secondary {
-		background: #d1aae9;
+		background: #9a86ff; /* purple */
+		color: white;
 	}
 
-	#card-container {
+	/* #card-container {
 		margin-top: 10px;
 		padding: 10px;
 		border: 1px dashed #bbb;
 		border-radius: 6px;
-	}
+	} */
 </style>
 
 
