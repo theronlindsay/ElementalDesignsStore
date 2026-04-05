@@ -2,6 +2,7 @@
 	import { Button, Input, Label, FormGroup, RichTextEditor } from '$lib';
 	import { UploadDropzone, createUploader } from '$lib/uploadthing';
 	import '@uploadthing/svelte/styles.css';
+
 	let { isOpen = false, event = null, onSave, onCancel } = $props();
 
 	const uploader = createUploader('imageUploader', {
@@ -196,23 +197,14 @@
 				<FormGroup>
 					<Label htmlFor="description" required>Description</Label>
 					<RichTextEditor
-						bind:content={formData.description}
+						value={formData.description}
+						onchange={(html) => { formData.description = html; }}
 						placeholder="Describe your event..."
-					/>
-				</FormGroup>
-			
-			<div class="form-row">
-				<FormGroup>
-					<Label htmlFor="date" required>Event Date</Label>
-					<Input
-						type="date"
-						name="date"
-						bind:value={formData.date}
-						required
 					/>
 				</FormGroup>
 
 				<div class="form-row">
+					<FormGroup>
 						<Label htmlFor="isMultiDay">Event Type</Label>
 						<div class="toggle-container">
 							<label class="toggle-label">
@@ -223,6 +215,7 @@
 								>
 							</label>
 						</div>
+					</FormGroup>
 
 					<FormGroup>
 						<Label htmlFor="location">Location Name</Label>
@@ -484,9 +477,37 @@
 			grid-template-columns: 1fr;
 		}
 	}
-	
 
-	
+	.textarea {
+		width: -webkit-fill-available;
+		padding: 0.75rem 1rem;
+		background: var(--bg-secondary);
+		border: 1px solid var(--border-secondary);
+		border-radius: 12px;
+		color: var(--text-secondary);
+		font-size: 1rem;
+		outline: none;
+		transition: all 0.3s ease;
+		font-family: inherit;
+		resize: vertical;
+		min-height: 120px;
+		line-height: 1.5;
+
+		&:focus {
+			border-color: var(--accent);
+			box-shadow: 0 0 0 3px rgba(167, 139, 250, 0.1);
+			background: var(--bg-primary);
+		}
+
+		&::placeholder {
+			color: var(--muted-2);
+		}
+
+		&:hover:not(:focus) {
+			border-color: var(--border-primary);
+		}
+	}
+
 	.image-upload-section {
 		display: flex;
 		flex-direction: column;
@@ -532,9 +553,38 @@
 			}
 		}
 	}
-	
 
-	
+	.upload-area {
+		position: relative;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 100%;
+
+		:global(.ut-button) {
+			background-color: var(--accent);
+			color: #ffffff;
+			transition: all 0.2s ease;
+		}
+
+		:global(.ut-button:hover) {
+			background-color: var(--accent);
+			opacity: 0.9;
+		}
+
+		:global(.ut-label) {
+			color: var(--accent);
+		}
+
+		:global(.ut-allowed-content) {
+			color: var(--muted);
+		}
+
+		:global(.ut-upload-icon) {
+			color: var(--accent);
+		}
+	}
+
 	.error-message {
 		color: #ff6b6b;
 		font-size: 0.9rem;
