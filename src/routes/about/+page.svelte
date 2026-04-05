@@ -1,12 +1,30 @@
 <script>
+	import OrderModal from '$lib/common/OrderModal.svelte';
+
+
+
 	let { data } = $props();
 
 	let aboutContent = $derived(data.aboutContent);
+	let showOrderModal = $state(false);
 
 	function renderHtml(text) {
 		if (!text) return '';
 		if (text.includes('<')) return text;
 		return text.split(/\n\s*\n/).map(p => `<p>${p.trim()}</p>`).join('');
+	}
+
+	function openOrderModal() {
+		showOrderModal = true;
+	}
+
+	function closeOrderModal() {
+		showOrderModal = false;
+	}
+
+	function handleOrderSubmit(event) {
+		console.log('Order submitted:', event.detail);
+		closeOrderModal();
 	}
 </script>
 
@@ -132,13 +150,15 @@
 				<h2>{aboutContent.ctaTitle}</h2>
 				<div class="rich-content">{@html renderHtml(aboutContent.ctaBody)}</div>
 				<div class="cta-buttons">
-					<button class="btn-primary">{aboutContent.ctaPrimaryLabel}</button>
+					<button class="btn-primary" onclick={openOrderModal}>{aboutContent.ctaPrimaryLabel}</button>
 					<button class="btn-secondary">{aboutContent.ctaSecondaryLabel}</button>
 				</div>
 			</div>
 		</div>
 	</section>
 </main>
+
+<OrderModal isOpen={showOrderModal} onSave={handleOrderSubmit} onCancel={closeOrderModal} />
 
 <style lang="scss">
 	* {
