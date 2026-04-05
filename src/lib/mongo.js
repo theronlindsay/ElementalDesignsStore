@@ -8,18 +8,31 @@ const DB_NAME =  env.MONGO_DB || 'elementaldesigns';
 
 let client;
 let db;
+let connectPromise;
 
 async function getDb() {
-  if (!client) {
-    client = new MongoClient(MONGO_URI);
-    try {
-      await client.connect();
-      db = client.db("AppData");
-    } catch (err) {
-      console.error('MongoDB connection error:', err);
-      throw new Error('Failed to connect to MongoDB. Check your MONGO_URI and replica set.');
+  if (!db) {
+    // Startup can trigger multiple server loads in parallel; share one connect attempt.
+    if (!connectPromise) {
+      client = new MongoClient(MONGO_URI);
+      connectPromise = client
+        .connect()
+        .then(() => {
+          db = client.db(DB_NAME);
+          return db;
+        })
+        .catch((err) => {
+          client = undefined;
+          db = undefined;
+          connectPromise = undefined;
+          console.error('MongoDB connection error:', err);
+          throw new Error('Failed to connect to MongoDB. Check your MONGO_URI and replica set.');
+        });
     }
+
+    await connectPromise;
   }
+
   if (!db) throw new Error('MongoDB database is not initialized.');
   return db;
 }

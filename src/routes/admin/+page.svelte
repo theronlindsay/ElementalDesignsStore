@@ -14,15 +14,6 @@
 
 	<section class="stats-grid" aria-label="Admin dashboard navigation">
 
-		<a class="stat-card" href={resolve('/admin/customers')}>
-			<div class="stat-icon" aria-hidden="true"><i class="fas fa-users"></i></div>
-			<div class="stat-info">
-				<p class="stat-label">Customers</p>
-				<p class="stat-description">Review customer details and history.</p>
-			</div>
-			<i class="fas fa-arrow-right" aria-hidden="true"></i>
-		</a>
-
 		<a class="stat-card" href={resolve('/admin/events')}>
 			<div class="stat-icon" aria-hidden="true"><i class="fas fa-calendar-alt"></i></div>
 			<div class="stat-info">
