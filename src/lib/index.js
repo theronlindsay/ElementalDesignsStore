@@ -10,6 +10,7 @@ export { default as Label } from './common/Label.svelte';
 export { default as FormGroup } from './common/FormGroup.svelte';
 export { default as CategoryGrid } from './common/CategoryGrid.svelte';
 export { default as ItemCard } from './common/ItemCard.svelte';
+export { default as RichTextEditor } from './common/RichTextEditor.svelte';
 
 //Cart
 export { default as CartItem } from './cart/CartItem.svelte';
