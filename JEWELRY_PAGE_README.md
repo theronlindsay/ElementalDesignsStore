@@ -1,12 +1,15 @@
 # Jewelry Page Implementation
 
 ## Overview
+
 Created a full-featured jewelry catalog page that integrates with Square's API to display and filter products.
 
 ## Files Created
 
 ### 1. `/src/routes/jewelry/+page.server.ts`
+
 Server-side data loader that:
+
 - Fetches jewelry items from Square using `getItemsByCategory()`
 - Handles errors gracefully
 - Returns structured data to the page
@@ -14,9 +17,11 @@ Server-side data loader that:
 **Important:** Replace `'JEWELRY_CATEGORY_ID'` with your actual Square jewelry category ID.
 
 ### 2. `/src/routes/jewelry/+page.svelte`
+
 Main jewelry page component with:
 
 #### Features:
+
 - **Responsive Grid Layout**: Auto-adjusting product cards
 - **Advanced Filtering**:
   - 15 jewelry type categories
@@ -27,6 +32,7 @@ Main jewelry page component with:
 - **Real-time Updates**: Filters update instantly using Svelte 5 runes
 
 #### Jewelry Types Supported:
+
 1. Earrings & Ear Cuffs
 2. Necklaces & Chokers
 3. Bracelets
@@ -45,6 +51,7 @@ Main jewelry page component with:
 ## Integration Notes
 
 ### Square Item Structure Expected:
+
 ```typescript
 {
   id: string,
@@ -71,24 +78,22 @@ Main jewelry page component with:
 ### Setup Steps:
 
 1. **Get Your Jewelry Category ID**:
-   ```typescript
+  ```typescript
    import { getAllCategories } from '$lib/square';
    const categories = await getAllCategories();
    // Find your jewelry category and use its ID
-   ```
-
+  ```
 2. **Add Custom Attributes in Square** (optional but recommended):
-   - `jewelry_type`: String field for jewelry subcategory
-   - `rating`: Number field for product ratings
-
+  - `jewelry_type`: String field for jewelry subcategory
+  - `rating`: Number field for product ratings
 3. **Configure Images**:
-   - Upload images to Square catalog
-   - Images will be referenced by `imageIds` array
-
+  - Upload images to Square catalog
+  - Images will be referenced by `imageIds` array
 4. **Environment Variable**:
-   Ensure `SQUARE_ACCESS_TOKEN` is set in your `.env` file.
+  Ensure `SQUARE_ACCESS_TOKEN` is set in your `.env` file.
 
 ## Styling
+
 - Uses existing SCSS theme from `app.scss`
 - Fully responsive with breakpoints:
   - Mobile: < 400px
@@ -97,6 +102,7 @@ Main jewelry page component with:
 - Consistent with site design (glass morphism, purple accents)
 
 ## Future Enhancements
+
 - Add to cart functionality integration
 - Product detail modal/page
 - Image gallery/zoom
@@ -105,3 +111,4 @@ Main jewelry page component with:
 - Stock availability indicator
 - Quick view feature
 - Color/size variation selector
+

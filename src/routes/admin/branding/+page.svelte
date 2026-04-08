@@ -23,6 +23,7 @@
 			homeHeroDescription: content.homeHeroDescription || '',
 			homeHeroImageOneUrl: content.homeHeroImageOneUrl || '',
 			homeHeroImageTwoUrl: content.homeHeroImageTwoUrl || '',
+			featuredItemIds: Array.isArray(content.featuredItemIds) ? content.featuredItemIds : [],
 			eventsSectionTitle: content.eventsSectionTitle || '',
 			testimonialsSectionTitle: content.testimonialsSectionTitle || '',
 			customOrdersTitle: content.customOrdersTitle || '',

@@ -5,6 +5,7 @@
 export { default as Button } from './common/Button.svelte';
 export { default as Navbar } from './common/Navbar.svelte';
 export { default as Footer } from './common/Footer.svelte';
+export { default as PastWorkDetailModal } from './common/PastWorkDetailModal.svelte';
 export { default as Input } from './common/Input.svelte';
 export { default as Label } from './common/Label.svelte';
 export { default as FormGroup } from './common/FormGroup.svelte';
@@ -27,3 +28,4 @@ export { default as RichTextEditor } from './admin/RichTextEditor.svelte';
 // You can also re-export specific things if needed:
 // export { someFunction } from './utils.js';
 export { default as TaggedGrid } from './common/TaggedGrid.svelte';
+export { default as SectionCarousel } from './common/SectionCarousel.svelte';

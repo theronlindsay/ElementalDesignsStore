@@ -27,6 +27,6 @@
 	{@render children?.()}
 
 	{#if showNavAndFooter}
-		<Footer />
+		<Footer footer={data.footer} />
 	{/if}
 </main>

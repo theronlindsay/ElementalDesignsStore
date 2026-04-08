@@ -1,4 +1,6 @@
 <script>
+	import { resolve } from '$app/paths';
+
 	let { data } = $props();
 
 	let aboutContent = $derived(data.aboutContent);
@@ -105,6 +107,9 @@
 					</div>
 					<h3>{aboutContent.customTitle}</h3>
 					<div class="rich-content">{@html renderHtml(aboutContent.customBody)}</div>
+					<p class="custom-past-work-cta">
+						<a href={resolve('/past-work')} class="past-work-link">See past work</a>
+					</p>
 				</div>
 			</div>
 
@@ -425,6 +430,25 @@
 		&:hover {
 			background: rgba(167, 139, 250, 0.1);
 			transform: translateY(-2px);
+		}
+	}
+
+	.custom-past-work-cta {
+		margin: 1.25rem 0 0;
+	}
+
+	.past-work-link {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.35rem;
+		font-weight: 600;
+		color: var(--accent);
+		text-decoration: none;
+		border-bottom: 1px solid color-mix(in srgb, var(--accent) 45%, transparent);
+
+		&:hover {
+			color: var(--accent-2, var(--accent));
+			border-bottom-color: var(--accent);
 		}
 	}
 

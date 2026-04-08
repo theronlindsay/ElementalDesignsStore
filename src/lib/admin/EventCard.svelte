@@ -59,6 +59,29 @@
 		if (text.includes('<')) return text;
 		return `<p>${text}</p>`;
 	}
+
+	const DESCRIPTION_MAX_PX = 300;
+
+	let descriptionExpanded = $state(false);
+	let showDescriptionToggle = $state(false);
+	/** @type {HTMLDivElement | undefined} */
+	let descriptionInnerEl = $state(undefined);
+
+	$effect(() => {
+		event.description;
+		const el = descriptionInnerEl;
+		if (!el) {
+			showDescriptionToggle = false;
+			return;
+		}
+		const measure = () => {
+			showDescriptionToggle = el.scrollHeight > DESCRIPTION_MAX_PX + 1;
+		};
+		measure();
+		const ro = new ResizeObserver(measure);
+		ro.observe(el);
+		return () => ro.disconnect();
+	});
 </script>
 
 <div class="event-card theme-glass">
@@ -69,6 +92,7 @@
 	{/if}
 
 	<div class="event-content">
+		<div class="event-content-main">
 		<div class="event-header">
 			<div
 				class="event-date-badge"
@@ -123,43 +147,70 @@
 
 		<h3 class="event-title">{event.title}</h3>
 
-		<!-- this html is coming from our database -->
-		<!-- eslint-disable -->
-		<div class="event-description rich-content">{@html renderHtml(event.description)}</div>
-
-		{#if event.location}
-			<div class="event-location-section">
-				<div class="event-location" title={event.address}>
-					<i class="fas fa-map-marker-alt"></i>
-					<span>{event.location}</span>
-					{#if event.address}
-						<span class="location-address">{event.address}</span>
-					{/if}
+		{#if event.description}
+			<div class="event-description-block">
+				<div
+					class="event-description-clamp"
+					class:is-expanded={descriptionExpanded}
+					aria-expanded={descriptionExpanded}
+				>
+					<!-- this html is coming from our database -->
+					<!-- eslint-disable -->
+					<div
+						class="event-description rich-content"
+						bind:this={descriptionInnerEl}
+					>{@html renderHtml(event.description)}</div>
 				</div>
-				{#if event.mapsLink}
-					<!-- eslint-disable svelte/no-navigation-without-resolve -- external URL -->
-					<a
-						href={event.mapsLink}
-						class="directions-btn"
-						target="_blank"
-						rel="noopener noreferrer"
-						aria-label="Get directions"
+				{#if showDescriptionToggle}
+					<button
+						type="button"
+						class="event-description-toggle"
+						onclick={() => (descriptionExpanded = !descriptionExpanded)}
 					>
-						<i class="fas fa-directions"></i>
-						Directions
+						{descriptionExpanded ? 'Show less' : 'Show more'}
+					</button>
+				{/if}
+			</div>
+		{/if}
+		</div>
+
+		{#if event.location || event.link}
+			<div class="event-content-footer">
+				{#if event.location}
+					<div class="event-location-section">
+						<div class="event-location" title={event.address}>
+							<i class="fas fa-map-marker-alt"></i>
+							<span>{event.location}</span>
+							{#if event.address}
+								<span class="location-address">{event.address}</span>
+							{/if}
+						</div>
+						{#if event.mapsLink}
+							<!-- eslint-disable svelte/no-navigation-without-resolve -- external URL -->
+							<a
+								href={event.mapsLink}
+								class="directions-btn"
+								target="_blank"
+								rel="noopener noreferrer"
+								aria-label="Get directions"
+							>
+								<i class="fas fa-directions"></i>
+								Directions
+							</a>
+							<!-- eslint-enable svelte/no-navigation-without-resolve -->
+						{/if}
+					</div>
+				{/if}
+
+				{#if event.link}
+					<!-- eslint-disable svelte/no-navigation-without-resolve -- external URL -->
+					<a href={event.link} class="event-link" target="_blank" rel="noopener noreferrer">
+						Learn More
+						<i class="fas fa-arrow-right"></i>
 					</a>
 					<!-- eslint-enable svelte/no-navigation-without-resolve -->
 				{/if}
 			</div>
-		{/if}
-
-		{#if event.link}
-			<!-- eslint-disable svelte/no-navigation-without-resolve -- external URL -->
-			<a href={event.link} class="event-link" target="_blank" rel="noopener noreferrer">
-				Learn More
-				<i class="fas fa-arrow-right"></i>
-			</a>
-			<!-- eslint-enable svelte/no-navigation-without-resolve -->
 		{/if}
 	</div>
 </div>
@@ -170,6 +221,12 @@
 		flex-direction: column;
 		overflow: hidden;
 		transition: all 0.3s ease;
+		max-width: 100%;
+		min-width: 0;
+		min-height: 0;
+		flex: 1;
+		height: 100%;
+		box-sizing: border-box;
 
 		&:hover {
 			transform: translateY(-4px);
@@ -200,13 +257,34 @@
 		display: flex;
 		flex-direction: column;
 		gap: 1rem;
+		flex: 1;
+		min-height: 0;
+	}
+
+	.event-content-main {
+		display: flex;
+		flex-direction: column;
+		gap: 1rem;
+		flex: 1;
+		min-height: 0;
+	}
+
+	.event-content-footer {
+		display: flex;
+		flex-direction: column;
+		gap: 1rem;
+		flex-shrink: 0;
+		margin-top: auto;
+		padding-top: 0.25rem;
 	}
 
 	.event-header {
 		display: flex;
 		justify-content: space-between;
-		align-items: center;
+		align-items: flex-start;
 		gap: 0.5rem;
+		flex-wrap: wrap;
+		min-width: 0;
 	}
 
 	.event-date-badge {
@@ -220,6 +298,9 @@
 		color: var(--accent);
 		font-size: 0.85rem;
 		font-weight: 600;
+		max-width: 100%;
+		flex-wrap: wrap;
+		min-width: 0;
 
 		i {
 			font-size: 0.9rem;
@@ -265,10 +346,51 @@
 		line-height: 1.3;
 	}
 
+	.event-description-block {
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
+		min-width: 0;
+	}
+
+	.event-description-clamp {
+		min-width: 0;
+
+		&:not(.is-expanded) {
+			max-height: 200px;
+			overflow: hidden;
+		}
+	}
+
+	.event-description-toggle {
+		align-self: flex-start;
+		padding: 0.35rem 0.75rem;
+		margin: 0;
+		border: 1px solid var(--border-secondary);
+		border-radius: 8px;
+		background: var(--bg-secondary);
+		color: var(--accent);
+		font-size: 0.85rem;
+		font-weight: 600;
+		cursor: pointer;
+		transition:
+			border-color 0.2s ease,
+			background 0.2s ease,
+			color 0.2s ease;
+
+		&:hover {
+			border-color: var(--accent);
+			background: rgba(167, 139, 250, 0.12);
+			color: var(--accent-2);
+		}
+	}
+
 	.event-description {
 		color: var(--muted);
 		margin: 0;
 		line-height: 1.6;
+		overflow-wrap: anywhere;
+		word-break: break-word;
 
 		:global(p) {
 			margin: 0 0 0.5rem;
@@ -313,7 +435,9 @@
 		border-radius: 6px;
 		color: var(--text-secondary);
 		font-size: 0.85rem;
-		white-space: nowrap;
+		white-space: normal;
+		max-width: min(18rem, 85vw);
+		overflow-wrap: anywhere;
 		opacity: 0;
 		pointer-events: none;
 		transition: opacity 0.2s ease;
@@ -359,7 +483,7 @@
 		color: var(--accent);
 		text-decoration: none;
 		font-weight: 600;
-		margin-top: 0.5rem;
+		margin-top: 0;
 		transition: all 0.2s ease;
 
 		&:hover {
@@ -412,7 +536,9 @@
 			opacity 0.2s ease,
 			transform 0.2s ease;
 		transform: translateY(-5px);
-		min-width: max-content;
+		min-width: min(16rem, calc(100vw - 3rem));
+		max-width: min(20rem, calc(100vw - 2rem));
+		box-sizing: border-box;
 		text-align: left;
 	}
 

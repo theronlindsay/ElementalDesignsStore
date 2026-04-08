@@ -32,11 +32,29 @@
 			<i class="fas fa-arrow-right" aria-hidden="true"></i>
 		</a>
 
+		<a class="stat-card" href={resolve('/admin/past-work')}>
+			<div class="stat-icon" aria-hidden="true"><i class="fas fa-images"></i></div>
+			<div class="stat-info">
+				<p class="stat-label">Past work</p>
+				<p class="stat-description">Gallery of custom pieces—images and optional details.</p>
+			</div>
+			<i class="fas fa-arrow-right" aria-hidden="true"></i>
+		</a>
+
 		<a class="stat-card" href={resolve('/admin/branding')}>
 			<div class="stat-icon" aria-hidden="true"><i class="fas fa-palette"></i></div>
 			<div class="stat-info">
 				<p class="stat-label">Branding</p>
 				<p class="stat-description">Control logos, colors, and identity assets.</p>
+			</div>
+			<i class="fas fa-arrow-right" aria-hidden="true"></i>
+		</a>
+
+		<a class="stat-card" href={resolve('/admin/featured')}>
+			<div class="stat-icon" aria-hidden="true"><i class="fas fa-star"></i></div>
+			<div class="stat-info">
+				<p class="stat-label">Featured</p>
+				<p class="stat-description">Choose hero featured item cards for the homepage.</p>
 			</div>
 			<i class="fas fa-arrow-right" aria-hidden="true"></i>
 		</a>
@@ -55,6 +73,15 @@
 			<div class="stat-info">
 				<p class="stat-label">Navbar</p>
 				<p class="stat-description">Arrange primary navigation links.</p>
+			</div>
+			<i class="fas fa-arrow-right" aria-hidden="true"></i>
+		</a>
+
+		<a class="stat-card" href={resolve('/admin/footer')}>
+			<div class="stat-icon" aria-hidden="true"><i class="fas fa-columns"></i></div>
+			<div class="stat-info">
+				<p class="stat-label">Footer</p>
+				<p class="stat-description">Edit footer columns, icons, links, and order.</p>
 			</div>
 			<i class="fas fa-arrow-right" aria-hidden="true"></i>
 		</a>

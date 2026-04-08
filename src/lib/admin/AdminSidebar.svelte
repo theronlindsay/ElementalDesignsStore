@@ -20,10 +20,22 @@
 			label: 'About'
 		},
 		{
+			route: '/admin/past-work',
+			href: resolve('/admin/past-work'),
+			icon: 'fa-images',
+			label: 'Past work'
+		},
+		{
 			route: '/admin/branding',
 			href: resolve('/admin/branding'),
 			icon: 'fa-palette',
 			label: 'Branding'
+		},
+		{
+			route: '/admin/featured',
+			href: resolve('/admin/featured'),
+			icon: 'fa-star',
+			label: 'Featured'
 		},
 		{
 			route: '/admin/item-filters',
@@ -32,6 +44,12 @@
 			label: 'Item Search & Filtering'
 		},
 		{ route: '/admin/navbar', href: resolve('/admin/navbar'), icon: 'fa-compass', label: 'Navbar' },
+		{
+			route: '/admin/footer',
+			href: resolve('/admin/footer'),
+			icon: 'fa-columns',
+			label: 'Footer'
+		},
 		{
 			route: '/admin/storefront',
 			href: resolve('/admin/storefront'),

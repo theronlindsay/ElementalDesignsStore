@@ -18,7 +18,8 @@ export const GET = async () => {
 export const POST = async ({ request }) => {
 	try {
 		const incomingContent = await request.json();
-		const branding = normalizeBrandingContent(incomingContent);
+		const { _id, updatedAt, ...safeIncomingContent } = incomingContent || {};
+		const branding = normalizeBrandingContent(safeIncomingContent);
 		const collection = await getCollection('Branding');
 
 		await collection.updateOne(

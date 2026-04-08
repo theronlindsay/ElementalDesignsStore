@@ -1,5 +1,37 @@
 <script>
 	import { resolve } from '$app/paths';
+	import { DEFAULT_FOOTER_SECTIONS } from '$lib/footer-config';
+
+	let { footer = null } = $props();
+
+	let columns = $derived(
+		footer?.sections?.length ? footer.sections : DEFAULT_FOOTER_SECTIONS
+	);
+
+	/** @param {string} [href] */
+	function resolvedHref(href) {
+		if (!href) return '';
+		if (
+			href.startsWith('http://') ||
+			href.startsWith('https://') ||
+			href.startsWith('mailto:')
+		) {
+			return href;
+		}
+		const hashIndex = href.indexOf('#');
+		if (hashIndex >= 0) {
+			const pathPart = href.slice(0, hashIndex) || '/';
+			const hashPart = href.slice(hashIndex);
+			return `${resolve(pathPart)}${hashPart}`;
+		}
+		const path = href.startsWith('/') ? href : `/${href}`;
+		return resolve(path);
+	}
+
+	/** @param {string} href */
+	function isExternal(href) {
+		return href.startsWith('http://') || href.startsWith('https://');
+	}
 </script>
 
 <!-- Footer -->
@@ -12,45 +44,32 @@
 		</div>
 
 		<div class="footer-links">
-			<div class="footer-column">
-				<h4>Info</h4>
-				<a href="{resolve('/')}#events-schedule"><i class="fas fa-calendar"></i> Event schedule</a>
-				<a href={resolve('/about')}><i class="fas fa-info"></i> About</a>
-				<a href="mailto:elementalchaindesigns@gmail.com"><i class="fas fa-envelope"></i> Contact</a>
-			</div>
-
-			<div class="footer-column">
-				<h4>Social</h4>
-				<a
-					href="https://www.instagram.com/elementalchaindesigns?igsh=MTF3YW13amV4MDFhMw=="
-					target="_blank"><i class="fab fa-instagram"></i> Instagram</a
-				>
-				<a href="https://www.facebook.com/share/188h9hVurC/?mibextid=LQQJ4d" target="_blank"
-					><i class="fab fa-facebook"></i> Facebook</a
-				>
-			</div>
-
-			<div class="footer-column">
-				<h4>Payments</h4>
-				<p><i class="fab fa-cc-visa"></i><i class="fab fa-cc-mastercard"></i> Visa/Mastercard</p>
-				<p><i class="fab fa-cc-amex"></i><i class="fab fa-cc-discover"></i> Amex/Discover</p>
-				<p>
-					<i class="fab fa-apple-pay"></i><i class="fab fa-google-pay"></i> Apple/Google Pay
-				</p>
-				<p>
-					<i class="fab fa-cc-paypal"></i><i class="fab fa-venmo-v"></i> Paypal/Venmo
-				</p>
-				<p>
-					<i class="fab fa-cash-app"></i><i class="fa-solid fa-square"></i> CashApp/Square
-				</p>
-			</div>
-
-			<div class="footer-column">
-				<h4>Policies</h4>
-				<a href="{resolve('/policies')}#shipping"><i class="fas fa-shipping-fast"></i> Shipping</a>
-				<a href="{resolve('/policies')}#returns"><i class="fas fa-undo"></i> Returns</a>
-				<a href="{resolve('/policies')}#privacy"><i class="fas fa-shield-alt"></i> Privacy</a>
-			</div>
+			{#each columns as section (section.id)}
+				<div class="footer-column">
+					<h4>{section.title}</h4>
+					{#each section.items as item (item.id)}
+						{#if item.href}
+							<a
+								href={resolvedHref(item.href)}
+								target={isExternal(item.href) ? '_blank' : undefined}
+								rel={isExternal(item.href) ? 'noopener noreferrer' : undefined}
+							>
+								{#if item.iconClass}
+									<i class={item.iconClass} aria-hidden="true"></i>
+								{/if}
+								{item.text}
+							</a>
+						{:else}
+							<p>
+								{#if item.iconClass}
+									<i class={item.iconClass} aria-hidden="true"></i>
+								{/if}
+								{item.text}
+							</p>
+						{/if}
+					{/each}
+				</div>
+			{/each}
 		</div>
 	</div>
 </footer>
@@ -86,7 +105,7 @@
 
 	$desktop-breakpoint: 1200px;
 	$tablet-breakpoint: 768px;
-	$mobile-breakpoint: 450px;
+	$mobile-breakpoint: 566px;
 	$bg-primary: #1a1625;
 
 	// Border Radius
@@ -146,7 +165,7 @@
 
 	.footer-links {
 		display: grid;
-		grid-template-columns: repeat(4, 1fr);
+		grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
 		gap: $spacing-xl;
 	}
 

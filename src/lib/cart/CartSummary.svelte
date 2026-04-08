@@ -1,12 +1,9 @@
 <script>
 	import { Button } from '$lib';
 	import { resolve } from '$app/paths';
-	
-	export let subtotal;
-	export let shipping = 0;
-	export let tax = 0;
-	
-	$: total = subtotal + shipping + tax;
+
+	let { subtotal, shipping = 0, tax = 0 } = $props();
+	let total = $derived(subtotal + shipping + tax);
 </script>
 
 <div class="cart-summary theme-glass">
@@ -41,7 +38,7 @@
 	</div>
 	
 	<div class="summary-actions">
-		<Button variant="primary" className="checkout-btn">
+		<Button variant="primary" className="checkout-btn" onclick={() => (window.location.href = resolve('/checkout'))}>
 			<i class="fas fa-lock"></i>
 			<span>Proceed to Checkout</span>
 		</Button>

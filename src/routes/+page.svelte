@@ -1,15 +1,15 @@
 <script>
 	import { resolve } from '$app/paths';
-	import { EventCard, TestimonialCard, TaggedGrid } from '$lib';
+	import { onMount } from 'svelte';
+	import { EventCard, TestimonialCard, TaggedGrid, SectionCarousel } from '$lib';
 	import OrderModal from '$lib/common/OrderModal.svelte';
 	import { normalizeBrandingContent, splitBrandingParagraphs } from '$lib/branding';
-
-	import defaultLogo from '$lib/assets/LogoTextAbove.png';
-	import defaultEarringsImg from '$lib/assets/steppingstone_earrings_pride_6color.png';
-	import defaultChokerImg from '$lib/assets/laughingskulls_choker_drape_rose_red_zoom.png';
 	let { data } = $props();
 	let branding = $derived(normalizeBrandingContent(data.branding));
 	let heroDescriptionParagraphs = $derived(splitBrandingParagraphs(branding.homeHeroDescription));
+	let featuredItemIds = $derived((branding.featuredItemIds || []).filter(Boolean));
+	let featuredItems = $state([]);
+	let useFeaturedCarousel = $state(false);
 
 	// Load data from server
 	let events = $derived(data.events || []);
@@ -75,21 +75,99 @@
 	function closeOrderModal() {
 		showOrderModal = false;
 	}
+
+	function formatPrice(amount) {
+		return new Intl.NumberFormat('en-US', {
+			style: 'currency',
+			currency: 'USD'
+		}).format(amount || 0);
+	}
+
+	onMount(() => {
+		const updateHeroFeaturedLayout = () => {
+			useFeaturedCarousel = window.innerWidth < 980;
+		};
+
+		async function loadFeaturedItems() {
+			if (featuredItemIds.length === 0) {
+				featuredItems = [];
+				return;
+			}
+
+			try {
+				const response = await fetch('/api/items');
+				if (!response.ok) {
+					featuredItems = [];
+					return;
+				}
+				const payload = await response.json();
+				const map = payload?.itemsMap || {};
+				featuredItems = featuredItemIds
+					.map((id) => map[id])
+					.filter(Boolean);
+			} catch (error) {
+				console.error('Failed to load featured hero items', error);
+				featuredItems = [];
+			}
+		}
+
+		updateHeroFeaturedLayout();
+		loadFeaturedItems();
+		window.addEventListener('resize', updateHeroFeaturedLayout);
+		return () => window.removeEventListener('resize', updateHeroFeaturedLayout);
+	});
 </script>
 
-<!-- Hero Section -->
+<!-- Hero Section: images column first so they sit left of copy above the mobile breakpoint -->
 <section class="hero">
-	<div class="hero-content">
+	<div class="hero-content hero-content--home">
+		<div class="hero-panels">
+			{#if featuredItems.length > 0}
+				{#if useFeaturedCarousel}
+					<SectionCarousel ariaLabel="Featured products" minSlideWidth={210} maxSlideWidth={280}>
+						{#snippet children()}
+							{#each featuredItems as item (item.id)}
+								<div class="carousel-slide">
+									<a class="hero-feature-card" href={resolve(`/item/${item.id}`)}>
+										<div class="hero-feature-image-wrap">
+											{#if item.imageUrl}
+												<img src={item.imageUrl} alt={item.name} class="hero-feature-image" />
+											{:else}
+												<div class="hero-feature-image hero-feature-image--placeholder">No image</div>
+											{/if}
+										</div>
+										<div class="hero-feature-meta">
+											<h3>{item.name}</h3>
+											<p>{formatPrice(item.price)}</p>
+										</div>
+									</a>
+								</div>
+							{/each}
+						{/snippet}
+					</SectionCarousel>
+				{:else}
+					<div class="hero-feature-grid">
+						{#each featuredItems as item (item.id)}
+							<a class="hero-feature-card" href={resolve(`/item/${item.id}`)}>
+								<div class="hero-feature-image-wrap">
+									{#if item.imageUrl}
+										<img src={item.imageUrl} alt={item.name} class="hero-feature-image" />
+									{:else}
+										<div class="hero-feature-image hero-feature-image--placeholder">No image</div>
+									{/if}
+								</div>
+								<div class="hero-feature-meta">
+									<h3>{item.name}</h3>
+									<p>{formatPrice(item.price)}</p>
+								</div>
+							</a>
+						{/each}
+					</div>
+				{/if}
+			{/if}
+		</div>
+
 		<div class="hero-main">
-			<a href={resolve('/')} class="logo-link" aria-label="Elemental Designs Home">
-				<div class="logo">
-					<img
-						src={branding.logoPrimaryUrl || defaultLogo}
-						alt={branding.logoAlt}
-						style="max-width: 500px; display: block"
-					/>
-				</div>
-			</a>
 			<p class="hero-title">{branding.homeHeroTitle}</p>
 			<div class="hero-description">
 				{#each heroDescriptionParagraphs as paragraph, index (index)}
@@ -97,25 +175,9 @@
 				{/each}
 			</div>
 
-			<!-- <div class="hero-actions">
-				<button class="btn-primary">Shop Now</button>
-				<button class="btn-secondary">Custom Orders</button>
-			</div> -->
-		</div>
-
-		<div class="hero-panels">
-			<div class="hero-image-stack">
-				<img
-					src={branding.homeHeroImageOneUrl || defaultEarringsImg}
-					alt="Homepage hero visual one"
-					class="hero-image"
-				/>
-				<img
-					src={branding.homeHeroImageTwoUrl || defaultChokerImg}
-					alt="Homepage hero visual two"
-					class="hero-image"
-				/>
-			</div>
+			<p class="hero-past-work-cta">
+				<a href={resolve('/past-work')} class="hero-past-work-link">Past work gallery</a>
+			</p>
 		</div>
 	</div>
 </section>
@@ -140,11 +202,15 @@
 		<h3>{branding.eventsSectionTitle}</h3>
 
 		{#if upcomingEvents.length > 0}
-			<div class="events-list">
-				{#each upcomingEvents as event (event.id)}
-					<EventCard {event} editable={false} />
-				{/each}
-			</div>
+			<SectionCarousel ariaLabel="Upcoming events" minSlideWidth={300}>
+				{#snippet children()}
+					{#each upcomingEvents as event (event.id)}
+						<div class="carousel-slide">
+							<EventCard {event} editable={false} />
+						</div>
+					{/each}
+				{/snippet}
+			</SectionCarousel>
 		{:else}
 			<div class="no-events">
 				<p>No upcoming events at this time. Check back soon!</p>
@@ -156,11 +222,19 @@
 	{#if testimonials.length > 0}
 		<section class="testimonials-section" id="testimonials">
 			<h3>{branding.testimonialsSectionTitle}</h3>
-			<div class="testimonials-list">
-				{#each testimonials as testimonial (testimonial.id || testimonial._id)}
-					<TestimonialCard {testimonial} editable={false} />
-				{/each}
-			</div>
+			<SectionCarousel
+				ariaLabel="Customer testimonials"
+				minSlideWidth={240}
+				maxSlideWidth={360}
+			>
+				{#snippet children()}
+					{#each testimonials as testimonial (testimonial.id || testimonial._id)}
+						<div class="carousel-slide">
+							<TestimonialCard {testimonial} editable={false} />
+						</div>
+					{/each}
+				{/snippet}
+			</SectionCarousel>
 		</section>
 	{/if}
 
@@ -174,7 +248,7 @@
 				<button class="btn-custom" onclick={openOrderModal}
 					>{branding.customOrdersPrimaryCta}</button
 				>
-				<button class="btn-past-work">{branding.customOrdersSecondaryCta}</button>
+				<a class="btn-past-work" href={resolve('/past-work')}>{branding.customOrdersSecondaryCta}</a>
 			</div>
 		</section>
 

@@ -85,6 +85,11 @@
 		transition: all 0.3s ease;
 		break-inside: avoid;
 		margin-bottom: 1.5rem;
+		width: 100%;
+		max-width: min(22.5rem, 100%);
+		min-width: 0;
+		margin-inline: auto;
+		box-sizing: border-box;
 		&:hover {
 			transform: translateY(-4px);
 			box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);
@@ -177,6 +182,8 @@
 		font-size: 1.1rem;
 		margin: 0;
 		line-height: 1.6;
+		overflow-wrap: anywhere;
+		word-break: break-word;
 
 		:global(p) {
 			margin: 0 0 0.5rem;

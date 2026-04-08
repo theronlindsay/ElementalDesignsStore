@@ -1,10 +1,14 @@
 import { getCollection } from '$lib/mongo';
 import { BRANDING_DOC_ID, DEFAULT_BRANDING_CONTENT, serializeBrandingContent } from '$lib/branding';
+import { FOOTER_DOC_ID, serializeFooterConfig } from '$lib/footer-config';
 
 export const load = async () => {
 	try {
 		const brandingCollection = await getCollection('Branding');
 		const brandingDoc = await brandingCollection.findOne({ id: BRANDING_DOC_ID });
+
+		const footerCol = await getCollection('FooterConfig');
+		const footerDoc = await footerCol.findOne({ id: FOOTER_DOC_ID });
 
 		const storeConfigCol = await getCollection('StoreConfig');
 		const config = await storeConfigCol.findOne({ id: 'main' });
@@ -20,7 +24,8 @@ export const load = async () => {
 
 		return {
 			branding: serializeBrandingContent(brandingDoc),
-			navbarLinks
+			navbarLinks,
+			footer: footerDoc ? serializeFooterConfig(footerDoc) : null
 		};
 	} catch (err) {
 		console.error('Error loading content from MongoDB:', err);
@@ -30,7 +35,8 @@ export const load = async () => {
 				{ id: 'home', label: 'Home', href: '/' },
 				{ id: 'custom', label: 'Custom Orders', href: '/#custom' },
 				{ id: 'about', label: 'About', href: '/about' }
-			]
+			],
+			footer: null
 		};
 	}
 };

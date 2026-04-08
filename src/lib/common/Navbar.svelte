@@ -79,34 +79,40 @@
 		// Special case: if on /search with a text query, don't highlight any nav item
 		const isSearchWithQuery = currentPath === '/search' && currentSearchParams.has('q');
 
-		if (!isSearchWithQuery) {
-			// Build the full URL (path + query + hash) for comparison
-			const currentSearch = currentSearchParams.toString();
-			const currentFullUrl = currentPath + (currentSearch ? '?' + currentSearch : '') + currentHash;
+		if (isSearchWithQuery) {
+			// Search bar owns the highlight state; clear nav-item selector/active styles.
+			visuallyActiveItem = null;
+			activeItem = null;
+			items = items.map((item) => ({ ...item, active: false }));
+			return;
+		}
 
-			for (const item of items) {
-				// Full URL match (handles /search?tags=jewelry style links)
-				if (item.href === currentFullUrl) {
-					matchedItemId = item.id;
-					break;
-				}
+		// Build the full URL (path + query + hash) for comparison
+		const currentSearch = currentSearchParams.toString();
+		const currentFullUrl = currentPath + (currentSearch ? '?' + currentSearch : '') + currentHash;
 
-				// Exact path match
-				if (item.href === currentPath) {
-					matchedItemId = item.id;
-					break;
-				}
+		for (const item of items) {
+			// Full URL match (handles /search?tags=jewelry style links)
+			if (item.href === currentFullUrl) {
+				matchedItemId = item.id;
+				break;
+			}
 
-				// Path + hash match
-				if (item.href === currentPath + currentHash) {
-					matchedItemId = item.id;
-					break;
-				}
+			// Exact path match
+			if (item.href === currentPath) {
+				matchedItemId = item.id;
+				break;
+			}
 
-				// Prefix match for nested routes
-				if (currentPath.startsWith(item.href) && item.href !== '/' && !item.href.includes('?')) {
-					matchedItemId = item.id;
-				}
+			// Path + hash match
+			if (item.href === currentPath + currentHash) {
+				matchedItemId = item.id;
+				break;
+			}
+
+			// Prefix match for nested routes
+			if (currentPath.startsWith(item.href) && item.href !== '/' && !item.href.includes('?')) {
+				matchedItemId = item.id;
 			}
 		}
 
@@ -137,7 +143,7 @@
 	let isWrappedMode = $state(false);
 
 	// Breakpoints
-	const MOBILE_BREAKPOINT = 450;
+	const MOBILE_BREAKPOINT = 566;
 	const WRAP_BREAKPOINT = 980;
 
 	// Update layout based on screen size
@@ -255,29 +261,46 @@
 	<div class="navbar-container" class:mobile-mode={isMobileMode} class:wrapped-mode={isWrappedMode}>
 		{#if isMobileMode}
 			<!-- Mobile Layout with Hamburger Menu -->
-			<div class="mobile-header" style="display: flex; flex-direction: column">
+			<div
+				class="mobile-header"
+				dir="ltr"
+				style="display: grid; grid-template-columns: auto minmax(0, 1fr) auto; grid-template-areas: 'menu logo cart' 'search search search'; align-items: center; row-gap: 0.45rem; column-gap: 0.25rem; width: 100%; box-sizing: border-box;"
+			>
+				<div class="mobile-header-start">
+					<button class="mobile-menu-toggle" onclick={toggleMobileMenu} aria-label="Toggle menu">
+						<i class="fas {isMobileMenuOpen ? 'fa-times' : 'fa-bars'}" aria-hidden="true"></i>
+					</button>
+				</div>
+
 				<div class="mobile-logo">
 					<a href={resolve('/')} class="logo-link" aria-label="Elemental Designs Home">
 						<div class="logo">
-							<img src={logoSrc} alt={logoAlt} style="max-width: 200px; display: block" />
+							<img src={logoSrc} alt={logoAlt} class="mobile-logo-img" />
 						</div>
 					</a>
 				</div>
 
-				<div style="display: flex; flex-direction:row; margin: 1em">
-					<button class="mobile-menu-toggle" onclick={toggleMobileMenu} aria-label="Toggle menu">
-						<i class="fas {isMobileMenuOpen ? 'fa-times' : 'fa-bars'}"></i>
-					</button>
+				<div class="mobile-header-end">
+					<!-- <a href={resolve('/search')} class="mobile-action-btn" aria-label="Search Products">
+						<i class="fas fa-search"></i>
+					</a> -->
+					<a href={resolve('/cart')} class="mobile-action-btn" aria-label="Shopping Cart">
+						<i class="fas fa-shopping-cart" aria-hidden="true"></i>
+					</a>
+				</div>
 
-					<!-- Mobile Actions (always visible) -->
-					<div class="mobile-actions">
-						<!-- <a href={resolve('/search')} class="mobile-action-btn" aria-label="Search Products">
+				<div class="mobile-search-row">
+					<form class="mobile-search-box {isSearchActive ? 'active' : ''}" onsubmit={handleSearch}>
+						<input
+							type="text"
+							placeholder="Search products..."
+							bind:value={searchInput}
+							onkeypress={handleSearchKeypress}
+						/>
+						<button type="submit" class="mobile-search-btn" aria-label="Search Products">
 							<i class="fas fa-search"></i>
-						</a> -->
-						<a href={resolve('/cart')} class="mobile-action-btn" aria-label="Shopping Cart">
-							<i class="fas fa-shopping-cart"></i>
-						</a>
-					</div>
+						</button>
+					</form>
 				</div>
 			</div>
 
@@ -314,66 +337,71 @@
 			{/if}
 		{:else}
 			<!-- Desktop Layout -->
+			<a href={resolve('/')} class="desktop-logo-link" aria-label="Elemental Designs Home">
+				<img src={logoSrc} alt={logoAlt} class="desktop-logo-img" />
+			</a>
 
-			<!-- Nav Items Section (with selector) -->
-			<div class="nav-items-wrapper">
-				<div class="selector {isSearchActive ? 'hidden' : ''}" bind:this={selectorElement}></div>
+			<div class="desktop-nav-content">
+				<!-- Nav Items Section (with selector) -->
+				<div class="nav-items-wrapper">
+					<div class="selector {isSearchActive ? 'hidden' : ''}" bind:this={selectorElement}></div>
 
-				{#each items.filter((item) => item.id !== 'cart') as item (item.id)}
-					{#if item.id === 'custom'}
-						<!-- Custom Orders: Open Modal Instead of Navigate -->
-						<button
-							bind:this={itemElements[item.id]}
-							class="nav-item {visuallyActiveItem === item.id ? 'active' : ''}"
-							onclick={handleCustomOrderClick}
-						>
-							{item.label}
+					{#each items.filter((item) => item.id !== 'cart') as item (item.id)}
+						{#if item.id === 'custom'}
+							<!-- Custom Orders: Open Modal Instead of Navigate -->
+							<button
+								bind:this={itemElements[item.id]}
+								class="nav-item {visuallyActiveItem === item.id ? 'active' : ''}"
+								onclick={handleCustomOrderClick}
+							>
+								{item.label}
+							</button>
+						{:else}
+							<a
+								bind:this={itemElements[item.id]}
+								href={resolve(/** @type {any} */ (item.href))}
+								class="nav-item {visuallyActiveItem === item.id ? 'active' : ''}"
+								onclick={() => handleItemClick(item.id)}
+							>
+								{item.label}
+							</a>
+						{/if}
+					{/each}
+				</div>
+
+				<!-- Divider -->
+				<div class="nav-divider">
+					<i class="fas fa-grip-lines-vertical"></i>
+				</div>
+
+				<!-- Search and Actions (together) -->
+				<div class="nav-search-container">
+					<form class="nav-search-box {isSearchActive ? 'active' : ''}" onsubmit={handleSearch}>
+						<input
+							type="text"
+							placeholder="Search products..."
+							bind:value={searchInput}
+							onkeypress={handleSearchKeypress}
+						/>
+						<button type="submit" class="nav-search-btn" aria-label="Search Products">
+							<i class="fas fa-search"></i>
 						</button>
-					{:else}
+					</form>
+
+					<!-- Navigation Actions -->
+					<div class="nav-actions">	
+
+						<!-- Shopping Cart -->
 						<a
-							bind:this={itemElements[item.id]}
-							href={resolve(/** @type {any} */ (item.href))}
-							class="nav-item {visuallyActiveItem === item.id ? 'active' : ''}"
-							onclick={() => handleItemClick(item.id)}
+							bind:this={itemElements['cart']}
+							href={resolve('/cart')}
+							class="nav-item {visuallyActiveItem === 'cart' ? 'active' : ''}"
+							onclick={() => handleItemClick('cart')}
 						>
-							{item.label}
+							<i class="fas fa-shopping-cart"></i>
+							<span>Cart</span>
 						</a>
-					{/if}
-				{/each}
-			</div>
-
-			<!-- Divider -->
-			<div class="nav-divider">
-				<i class="fas fa-grip-lines-vertical"></i>
-			</div>
-
-			<!-- Search and Actions (together) -->
-			<div class="nav-search-container">
-				<!-- <form class="nav-search-box {isSearchActive ? 'active' : ''}" onsubmit={handleSearch}>
-					<input
-						type="text"
-						placeholder="Search products..."
-						bind:value={searchInput}
-						onkeypress={handleSearchKeypress}
-					/>
-					<button type="submit" class="nav-search-btn" aria-label="Search Products">
-						<i class="fas fa-search"></i>
-					</button>
-				</form> -->
-
-				<!-- Navigation Actions -->
-				<div class="nav-actions">	
-
-					<!-- Shopping Cart -->
-					<a
-						bind:this={itemElements['cart']}
-						href={resolve('/cart')}
-						class="nav-item {visuallyActiveItem === 'cart' ? 'active' : ''}"
-						onclick={() => handleItemClick('cart')}
-					>
-						<i class="fas fa-shopping-cart"></i>
-						<span>Cart</span>
-					</a>
+					</div>
 				</div>
 			</div>
 		{/if}
@@ -390,12 +418,12 @@
 <style lang="scss">
 	/*
 	 * BREAKPOINTS (defined in script section):
-	 * MOBILE_BREAKPOINT = 400px  - Mobile menu mode
+	 * MOBILE_BREAKPOINT = 566px  - Mobile menu mode
 	 * WRAP_BREAKPOINT = 936px    - Search bar wraps to second row
 	 */
 
 	// SCSS Variables for breakpoints
-	$mobile-breakpoint: 450px;
+	$mobile-breakpoint: 566px;
 	$wrap-breakpoint: 936px;
 
 	/* Debug indicator */
@@ -408,15 +436,16 @@
 		display: flex;
 		justify-content: center;
 		align-items: center;
-		padding: 1rem;
+		padding: 0;
 		font-family:
 			system-ui,
 			-apple-system,
 			sans-serif;
-		width: fit-content;
-		max-width: 85vw;
-		margin: 0 auto;
+		width: 100%;
+		max-width: 100vw;
+		margin: 0 auto 0.5rem;
 		background: transparent;
+		box-sizing: border-box;
 	}
 
 	/* container */
@@ -424,11 +453,11 @@
 		position: relative;
 		display: flex;
 		align-items: center;
-		justify-content: center;
+		justify-content: flex-start;
 		flex-wrap: nowrap;
 		background: var(--nav-bg);
-		border-radius: 25px;
-		padding: 6px;
+		border-radius: 0 0 14px 14px;
+		padding: 1.2rem 1rem;
 		gap: 4px;
 		box-shadow: var(--glass-shadow);
 		backdrop-filter: blur(20px);
@@ -437,8 +466,11 @@
 			padding 0.3s ease,
 			gap 0.3s ease,
 			border-radius 0.3s ease;
-		width: fit-content;
-		min-width: min-content;
+		width: 100%;
+		max-width: 100%;
+		min-width: 0;
+		box-sizing: border-box;
+		margin-bottom: 0.6rem;
 	}
 
 	/* common panel helper to DRY-up repeated backgrounds/borders */
@@ -457,6 +489,8 @@
 		align-items: center;
 		gap: 4px;
 		transition: gap 0.3s ease;
+		min-width: 0;
+		flex-wrap: wrap;
 	}
 
 	/* selector (accented moving highlight) */
@@ -484,14 +518,14 @@
 		background: none;
 		border: none;
 		color: var(--muted);
-		padding: 0.5rem;
+		padding: 0.55rem 0.6rem;
 		border-radius: 20px;
 		font-size: 14px;
 		font-weight: 600;
 		cursor: pointer;
 		transition: all 0.2s ease;
 		white-space: nowrap;
-		min-width: fit-content;
+		min-width: 0;
 		text-decoration: none;
 		display: inline-block;
 	}
@@ -556,8 +590,34 @@
 			transparent,
 			rgba(167, 139, 250, 0.1)
 		);
-		border-radius: 25px;
+		border-radius: 0 0 14px 14px;
 		z-index: -1;
+	}
+
+	.desktop-logo-link {
+		display: flex;
+		align-items: center;
+		margin-right: 0;
+		text-decoration: none;
+		flex: 0 0 auto;
+	}
+
+	.desktop-nav-content {
+		flex: 1 1 auto;
+		min-width: 0;
+		max-width: min(1000px, 100%);
+		margin: 0 auto;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 0.75rem;
+	}
+
+	.desktop-logo-img {
+		display: block;
+		height: 92px;
+		width: auto;
+		max-width: min(440px, 36vw);
 	}
 
 	/* Desktop Search and Actions */
@@ -571,9 +631,12 @@
 		display: flex;
 		align-items: center;
 		gap: 0.5rem;
+		min-width: 0;
 	}
 
 	.nav-search-box {
+		position: relative;
+		isolation: isolate;
 		display: flex;
 		align-items: center;
 		background: rgba(0, 0, 0, 0.2);
@@ -582,14 +645,41 @@
 		padding: 4px 12px;
 		transition: all 0.3s ease;
 
+		/* Selector-like halo for the whole search box when in use */
+		&::before {
+			content: '';
+			position: absolute;
+			inset: -2px;
+			border-radius: 22px;
+			background: linear-gradient(135deg, var(--accent) 0%, var(--accent-2) 100%);
+			opacity: 0;
+			transform: scaleX(0.35);
+			transform-origin: left center;
+			transition:
+				opacity 0.25s ease,
+				transform 0.35s cubic-bezier(0.22, 0.61, 0.36, 1);
+			z-index: 0;
+			pointer-events: none;
+		}
+
 		&:focus-within,
 		&.active {
 			background: var(--bg-primary);
 			border-color: var(--accent);
-			box-shadow: 0 0 0 2px rgba(167, 139, 250, 0.2);
+			box-shadow:
+				0 0 0 2px rgba(167, 139, 250, 0.2),
+				0 6px 16px rgba(0, 0, 0, 0.2);
+		}
+
+		&:focus-within::before,
+		&.active::before {
+			opacity: 0.95;
+			transform: scaleX(1);
 		}
 
 		input {
+			position: relative;
+			z-index: 1;
 			background: transparent;
 			border: none;
 			color: var(--text-primary);
@@ -610,6 +700,8 @@
 	}
 
 	.nav-search-btn {
+		position: relative;
+		z-index: 1;
 		background: transparent;
 		border: none;
 		color: var(--muted);
@@ -662,14 +754,127 @@
 		}
 	}
 
-	/* mobile */
-	.mobile-header {
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
-		width: 100%;
-		padding: 8px;
+	/* mobile — grid + inline style so menu / logo / cart stay one row (survives flex-wrap from wider breakpoints) */
+	.navbar-container.mobile-mode .mobile-header {
+		display: grid !important;
+		grid-template-columns: auto minmax(0, 1fr) auto !important;
+		grid-template-areas:
+			'menu logo cart'
+			'search search search' !important;
+		align-items: center !important;
+		row-gap: 0.55rem !important;
+		column-gap: 0.25rem !important;
+		width: 100% !important;
+		padding: 10px 4px 12px !important;
+		box-sizing: border-box !important;
+		direction: ltr !important;
 	}
+
+	.mobile-header-start {
+		grid-area: menu;
+		display: flex;
+		align-items: center;
+		justify-self: start;
+	}
+
+	.mobile-header-end {
+		grid-area: cart;
+		display: flex;
+		align-items: center;
+		justify-self: end;
+		gap: 8px;
+	}
+
+	.mobile-logo {
+		grid-area: logo;
+		justify-self: stretch;
+		place-self: center;
+		min-width: 0;
+		width: 100%;
+		max-width: 100%;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+
+		.logo {
+			width: 100%;
+			margin-right: 0;
+			display: flex;
+			justify-content: center;
+		}
+	}
+
+	.mobile-logo .logo-link {
+		width: 100%;
+		justify-content: center;
+		min-width: 0;
+		max-width: 100%;
+	}
+
+	.mobile-logo-img {
+		display: block;
+		width: auto;
+		max-width: min(380px, calc(100% - 0.25rem));
+		max-height: 100px;
+		height: auto;
+		margin: 0;
+	}
+
+	.mobile-search-row {
+		grid-area: search;
+		width: 100%;
+		display: flex;
+		justify-content: center;
+	}
+
+	.mobile-search-box {
+		display: flex;
+		align-items: center;
+		width: min(100%, 380px);
+		background: rgba(0, 0, 0, 0.22);
+		border: 1px solid var(--panel-border);
+		border-radius: 14px;
+		padding: 0.35rem 0.7rem;
+		box-sizing: border-box;
+		transition: border-color 0.2s ease, box-shadow 0.2s ease;
+
+		&:focus-within,
+		&.active {
+			border-color: var(--accent);
+			box-shadow: 0 0 0 2px rgba(167, 139, 250, 0.2);
+		}
+
+		input {
+			flex: 1 1 auto;
+			min-width: 0;
+			background: transparent;
+			border: none;
+			color: var(--text-primary);
+			font-size: 0.95rem;
+			padding: 0.2rem 0.25rem;
+			outline: none;
+
+			&::placeholder {
+				color: var(--muted);
+			}
+		}
+	}
+
+	.mobile-search-btn {
+		background: transparent;
+		border: none;
+		color: var(--muted);
+		cursor: pointer;
+		padding: 0.25rem;
+		font-size: 1rem;
+		line-height: 1;
+		transition: color 0.2s ease;
+
+		&:hover {
+			color: var(--accent);
+		}
+	}
+
 	.mobile-menu-toggle {
 		display: flex;
 		align-items: center;
@@ -677,12 +882,17 @@
 		background: transparent;
 		border: 1px solid var(--panel-border);
 		color: var(--muted);
-		padding: 8px;
+		min-width: 2rem;
+		min-height: 2rem;
+		width: 2rem;
+		height: 2rem;
+		padding: 0;
 		border-radius: 10px;
 		cursor: pointer;
-		font-size: 16px;
+		font-size: 1.05rem;
+		line-height: 1;
 		transition: all 0.2s;
-		margin-right: 10px;
+		flex-shrink: 0;
 	}
 	.mobile-menu-toggle:hover {
 		border-color: var(--accent);
@@ -692,6 +902,7 @@
 		display: flex;
 		gap: 8px;
 	}
+
 	.mobile-action-btn {
 		display: flex;
 		align-items: center;
@@ -699,12 +910,18 @@
 		background: transparent;
 		border: 1px solid var(--panel-border);
 		color: var(--muted);
-		padding: 8px;
+		min-width: 2rem;
+		min-height: 2rem;
+		width: 2rem;
+		height: 2rem;
+		padding: 0;
 		border-radius: 10px;
 		cursor: pointer;
-		font-size: 16px;
+		font-size: 1.05rem;
+		line-height: 1;
 		transition: all 0.2s;
 		text-decoration: none;
+		flex-shrink: 0;
 	}
 	.mobile-action-btn:hover {
 		border-color: var(--accent);
@@ -717,7 +934,7 @@
 		right: 0;
 		border-radius: 0 0 12px 12px;
 		z-index: 100;
-		padding: 16px;
+		padding: 12px;
 		animation: slideDown 0.3s ease-out;
 		background: rgba(30, 27, 50, 0.8);
 		backdrop-filter: blur(10px);
@@ -728,7 +945,7 @@
 	}
 	.mobile-nav-item {
 		display: block !important;
-		width: calc(100% - 24px);
+		width: 100%;
 		margin-bottom: 8px;
 		text-align: left;
 		padding: 12px 12px !important;
@@ -785,8 +1002,9 @@
 	/* layout mode tweaks */
 	.navbar-container.mobile-mode {
 		flex-direction: column;
-		padding: 8px;
-		border-radius: 16px;
+		flex-wrap: nowrap;
+		padding: 12px 10px 14px;
+		border-radius: 0 0 12px 12px;
 		position: relative;
 	}
 
@@ -797,14 +1015,33 @@
 	/* Wrapped Mode: ≤$wrap-breakpoint */
 	@media (max-width: $wrap-breakpoint) {
 		.navbar {
-			padding: 0.6rem;
-			max-width: fit-content;
+			padding: 0;
+			max-width: 100vw;
 		}
 		.navbar-container {
-			padding: 1.5em;
+			padding: 1.15rem 0.85rem 1.2rem;
 			gap: 3px;
-			width: min-content;
+			width: 100%;
+			flex-wrap: nowrap;
+			flex-direction: column;
+			align-items: stretch;
+		}
+		.desktop-logo-img {
+			height: 84px;
+			max-width: min(400px, 40vw);
+		}
+		.desktop-logo-link {
+			align-self: center;
+			margin-right: 0;
+			margin-bottom: 0.55rem;
+		}
+		.desktop-nav-content {
+			width: 100%;
+			max-width: none;
+			margin: 0;
+			justify-content: center;
 			flex-wrap: wrap;
+			gap: 0.55rem;
 		}
 		.nav-items-wrapper {
 			gap: 3px;
@@ -816,18 +1053,65 @@
 		.logo {
 			margin-right: 12px;
 		}
+
+		/* Keep search/cart grouped and centered under the top logo row. */
+		.nav-search-container {
+			flex: 0 0 auto;
+			justify-content: center;
+		}
 	}
 
 	/* Mobile Mode: ≤$mobile-breakpoint */
 	@media (max-width: $mobile-breakpoint) {
 		.navbar {
-			padding: 0.4rem;
-			max-width: 98vw;
+			padding: 0;
+			max-width: 100vw;
 		}
 		.navbar-container {
-			padding: 3px;
+			padding: 8px 6px 10px;
 			gap: 2px;
-			width: 80vw;
+			width: 100%;
+			border-radius: 0 0 12px 12px;
+			margin-bottom: 0.9rem;
+		}
+		.navbar-container::before {
+			border-radius: 0 0 12px 12px;
+		}
+		.desktop-logo-link {
+			display: none;
+		}
+		.desktop-nav-content {
+			display: contents;
+		}
+
+		/* Mobile navbar icon buttons: large touch targets until very narrow screens */
+		.mobile-menu-toggle,
+		.mobile-action-btn {
+			min-width: 4em;
+			min-height: 4em;
+			width: 4em;
+			height: 4em;
+		}
+
+		.mobile-menu-toggle i,
+		.mobile-action-btn i {
+			font-size: 1.8em;
+			line-height: 1;
+		}
+	}
+
+	@media (max-width: 360px) {
+		.mobile-menu-toggle,
+		.mobile-action-btn {
+			min-width: 2em;
+			min-height: 2em;
+			width: 2em;
+			height: 2em;
+		}
+
+		.mobile-menu-toggle i,
+		.mobile-action-btn i {
+			font-size: 0.9em;
 		}
 	}
 </style>

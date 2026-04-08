@@ -45,6 +45,7 @@
 	let sortBy = $state('name');
 	let showFilters = $state(true);
 	let activeTags = $state([]);
+	const MOBILE_FILTER_BREAKPOINT = 768;
 
 	// Auto-detect the active primary category from the current activeTags.
 	// The navbar already handles navigation (e.g. /search?tags=jewelry),
@@ -153,6 +154,16 @@
 
 	// Load data once on mount
 	onMount(() => {
+		showFilters = window.innerWidth > MOBILE_FILTER_BREAKPOINT;
+
+		const handleResize = () => {
+			if (window.innerWidth <= MOBILE_FILTER_BREAKPOINT) {
+				showFilters = false;
+			}
+		};
+
+		window.addEventListener('resize', handleResize);
+
 		// Load all categories data once
 		data.allCategoriesPromise
 			.then((loadedData) => {
@@ -167,6 +178,10 @@
 				console.error('Error loading categories:', err);
 				dataLoaded = false;
 			});
+
+		return () => {
+			window.removeEventListener('resize', handleResize);
+		};
 	});
 
 	// Extract price from Square item
@@ -726,7 +741,7 @@
 
 	.search-page {
 		min-height: 100vh;
-		padding: $spacing-xl;
+		padding: clamp(0.75rem, 2.5vw, $spacing-xl);
 	}
 
 	.page-header {
@@ -846,12 +861,14 @@
 		gap: $spacing-xl;
 		max-width: $desktop-breakpoint;
 		margin: 0 auto;
+		min-width: 0;
 	}
 
 	/* Filters Sidebar */
 	.filters-sidebar {
 		flex-shrink: 0;
 		width: 280px;
+		max-width: 100%;
 		background: $bg-panel;
 		border: 1px solid $border-secondary;
 		border-radius: $radius-lg;
@@ -946,7 +963,7 @@
 		align-items: flex-end;
 		gap: $spacing-sm;
 		margin-bottom: $spacing-sm;
-		max-width: 20vw;
+		max-width: 100%;
 
 		.input-group {
 			flex: 1;
@@ -966,8 +983,8 @@
 				padding: $spacing-sm;
 				border-radius: $radius-sm;
 				outline: none;
-				max-width: 20vw;
-				width: 7em;
+				width: 100%;
+				min-width: 0;
 
 				&:focus {
 					border-color: $accent-primary;
@@ -1219,6 +1236,7 @@
 
 		.search-container {
 			flex-direction: column;
+			gap: $spacing-md;
 		}
 
 		.filters-sidebar {
@@ -1228,6 +1246,10 @@
 			&.collapsed {
 				display: none;
 			}
+		}
+
+		.price-inputs {
+			align-items: stretch;
 		}
 
 		.product-grid {

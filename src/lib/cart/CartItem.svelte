@@ -109,6 +109,7 @@
 		font-size: 1.1rem;
 		font-weight: 600;
 		margin: 0;
+		padding-left: 0.75rem;
 	}
 	
 	.item-variant {
@@ -121,6 +122,7 @@
 		color: var(--accent);
 		font-weight: 600;
 		margin: 0;
+		padding-left: 0.75rem;
 	}
 	
 	.item-unit-price {

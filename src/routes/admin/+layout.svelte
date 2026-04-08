@@ -52,11 +52,12 @@
 		flex-direction: column;
 		transition: margin-left 0.3s ease;
 		min-width: 0; // Allows flex item to shrink below content size
-		width: calc(100vw - $sidebar-width); // Ensure content doesn't exceed viewport
+		width: auto;
+		max-width: 100%;
 		
 		@media (max-width: $mobile-breakpoint) {
 			margin-left: 0;
-			width: 100vw;
+			width: auto;
 		}
 	}
 	

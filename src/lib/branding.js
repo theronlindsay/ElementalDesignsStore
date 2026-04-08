@@ -7,8 +7,7 @@ export const DEFAULT_BRANDING_CONTENT = {
 	homeHeroTitle: 'Handcrafted Chainmail and Laser-Engraved Gifts',
 	homeHeroDescription:
 		'Explore our unique collection of handcrafted jewelry and personalized gifts.\n\nEach piece is carefully crafted with attention to detail and quality.',
-	homeHeroImageOneUrl: '',
-	homeHeroImageTwoUrl: '',
+	featuredItemIds: [],
 	eventsSectionTitle: 'Upcoming Events',
 	testimonialsSectionTitle: 'Customer Testimonials',
 	customOrdersTitle: 'Custom orders',

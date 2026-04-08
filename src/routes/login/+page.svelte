@@ -2,7 +2,7 @@
 	import { Button, Input, Label, FormGroup } from '$lib';
 	import { resolve } from '$app/paths';
 
-	export let form;
+	let { form } = $props();
 </script>
 
 <svelte:head>
@@ -47,11 +47,10 @@
 					/>
 				</FormGroup>
 
-				<!-- Error Message -->
-				{#if form?.incorrect}
-					<div class="error-message">
-						<i class="fas fa-exclamation-circle"></i>
-						<span>Invalid credentials. Please try again.</span>
+				{#if form?.message}
+					<div class="error-message" role="alert">
+						<i class="fas fa-exclamation-circle" aria-hidden="true"></i>
+						<span>{form.message}</span>
 					</div>
 				{/if}
 
