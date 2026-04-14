@@ -57,13 +57,30 @@
 	);
 
 	// Handle order submission
-	function handleOrderSubmit(orderData) {
+	async function handleOrderSubmit(orderData) {
 		console.log('Order submitted:', orderData);
 
-		// TODO: Send order data to server
-		// For now, just close the modal and show a success message
-		showOrderModal = false;
-		alert('Thank you for your order request! We will contact you soon at ' + orderData.email);
+		try {
+			const response = await fetch('/api/custom-order', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify(orderData)
+			});
+
+			const result = await response.json();
+
+			if (!response.ok) {
+				throw new Error(result.error || 'Failed to send request');
+			}
+
+			showOrderModal = false;
+			alert('Thank you for your order request! We will contact you soon at ' + orderData.email);
+		} catch (error) {
+			console.error('Error submitting order:', error);
+			alert('Error: ' + (error.message || 'Failed to send order request'));
+		}
 	}
 
 	// Open order modal
